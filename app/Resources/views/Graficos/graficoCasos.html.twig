@@ -1,0 +1,1250 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    {% set anno_actual =  "now"|date("Y") %}
+
+    <div style="padding-left: 0; padding-right: 0" class="container-fluid">
+        <div class="row" style="margin:5px">
+            <div class="form-cont">
+                <h2 id="titulo_fecha" class="text-center">GRÁFICOS DE CASOS TB</h2>
+                <br>
+                <div>
+                    <table id="id_tb_year" class="table table-bordered table-responsive">
+                        <thead>
+                        <tr>
+                            <th style="text-align: center">
+                                </br>
+                                </br>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="fechaInicio"
+                                               class="col-lg-1 col-md-1 col-sm-1 control-label text-right">DESDE:</label>
+                                        <div class="col-lg-2 col-md-2 col-sm-2">
+                                            <input type="date"
+                                                   name="fechaInicio" id="fechaInicio"
+                                                   value="{{ fechaInicio|date("Y-m-d") }}">
+                                        </div>
+                                        <label for="fechaFinal"
+                                               class="col-lg-1 col-md-1 col-sm-1 control-label text-right">HASTA:</label>
+                                        <div class="col-lg-2 col-md-2 col-sm-2">
+                                            <input type="date"
+                                                   name="fechaFinal" id="fechaFinal"
+                                                   value="{{ fechaFinal|date("Y-m-d") }}">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button id="bt_search" class="btn btn-primario" type="submit">Buscar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div>
+                    <table id="id_tb_1" class="table table-responsive">
+                        <thead>
+                        <tr>
+                            <th id="mostrarCategoria">CASOS POR CATEGORÍA DE ENTRADA</th>
+                            <th id="mostrarGrupo">CASOS POR GRUPOS VULNERABLES</th>
+                        </tr>
+                        <tr>
+                            <td width="50%">
+                                <span class="glyphicon glyphicon-circle-arrow-left" style="float: right;display: none;cursor: pointer" id="btnAtrasProvincia"> Categorías</span>
+                                <span class="glyphicon glyphicon-circle-arrow-left" style="float: right;display: none;cursor: pointer" id="btnAtrasMunicipio"> Provincias</span>
+                            </td>
+                            <td width="50%">
+                                <span class="glyphicon glyphicon-circle-arrow-left" style="float: right;display: none;cursor: pointer" id="btnAtrasGrupo"> Grupos</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50%">
+                                <div id="graficoCategoria" class="chart"></div>
+                            </td>
+                            <td width="50%">
+                                <div id="graficoGrupoVulnerable" class="chart"></div>
+                            </td>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div>
+                    <table id="id_tb_2" class="table table-responsive">
+                        <thead>
+                        <tr>
+                            <th id="mostrarResultado">CASOS POR RESULTADOS DE TRATAMIENTO</th>
+                            <th id="mostrarNotificados">CASOS NOTIFICADOS POR AÑOS</th>
+                        </tr>
+                        <tr>
+                            <td width="50%">
+                                <span class="glyphicon glyphicon-circle-arrow-left" style="float: right;display: none;cursor: pointer" id="btnAtrasResultado"> Resultados</span>
+                            </td>
+                            <td width="50%">
+                                <span class="glyphicon glyphicon-circle-arrow-left" style="float: right;display: none;cursor: pointer" id="btnAtrasNotificado"> Notificados</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50%">
+                                <div id="graficoTratamiento" class="chart"></div>
+                            </td>
+                            <td width="50%">
+                                <div id="graficoNotificados" class="chart"></div>
+                            </td>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <br/>
+                <br/>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- BEGIN GRAFICOS HIGHSTOCK LEVEL PLUGINS -->
+    <script src="{{ asset('bundles/easyadmin/highstock/code/highstock.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/highstock/code/modules/annotations.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/highstock/code/modules/exporting.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/highstock/code/modules/export-data.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/highstock/code/modules/export-clientside.js') }}"></script>
+    <!-- END  GRAFICOS HIGHSTOCK LEVEL PLUGINS -->
+    <script>
+        $(document).ready(function () {
+
+            var categorias = [];
+            var notificadosYears = [];
+            var gruposVulnerables = [];
+            var resultadosTratamientos = [];
+            var n;
+            var codigoId;
+            var codigoName;
+            var provinciaId;
+            var fechaInicioId = '';
+            var fechaFinalId = '';
+            var color;
+
+            var md = $('#processing-modal');
+
+            $("#bt_search").click(function () {
+
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+
+                if($("#fechaInicio").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de inicio.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Advertencia</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if($("#fechaFinal").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha final.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Advertencia</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if($("#fechaFinal").val() < $("#fechaInicio").val()) {
+                    alertify.alert('<strong>Error: la fecha final no puede ser menor que la fecha de inicio.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if($("#fechaInicio").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de inicio no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if($("#fechaFinal").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha final no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                md.modal('show');
+
+                fechaInicioId = $("#fechaInicio").val();
+                fechaFinalId = $("#fechaFinal").val();
+
+                var mat_datos = {
+                    fechaInicio: fechaInicioId,
+                    fechaFinal: fechaFinalId
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("graficoCasosBuscar") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    md.modal('hide');
+
+                    var obj = JSON.parse(data);
+                    var categoria = obj['categorias'];
+                    var grupo = obj['gruposVulnerables'];
+                    var resultado = obj['resultados'];
+
+                    categorias = [];
+                    for (n = 0; n < categoria.length; n++) {
+                        categorias.push({
+                            name: categoria[n]['codigo'] + ' TB ' + categoria[n]['localizacionAnatomica'].toLowerCase() + ' ' + categoria[n]['definicionCaso'].toLowerCase() + ' (' + categoria[n]['tipoEnfermo'].toLowerCase() + ')',
+                            y: parseFloat(categoria[n]['cant'])
+                        });
+                    }
+
+                    gruposVulnerables = [];
+                    for (n = 0; n < grupo.length; n++) {
+                        gruposVulnerables.push({
+                            name: grupo[n]['grupo'],
+                            y: parseFloat(grupo[n]['cant'])
+                        });
+                    }
+
+                    resultadosTratamientos = [];
+                    for (n = 0; n < resultado.length; n++) {
+                        resultadosTratamientos.push({
+                            name: resultado[n]['resultado'],
+                            y: parseFloat(resultado[n]['cant'])
+                        });
+                    }
+
+                    graficoCategoria();
+                    graficoGrupoVulnerable();
+                    graficoTratamiento();
+                });
+            });
+
+            //Gráfico 1er nivel de Categorías de entrada
+            {% for graficoCategoria in categorias %}
+            categorias.push({
+                name: '{{ graficoCategoria['codigo'] ~ ' TB' ~ ' ' ~ graficoCategoria['localizacionAnatomica']|lower ~ ' ' ~ graficoCategoria['definicionCaso']|lower ~ ' (' ~ graficoCategoria['tipoEnfermo']|lower ~ ')'}}',
+                y: parseInt('{{ graficoCategoria['cant'] }}')
+            });
+            {% endfor %}
+
+            //Gráfico de Comparativo de casos notificados por años
+            {% for graficoYear in notificadosYears %}
+            notificadosYears.push({
+                name: '{{ graficoYear['y'] }}',
+                y: parseInt('{{ graficoYear['cant'] }}')
+            });
+            {% endfor %}
+
+            //Gráfico de 1er nivel grupos vulnerables
+            {% for graficoGrupo in gruposVulnerables %}
+            gruposVulnerables.push({
+                name: '{{ graficoGrupo['grupo'] }}',
+                y: parseInt('{{ graficoGrupo['cant'] }}')
+            });
+            {% endfor %}
+
+            //Gráfico de 1er nivel Resultados Tratamiento
+            {% for graficoResultado in resultadosTratamientos %}
+            resultadosTratamientos.push({
+                name: '{{ graficoResultado['resultado'] }}',
+                y: parseInt('{{ graficoResultado['cant'] }}')
+            });
+            {% endfor %}
+
+            graficoCategoria();
+            graficoGrupoVulnerable();
+            graficoTratamiento();
+            graficoNotificados();
+
+            function graficoCategoria() {
+                var valorMax = categorias.length - 1;
+                var valorScrollbar = false;
+                if (categorias.length > 6) {
+                    valorMax = 5;
+                    valorScrollbar = true;
+                }
+                Highcharts.chart('graficoCategoria', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: null
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    scrollbar: {
+                        enabled: valorScrollbar,
+                        liveRedraw: true,
+                        step: 1
+                    },
+                    xAxis: {
+                        type: 'category',
+                        min: 0,
+                        max: valorMax,
+                        useHTML: true
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Casos',
+                            useHTML: true
+                        }
+
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            getExtremesFromAll: true,
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    return Highcharts.numberFormat(this.y, 0, ',', '.');
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span><b> {point.y:,.0f}</b>' + ' casos '
+                    },
+
+                    "series": [
+                        {
+                            "name": "Categorías",
+                            "colorByPoint": true,
+                            "data": categorias,
+                            events: {
+                                click: function (oEvent) {
+                                    categoriaProvincia(oEvent.point.name, oEvent.point.color);
+                                }
+                            }
+                        }
+                    ],
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 800
+                            },
+                            chartOptions: {
+                                scrollbar: {
+                                    enabled: true
+                                },
+                                xAxis: {
+                                    min: 0,
+                                    max: 1,
+                                    useHTML: true
+                                }
+                            }
+                        }]
+                    }
+                });
+            }
+
+            function graficoCategoriaProvincia() {
+                var valorMax = categorias.length - 1;
+                var valorScrollbar = false;
+                if (categorias.length > 6) {
+                    valorMax = 5;
+                    valorScrollbar = true;
+                }
+                Highcharts.chart('graficoCategoria', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: null
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    scrollbar: {
+                        enabled: valorScrollbar,
+                        liveRedraw: true,
+                        step: 1
+                    },
+                    xAxis: {
+                        type: 'category',
+                        min: 0,
+                        max: valorMax,
+                        useHTML: true
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Casos',
+                            useHTML: true
+                        }
+
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            getExtremesFromAll: true,
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    return Highcharts.numberFormat(this.y, 0, ',', '.');
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span><b> {point.y:,.0f}</b>' + ' casos '
+                    },
+
+                    "series": [
+                        {
+                            "name": "Provincias",
+                            "colorByPoint": true,
+                            "data": categorias,
+                            events: {
+                                click: function (oEvent) {
+                                    categoriaMunicipio(oEvent.point.name, oEvent.point.color);
+                                }
+                            }
+                        }
+                    ],
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 800
+                            },
+                            chartOptions: {
+                                scrollbar: {
+                                    enabled: true
+                                },
+                                xAxis: {
+                                    min: 0,
+                                    max: 1,
+                                    useHTML: true
+                                }
+                            }
+                        }]
+                    }
+                });
+            }
+
+            function graficoCategoriaMunicipio() {
+                var valorMax = categorias.length - 1;
+                var valorScrollbar = false;
+                if (categorias.length > 6) {
+                    valorMax = 5;
+                    valorScrollbar = true;
+                }
+                Highcharts.chart('graficoCategoria', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: null
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    scrollbar: {
+                        enabled: valorScrollbar,
+                        liveRedraw: true,
+                        step: 1
+                    },
+                    xAxis: {
+                        type: 'category',
+                        min: 0,
+                        max: valorMax,
+                        useHTML: true
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Casos',
+                            useHTML: true
+                        }
+
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            getExtremesFromAll: true,
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    return Highcharts.numberFormat(this.y, 0, ',', '.');
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span><b> {point.y:,.0f}</b>' + ' casos '
+                    },
+
+                    "series": [
+                        {
+                            "name": "Municipios",
+                            "colorByPoint": true,
+                            "data": categorias,
+                            events: {
+                                click: function (oEvent) {
+                                    categoriaReparto(oEvent.point.name, oEvent.point.color);
+                                }
+                            }
+                        }
+                    ],
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 800
+                            },
+                            chartOptions: {
+                                scrollbar: {
+                                    enabled: true
+                                },
+                                xAxis: {
+                                    min: 0,
+                                    max: 1,
+                                    useHTML: true
+                                }
+                            }
+                        }]
+                    }
+                });
+            }
+
+            function graficoGrupoVulnerable() {
+                var valorMax = gruposVulnerables.length - 1;
+                var valorScrollbar = false;
+                if (gruposVulnerables.length > 6) {
+                    valorMax = 5;
+                    valorScrollbar = true;
+                }
+                Highcharts.chart('graficoGrupoVulnerable', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: null
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    scrollbar: {
+                        enabled: valorScrollbar,
+                        liveRedraw: true,
+                        step: 1
+                    },
+                    xAxis: {
+                        type: 'category',
+                        min: 0,
+                        max: valorMax,
+                        useHTML: true
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Casos',
+                            useHTML: true
+                        }
+
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            getExtremesFromAll: true,
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    return Highcharts.numberFormat(this.y, 0, ',', '.');
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span>' + ' casos ' + '<b>{point.y:,.0f}</b>'
+                    },
+
+                    "series": [
+                        {
+                            "name": "gruposVulnerables",
+                            "colorByPoint": true,
+                            "data": gruposVulnerables,
+                            events: {
+                                click: function (oEvent) {
+                                    // cargarDivision(oEvent.point.name, oEvent.point.y, oEvent.point.color);
+                                }
+                            }
+                        }
+                    ],
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 800
+                            },
+                            chartOptions: {
+                                scrollbar: {
+                                    enabled: true
+                                },
+                                xAxis: {
+                                    min: 0,
+                                    max: 1,
+                                    useHTML: true
+                                }
+                            }
+                        }]
+                    }
+                });
+            }
+
+            function graficoTratamiento() {
+                var valorMax = resultadosTratamientos.length - 1;
+                var valorScrollbar = false;
+                if (resultadosTratamientos.length > 6) {
+                    valorMax = 5;
+                    valorScrollbar = true;
+                }
+                Highcharts.chart('graficoTratamiento', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: null
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    scrollbar: {
+                        enabled: valorScrollbar,
+                        liveRedraw: true,
+                        step: 1
+                    },
+                    xAxis: {
+                        type: 'category',
+                        min: 0,
+                        max: valorMax,
+                        useHTML: true
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Casos',
+                            useHTML: true
+                        }
+
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            getExtremesFromAll: true,
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    return Highcharts.numberFormat(this.y, 0, ',', '.');
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span>' + ' casos ' + '<b>{point.y:,.0f}</b>'
+                    },
+
+                    "series": [
+                        {
+                            "name": "Resultados",
+                            "colorByPoint": true,
+                            "data": resultadosTratamientos,
+                            events: {
+                                click: function (oEvent) {
+                                    // cargarDivision(oEvent.point.name, oEvent.point.y, oEvent.point.color);
+                                }
+                            }
+                        }
+                    ],
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 800
+                            },
+                            chartOptions: {
+                                scrollbar: {
+                                    enabled: true
+                                },
+                                xAxis: {
+                                    min: 0,
+                                    max: 1,
+                                    useHTML: true
+                                }
+                            }
+                        }]
+                    }
+                });
+            }
+
+            function graficoNotificados() {
+                var valorMax = notificadosYears.length - 1;
+                var valorScrollbar = false;
+                if (notificadosYears.length > 6) {
+                    valorMax = 5;
+                    valorScrollbar = true;
+                }
+                Highcharts.chart('graficoNotificados', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: null
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    scrollbar: {
+                        enabled: valorScrollbar,
+                        liveRedraw: true,
+                        step: 1
+                    },
+                    xAxis: {
+                        type: 'category',
+                        min: 0,
+                        max: valorMax,
+                        useHTML: true
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Casos',
+                            useHTML: true
+                        }
+
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            getExtremesFromAll: true,
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    return Highcharts.numberFormat(this.y, 0, ',', '.');
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span>' + ' casos ' + '<b>{point.y:,.0f}</b>'
+                    },
+
+                    "series": [
+                        {
+                            "name": "notificadosYears",
+                            "colorByPoint": true,
+                            "data": notificadosYears,
+                            events: {
+                                click: function (oEvent) {
+                                    cargarNotificadosYears(oEvent.point.name, oEvent.point.color);
+                                }
+                            }
+                        }
+                    ],
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 800
+                            },
+                            chartOptions: {
+                                scrollbar: {
+                                    enabled: true
+                                },
+                                xAxis: {
+                                    min: 0,
+                                    max: 1,
+                                    useHTML: true
+                                }
+                            }
+                        }]
+                    }
+                });
+            }
+
+            function cargarCategoria() {
+
+                md.modal('show');
+
+                var mat_datos = {
+                    fechaInicio: fechaInicioId === '' ? $("#fechaInicio").val(): fechaInicioId,
+                    fechaFinal: fechaFinalId === '' ? $("#fechaFinal").val(): fechaFinalId
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("graficoCasosBuscar") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    md.modal('hide');
+
+                    var obj = JSON.parse(data);
+                    var categoria = obj['categorias'];
+                    var grupo = obj['gruposVulnerables'];
+                    var resultado = obj['resultados'];
+
+                    categorias = [];
+                    for (n = 0; n < categoria.length; n++) {
+                        categorias.push({
+                            name: categoria[n]['codigo'] + ' TB ' + categoria[n]['localizacionAnatomica'].toLowerCase() + ' ' + categoria[n]['definicionCaso'].toLowerCase() + ' (' + categoria[n]['tipoEnfermo'].toLowerCase() + ')',
+                            y: parseFloat(categoria[n]['cant'])
+                        });
+                    }
+
+                    gruposVulnerables = [];
+                    for (n = 0; n < grupo.length; n++) {
+                        gruposVulnerables.push({
+                            name: grupo[n]['grupo'],
+                            y: parseFloat(grupo[n]['cant'])
+                        });
+                    }
+
+                    resultadosTratamientos = [];
+                    for (n = 0; n < resultado.length; n++) {
+                        resultadosTratamientos.push({
+                            name: resultado[n]['resultado'],
+                            y: parseFloat(resultado[n]['cant'])
+                        });
+                    }
+                    graficoCategoria();
+                    graficoGrupoVulnerable();
+                    graficoTratamiento();
+                });
+            }
+
+            function categoriaProvincia(codigo,colorSeleccionado) {
+
+                md.modal('show');
+
+                codigoName = codigo;
+                codigoId = codigo.slice(0, codigo.indexOf("TB")).trim();
+                color =  colorSeleccionado;
+
+                var mat_datos = {
+                    fechaInicio: fechaInicioId == '' ? $("#fechaInicio").val(): fechaInicioId,
+                    fechaFinal: fechaFinalId == '' ? $("#fechaFinal").val(): fechaFinalId,
+                    codigo: codigoId
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("graficoCategoriaEntradaProvincias") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    md.modal('hide');
+                    var obj = JSON.parse(data);
+                    var categoria = obj['categoriasProvincias'];
+                    var notificado = obj['notificadosYearsCategoria'];
+                    var grupo = obj['gruposVulnerablesCategoria'];
+                    var resultado = obj['resultadosTratamientosCategoria'];
+
+                    categorias = [];
+                    for (n = 0; n < categoria.length; n++) {
+                        categorias.push({
+                            name: categoria[n]['provincia'],
+                            y: parseFloat(categoria[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    gruposVulnerables = [];
+                    for (n = 0; n < grupo.length; n++) {
+                        gruposVulnerables.push({
+                            name: grupo[n]['grupo'],
+                            y: parseFloat(grupo[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    notificadosYears = [];
+                    for (n = 0; n < notificado.length; n++) {
+                        notificadosYears.push({
+                            name: notificado[n]['y'],
+                            y: parseFloat(notificado[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    resultadosTratamientos = [];
+                    for (n = 0; n < resultado.length; n++) {
+                        resultadosTratamientos.push({
+                            name: resultado[n]['resultado'],
+                            y: parseFloat(resultado[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    $('#mostrarCategoria').text('CASOS POR PROVINCIAS DE LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#mostrarGrupo').text('GRUPOS VULNERABLES DE LOS CASOS POR LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#mostrarNotificados').text('CASOS NOTIFICADOS POR AÑOS POR LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#mostrarResultado').text('CASOS POR RESULTADOS DE TRATAMIENTO POR LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#btnAtrasMunicipio').css("display", "none");
+                    $('#btnAtrasProvincia').css("display", "block");
+                    $('#btnAtrasGrupo').css("display", "block");
+                    $('#btnAtrasResultado').css("display", "block");
+                    $('#btnAtrasNotificado').css("display", "block");
+                    graficoCategoriaProvincia();
+                    graficoGrupoVulnerable();
+                    graficoTratamiento()
+                    graficoNotificados();
+
+                });
+            }
+
+            function categoriaMunicipio(provincia,colorSeleccionado) {
+
+                md.modal('show');
+
+                provinciaId = provincia;
+
+                var mat_datos = {
+                    fechaInicio: fechaInicioId == '' ? $("#fechaInicio").val(): fechaInicioId,
+                    fechaFinal: fechaFinalId == '' ? $("#fechaFinal").val(): fechaFinalId,
+                    codigo: codigoId,
+                    provincia: provinciaId
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("graficoCategoriaEntradaMunicipios") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    md.modal('hide');
+                    var obj = JSON.parse(data);
+                    var categoria = obj['categoriasMunicipios'];
+                    var notificado = obj['categoriaProvinciaNotificadosYears'];
+                    var grupo = obj['categoriaProvinciaGruposVulnerables'];
+                    var resultado = obj['categoriaProvinciaResultadosTratamientos'];
+
+                    categorias = [];
+                    for (n = 0; n < categoria.length; n++) {
+                        categorias.push({
+                            name: categoria[n]['municipio'],
+                            y: parseFloat(categoria[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    gruposVulnerables = [];
+                    for (n = 0; n < grupo.length; n++) {
+                        gruposVulnerables.push({
+                            name: grupo[n]['grupo'],
+                            y: parseFloat(grupo[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    notificadosYears = [];
+                    for (n = 0; n < notificado.length; n++) {
+                        notificadosYears.push({
+                            name: notificado[n]['y'],
+                            y: parseFloat(notificado[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    resultadosTratamientos = [];
+                    for (n = 0; n < resultado.length; n++) {
+                        resultadosTratamientos.push({
+                            name: resultado[n]['resultado'],
+                            y: parseFloat(resultado[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    $('#mostrarCategoria').text('CASOS POR MUNICIPIOS DE LA PROVINCIA ' + provincia + ' Y LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#mostrarGrupo').text('GRUPOS VULNERABLES DE LOS CASOS DE LA PROVINCIA ' + provincia + ' Y LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#mostrarNotificados').text('CASOS NOTIFICADOS POR AÑOS DE LA PROVINCIA ' + provincia + ' Y LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#mostrarResultado').text('CASOS POR RESULTADOS DE TRATAMIENTO DE LA PROVINCIA ' + provincia + ' Y LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#btnAtrasProvincia').css("display", "none");
+                    $('#btnAtrasMunicipio').css("display", "block");
+                    $('#btnAtrasGrupo').css("display", "block");
+                    $('#btnAtrasResultado').css("display", "block");
+                    $('#btnAtrasNotificado').css("display", "block");
+                    graficoCategoriaMunicipio();
+                    graficoGrupoVulnerable();
+                    graficoTratamiento()
+                    graficoNotificados();
+
+                });
+            }
+
+            function categoriaReparto(municipio,colorSeleccionado) {
+
+                md.modal('show');
+
+                var mat_datos = {
+                    fechaInicio: fechaInicioId == '' ? $("#fechaInicio").val(): fechaInicioId,
+                    fechaFinal: fechaFinalId == '' ? $("#fechaFinal").val(): fechaFinalId,
+                    codigo: codigoId,
+                    municipio: municipio
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("graficoCategoriaEntradaRepartos") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    md.modal('hide');
+                    var obj = JSON.parse(data);
+                    var notificado = obj['categoriaMunicipioNotificadosYears'];
+                    var grupo = obj['categoriaMunicipioGruposVulnerables'];
+                    var resultado = obj['categoriaMunicipioResultadosTratamientos'];
+
+                    gruposVulnerables = [];
+                    for (n = 0; n < grupo.length; n++) {
+                        gruposVulnerables.push({
+                            name: grupo[n]['grupo'],
+                            y: parseFloat(grupo[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    notificadosYears = [];
+                    for (n = 0; n < notificado.length; n++) {
+                        notificadosYears.push({
+                            name: notificado[n]['y'],
+                            y: parseFloat(notificado[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    resultadosTratamientos = [];
+                    for (n = 0; n < resultado.length; n++) {
+                        resultadosTratamientos.push({
+                            name: resultado[n]['resultado'],
+                            y: parseFloat(resultado[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    $('#mostrarGrupo').text('GRUPOS VULNERABLES DE LOS CASOS DEL MUNICIPIO ' + municipio + ' Y LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#mostrarNotificados').text('CASOS NOTIFICADOS POR AÑOS DEL MUNICIPIO ' + municipio + ' Y LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#mostrarResultado').text('CASOS POR RESULTADOS DE TRATAMIENTO DEL MUNICIPIO ' + municipio + ' Y LA CATEGORÍA DE ENTRADA ' + codigoName);
+                    $('#btnAtrasGrupo').css("display", "block");
+                    $('#btnAtrasResultado').css("display", "block");
+                    $('#btnAtrasNotificado').css("display", "block");
+                    graficoGrupoVulnerable();
+                    graficoTratamiento()
+                    graficoNotificados();
+
+                });
+            }
+
+            function cargarNotificadosYears(year,colorSeleccionado) {
+
+                md.modal('show');
+
+                var mat_datos = {
+                    year: year
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("graficoCasosYears") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    md.modal('hide');
+                    var obj = JSON.parse(data);
+                    var fechaInicio = obj['fechaInicio'];
+                    var fechaFinal = obj['fechaFinal'];
+                    var categoria = obj['categorias'];
+                    var grupo = obj['gruposVulnerables'];
+                    var resultado = obj['resultados'];
+
+                    var fi = new Date(fechaInicio['date']);
+                    var ff = new Date(fechaFinal['date']);
+                    var ddi = String(fi.getDate()).padStart(2, '0');
+                    var ddf = String(ff.getDate()).padStart(2, '0');
+                    var mmi = String(fi.getMonth() + 1).padStart(2, '0'); //January is 0!
+                    var mmf = String(ff.getMonth() + 1).padStart(2, '0'); //January is 0!
+                    var yyyyi = fi.getFullYear();
+                    var yyyyf = ff.getFullYear();
+
+                    $("#fechaInicio").val(yyyyi + '-' + mmi + '-' + ddi);
+                    $("#fechaFinal").val(yyyyf + '-' + mmf + '-' + ddf);
+
+                    console.log(fechaFinal);
+
+                    categorias = [];
+                    for (n = 0; n < categoria.length; n++) {
+                        categorias.push({
+                            name: categoria[n]['codigo'] + ' TB ' + categoria[n]['localizacionAnatomica'].toLowerCase() + ' ' + categoria[n]['definicionCaso'].toLowerCase() + ' (' + categoria[n]['tipoEnfermo'].toLowerCase() + ')',
+                            y: parseFloat(categoria[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    gruposVulnerables = [];
+                    for (n = 0; n < grupo.length; n++) {
+                        gruposVulnerables.push({
+                            name: grupo[n]['grupo'],
+                            y: parseFloat(grupo[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    resultadosTratamientos = [];
+                    for (n = 0; n < resultado.length; n++) {
+                        resultadosTratamientos.push({
+                            name: resultado[n]['resultado'],
+                            y: parseFloat(resultado[n]['cant']),
+                            color: colorSeleccionado
+                        });
+                    }
+
+                    $('#mostrarCategoria').text('CASOS POR CATEGORÍA DE ENTRADA');
+                    $('#mostrarGrupo').text('CASOS POR GRUPOS VULNERABLES');
+                    $('#mostrarNotificados').text('CASOS NOTIFICADOS POR AÑOS');
+                    $('#mostrarResultado').text('CASOS POR RESULTADOS DE TRATAMIENTO');
+                    $('#btnAtrasMunicipio').css("display", "none");
+                    $('#btnAtrasProvincia').css("display", "none");
+                    $('#btnAtrasGrupo').css("display", "none");
+                    $('#btnAtrasResultado').css("display", "none");
+                    $('#btnAtrasNotificado').css("display", "none");
+                    graficoCategoria();
+                    graficoGrupoVulnerable();
+                    graficoTratamiento()
+
+                });
+            }
+
+            $('#btnAtrasProvincia').on("click", function () {
+                $('#btnAtrasProvincia').css("display", "none");
+                $('#btnAtrasGrupo').css("display", "none");
+                $('#btnAtrasNotificado').css("display", "none");
+                $('#btnAtrasResultado').css("display", "none");
+                cargarCategoria();
+                inicioNotificado();
+                graficoNotificados();
+                $('#mostrarCategoria').text('CASOS POR CATEGORÍA DE ENTRADA');
+                $('#mostrarGrupo').text('CASOS POR GRUPOS VULNERABLES');
+                $('#mostrarNotificados').text('CASOS NOTIFICADOS POR AÑOS');
+                $('#mostrarResultado').text('CASOS POR RESULTADOS DE TRATAMIENTO');
+            });
+
+            $('#btnAtrasMunicipio').on("click", function () {
+                $('#btnAtrasMunicipio').css("display", "none");
+                $('#btnAtrasProvincia').css("display", "block");
+                categoriaProvincia(codigoName,color);
+            });
+
+            $('#btnAtrasGrupo').on("click", function () {
+                $('#btnAtrasGrupo').css("display", "none");
+                inicioGrupo();
+                graficoGrupoVulnerable();
+                $('#mostrarGrupo').text('CASOS POR GRUPOS VULNERABLES');
+            });
+
+            function inicioGrupo() {
+                gruposVulnerables = [];
+                {% for graficoGrupo in gruposVulnerables %}
+                gruposVulnerables.push({
+                    name: '{{ graficoGrupo['grupo'] }}',
+                    y: parseInt('{{ graficoGrupo['cant'] }}')
+                });
+                {% endfor %}
+            }
+
+            $('#btnAtrasNotificado').on("click", function () {
+                $('#btnAtrasNotificado').css("display", "none");
+                inicioNotificado();
+                graficoNotificados();
+                $('#mostrarNotificados').text('CASOS NOTIFICADOS POR AÑOS');
+            });
+
+            function inicioNotificado() {
+                notificadosYears = [];
+                {% for graficoYear in notificadosYears %}
+                notificadosYears.push({
+                    name: '{{ graficoYear['y'] }}',
+                    y: parseInt('{{ graficoYear['cant'] }}')
+                });
+                {% endfor %}
+            }
+
+            $('#btnAtrasResultado').on("click", function () {
+                $('#btnAtrasResultado').css("display", "none");
+                inicioResultado();
+                graficoTratamiento();
+                $('#mostrarResultado').text('CASOS POR RESULTADOS DE TRATAMIENTO');
+            });
+
+            function inicioResultado() {
+                resultadosTratamientos = [];
+                {% for graficoResultado in resultadosTratamientos %}
+                resultadosTratamientos.push({
+                    name: '{{ graficoResultado['resultado'] }}',
+                    y: parseInt('{{ graficoResultado['cant'] }}')
+                });
+                {% endfor %}
+            }
+
+
+        });
+    </script>
+{% endblock %}

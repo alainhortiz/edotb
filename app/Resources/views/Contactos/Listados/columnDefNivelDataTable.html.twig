@@ -1,0 +1,18 @@
+{% macro definir() %}
+    var columnDefs = [];
+        columnDefs = [
+        { "bSortable": false, "aTargets": [5] },
+        { "name": "carnetIdentidad", "targets": 0 },
+        { "name": "nombre", "targets": 1 },
+        { "name": "primerApellido", "targets": 2 },
+        { "name": "segundoApellido", "targets": 3 },
+        { "name": "fechaNotificacion", "targets": 4 , class: "text-center"},
+        { "sWidth": "7%", "targets": [ 0 ] },
+        { "sWidth": "7%", "targets": [ 1 ] },
+        { "sWidth": "10%", "targets": [ 2 ] },
+        { "sWidth": "10%", "targets": [ 3 ] },
+        { "sWidth": "9%", "aTargets": [ 4 ] },
+        { "sWidth": "9%", "targets": [ 5 ] }
+        ];
+        order = [[4, 'asc']];
+{% endmacro %}

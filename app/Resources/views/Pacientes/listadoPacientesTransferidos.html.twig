@@ -1,0 +1,86 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="top-datatable" style="background: #434242; padding: 5px">
+        <div class="row" style=" margin-right: auto">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 class="no-padding" style="color: #70cbb1">Listado de Pacientes Transferidos</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" >
+        <div  class="row" style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242;">
+            <div class="col-md-12">
+                <table id="dataPaciente" class="display" cellspacing="0" width="100%" >
+                    <thead>
+                    <tr>
+                        <th class="hidden"></th>
+                        <th>Fecha</th>
+                        <th>Nombre</th>
+                        <th>Primer Apellido</th>
+                        <th>Segundo Apellido</th>
+                        <th>Origen(Provincia - Municipio - Unidad)</th>
+                        <th>Destino(Provincia - Municipio - Unidad)</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set indice  = 1 %}
+                    {% for paciente in pacientes %}
+                        <tr  data-id ="{{ paciente.id }}">
+                            <td class="hidden">{{ indice }}</td>
+                            <td>{{ paciente.fecha|date('Y-m-d') }}</td>
+                            <td>{{ paciente.getPaciente().nombre }}</td>
+                            <td>{{ paciente.getPaciente().primerApellido }}</td>
+                            <td>{{ paciente.getPaciente().segundoApellido }}</td>
+                            {% if  paciente.getOrigen() != null %}
+                                <td>{{ paciente.getOrigen().getMunicipio().getProvincia().nombre ~ ' - ' ~ paciente.getOrigen().getMunicipio().nombre ~ ' - ' ~ paciente.getOrigen().nombre }}</td>
+                            {% else %}
+                                <td>{{ paciente.getOrigenHospital().getMunicipio().getProvincia().nombre ~ ' - ' ~ paciente.getOrigenHospital().getMunicipio().nombre ~ ' - ' ~ paciente.getOrigenHospital().nombre }}</td>
+                            {% endif %}
+                            {% if  paciente.getDestino() != null %}
+                                <td>{{ paciente.getDestino().getMunicipio().getProvincia().nombre ~ ' - ' ~ paciente.getDestino().getMunicipio().nombre ~ ' - ' ~ paciente.getDestino().nombre }}</td>
+                            {% else %}
+                                <td>{{ paciente.getDestinoHospital().getMunicipio().getProvincia().nombre ~ ' - ' ~ paciente.getDestinoHospital().getMunicipio().nombre ~ ' - ' ~ paciente.getDestinoHospital().nombre }}</td>
+                            {% endif %}
+                            <td>
+                                <div class="btn-opt" id="ver" style="background: #ffffff; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Datos">
+                                    <a href="{{ path('verPaciente' , {ci:paciente.getPaciente().carnetIdentidad , origen:origen}) }}" style="text-decoration: none; color: #1f1f1f">
+                                        <i class="glyphicon glyphicon-eye-open" style="font-size: 20px"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% set indice = indice + 1 %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+            $('#dataPaciente').DataTable();
+        });
+    </script>
+{% endblock %}

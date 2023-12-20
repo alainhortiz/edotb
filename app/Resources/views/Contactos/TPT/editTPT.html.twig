@@ -1,0 +1,883 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/styles.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container-fluid" style="margin-top: 20px">
+        <div class="form-cont">
+            <div class="row" style="padding: 20px">
+                <h2 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                    <span style="color: #434242">CONTACTO CI:</span>
+                    {{ tpt.contactoSeguimiento.contacto.carnetIdentidad ~ ' - ' ~ tpt.contactoSeguimiento.contacto.nombreCompleto() }}
+                </h2>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <div role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul style="margin-bottom: 10px" class="nav nav-tabs" role="tablist" id="myTab">
+                            <li role="presentation" class="active">
+                                <a href="#tptTab" aria-controls="tptTab" role="tab" data-toggle="tab">
+                                    <strong>Datos sobre TPT</strong>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="tptTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="prescripcion">PRESCRIPCIÓN DE
+                                                        TPT?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="prescripcion"
+                                                               value="1" {{ (tpt.prescripcion == '1') ? 'checked' }}>
+                                                        <label for="prescripcion">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="prescripcion"
+                                                               value="0" {{ (tpt.prescripcion == '0') ? 'checked' }}>
+                                                        <label for="prescripcion">No</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label " for="peso">Peso del paciente:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee ..." type="number"
+                                                               class="form-control input-sm" id="peso"
+                                                               name="peso" value="{{ tpt.peso }}"> Kg
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label " for="talla">Talla:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee ..." type="number"
+                                                               class="form-control input-sm" id="talla"
+                                                               name="talla" value="{{ tpt.talla }}"> cm (para <19 años)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="mostrarCausas"
+                                                 class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-1"
+                                                 style="border-top: none;display: {{ (tpt.prescripcion == '1') ? 'none': 'block' }}">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="multi-causas"><strong>Seleccione
+                                                            las causas de no prescripción:</strong></label>
+                                                    <select multiple="multiple" id="multi-causas"
+                                                            name="multi-causas"
+                                                            class="form-control">
+                                                        {% for causa in causas %}
+                                                            {% if not (causa in tpt.getContactoCausaNoPrescripcion()) %}
+                                                                <option value={{ causa.id }}>{{ causa.nombre }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        {% for causa in tpt.getContactoCausaNoPrescripcion() %}
+                                                            <option class="misCausas"
+                                                                    value={{ causa.id }}>{{ causa.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="mostrarMedicamentos"
+                                                 style="display: {{ (tpt.prescripcion == '1') ? 'block': 'none' }}">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label"
+                                                               for="fechaPrescripcion">Fecha:</label>
+                                                        <div>
+                                                            <input type="date" id="fechaPrescripcion"
+                                                                   name="fechaPrescripcion"
+                                                                   value="{{ (tpt.fechaPrescripcion) ? tpt.fechaPrescripcion |date('Y-m-d') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="control-label " for="medicamento">Medicamento:</label>
+                                                    <div class="form-group">
+                                                        <select class="form-control input-sm " id="medicamento"
+                                                                name="medicamento">
+                                                            {% if tpt.medicamento %}
+                                                                <option value="{{ tpt.medicamento.id }}">{{ tpt.medicamento.nombre }}</option>
+                                                            {% else %}
+                                                                <option value="0">Seleccione el medicamento</option>
+                                                            {% endif %}
+                                                            {% for medicamento in  medicamentos %}
+                                                                <option value="{{ medicamento.id }}">{{ medicamento.nombre }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4"
+                                                     style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="duracion">Duración de TPT
+                                                            según la prescripción:</label>
+                                                        <div style="margin-left: 50px">
+                                                            <input type="radio" name="duracion"
+                                                                   value="3" {{ (tpt.duracion == '3') ? 'checked' }}>
+                                                            <label for="duracion">3 meses</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="duracion"
+                                                                   value="6" {{ (tpt.duracion == '6') ? 'checked' }}>
+                                                            <label for="duracion">6 meses</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="duracion"
+                                                                   value="9" {{ (tpt.duracion == '9') ? 'checked' }}>
+                                                            <label for="duracion">9 meses</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="duracion"
+                                                                   value="12" {{ (tpt.duracion == '12') ? 'checked' }}>
+                                                            <label for="duracion">12 meses</label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-md-offset-3" id="mostrarPorque"
+                                                     style="display: none">
+                                                    <label class="control-label " for="porque">¿Por qué?:</label>
+                                                    <textarea
+                                                            style=" width: 100%; resize: none ; height: 100px ; margin-top: 2px"
+                                                            id="porque"> {{ tpt.porqueDuracion }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="iniciacion">INICIACIÓN DE
+                                                        TPT:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="iniciacion"
+                                                               value="1" {{ (tpt.iniciacion == '1') ? 'checked' }}>
+                                                        <label for="iniciacion">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="iniciacion"
+                                                               value="0" {{ (tpt.iniciacion == '0') ? 'checked' }}>
+                                                        <label for="iniciacion">No</label>
+                                                    </div>
+                                                </div>
+                                                <div id="mostrarCausaNoIniciacion" class="form-group"
+                                                     style="border-top: none; display: {{ (tpt.iniciacion == '0') ? 'block': 'none' }}">
+                                                    <label class="control-label " for="causaNoIniciacion">Persona negada
+                                                        al TPT:</label>
+                                                    <div class="md-checkbox" style="left: 45%">
+                                                        <input type="checkbox" id="causaNoIniciacion"
+                                                               name="causaNoIniciacion"
+                                                               class="md-check" {{ (tpt.personaNegada == '1') ? 'checked' }}>
+                                                        <label for="causaNoIniciacion">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="mostrarIniciacion"
+                                                 style="display: {{ (tpt.iniciacion == '1') ? 'block': 'none' }}">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="fechaPrimeraTPT">PRIMERA
+                                                            DOSIS:</label>
+                                                        <div>
+                                                            <input type="date" id="fechaPrimeraTPT"
+                                                                   name="fechaPrimeraTPT"
+                                                                   value="{{ (tpt.fechaPrimeraDosis) ? tpt.fechaPrimeraDosis |date('Y-m-d') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="fechaUltimaTPT">ULTIMA
+                                                            DOSIS:</label>
+                                                        <div>
+                                                            <input type="date" id="fechaUltimaTPT"
+                                                                   name="fechaUltimaTPT"
+                                                                   value="{{ (tpt.fechaUltimaDosis) ? tpt.fechaUltimaDosis |date('Y-m-d') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5"
+                                                     style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="regimenPrescrito">Régimen
+                                                            prescrito:</label>
+                                                        <div style="margin-left: 50px">
+                                                            <input type="radio" name="regimenPrescrito"
+                                                                   value="diario" {{ (tpt.regimenPrescrito == 'diario') ? 'checked' }}>
+                                                            <label for="regimenPrescrito">Diario</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="regimenPrescrito"
+                                                                   value="bisemanal" {{ (tpt.regimenPrescrito == 'bisemanal') ? 'checked' }}>
+                                                            <label for="regimenPrescrito">Bisemanal</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="noTabletas">N° tabletas en
+                                                            cada administración:</label>
+                                                        <div>
+                                                            <input placeholder="Teclee ..." type="number"
+                                                                   class="form-control input-sm" id="noTabletas"
+                                                                   name="noTabletas" value="{{ tpt.noTabletas }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="noDias">N° días/semana en
+                                                            TPT:</label>
+                                                        <div>
+                                                            <input placeholder="Teclee ..." type="number"
+                                                                   class="form-control input-sm" id="noDias"
+                                                                   name="noDias" value="{{ tpt.noDias }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="reaccionAdversa">REACCIÓN ADVERSA
+                                                        (RA) AL TPT:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="reaccionAdversa"
+                                                               value="1" {{ (tpt.reaccionAdversa == '1') ? 'checked' }}>
+                                                        <label for="reaccionAdversa">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="reaccionAdversa"
+                                                               value="0" {{ (tpt.reaccionAdversa == '0') ? 'checked' }}>
+                                                        <label for="reaccionAdversa">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="mostrarReaccionAdversa"
+                                                 style="display: {{ (tpt.reaccionAdversa == '1') ? 'block' : 'none' }}">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="fechaInicioReaccionAdversa">Fecha
+                                                            de
+                                                            inicio:</label>
+                                                        <div>
+                                                            <input type="date" id="fechaInicioReaccionAdversa"
+                                                                   name="fechaInicioReaccionAdversa"
+                                                                   value="{{ (tpt.fechaInicioReaccionAdversa) ? tpt.fechaInicioReaccionAdversa |date('Y-m-d') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="fechaFinalReaccionAdversa">Fecha
+                                                            de
+                                                            fin:</label>
+                                                        <div>
+                                                            <input type="date" id="fechaFinalReaccionAdversa"
+                                                                   name="fechaFinalReaccionAdversa"
+                                                                   value="{{ (tpt.fechaFinalReaccionAdversa) ? tpt.fechaFinalReaccionAdversa |date('Y-m-d') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5"
+                                                     style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="provocoSuspension">¿Provocó
+                                                            suspensión del TPT?:</label>
+                                                        <div style="margin-left: 50px">
+                                                            <input type="radio" name="provocoSuspension"
+                                                                   value="1">
+                                                            <label for="provocoSuspension">Si</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="provocoSuspension" value="0" checked>
+                                                            <label for="provocoSuspension">No</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="provocoModificacion">¿Provocó
+                                                            modificación del régimen prescrito?:</label>
+                                                        <div style="margin-left: 50px">
+                                                            <input type="radio" name="provocoModificacion"
+                                                                   value="1" {{ (tpt.provocoModificacion == '1') ? 'checked' }}>
+                                                            <label for="provocoModificacion">Si</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="provocoModificacion"
+                                                                   value="0" {{ (tpt.provocoModificacion == '0') ? 'checked' }}>
+                                                            <label for="provocoModificacion">No</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-9" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="administracion">DE LA
+                                                        ADMINISTRACIÓN de TPT:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="administracion"
+                                                               value="Administracion de todas las dosis" {{ (tpt.administracion == 'Administracion de todas las dosis') ? 'checked' }}>
+                                                        <label for="administracion">Administración de todas las
+                                                            dosis</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="administracion"
+                                                               value="Existencia de dosis no administradas" {{ (tpt.administracion == 'Existencia de dosis no administradas') ? 'checked' }}>
+                                                        <label for="administracion">Existencia de dosis no
+                                                            administradas</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarNoDosisSaltadas" class="form-group"
+                                                     style="display: {{ (tpt.administracion == 'Existencia de dosis no administradas') ? 'block' : 'none' }}">
+                                                    <label class="control-label " for="noDosisSaltadas"># de dosis
+                                                        saltadas: </label>
+                                                    <div>
+                                                        <input placeholder="Teclee ..." type="number"
+                                                               class="form-control input-sm" id="noDosisSaltadas"
+                                                               name="noDosisSaltadas" value="{{ tpt.noDosisSaltadas }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="resultado">Resultados de TPT:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm " id="resultado"
+                                                            name="resultado">
+                                                        <option value="{{ tpt.resultado.id }}">{{ tpt.resultado.resultado }}</option>
+                                                        {% for resultado in  resultados %}
+                                                            <option value="{{ resultado.id }}">{{ resultado.resultado }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="mostrarSuspension"
+                                                 style="display: {{ (tpt.resultado.id == '11') ? 'block' : 'none' }}">
+                                                <div class="col-md-3">
+                                                    <label class="control-label " for="causaSuspension">Causas de
+                                                        suspensión de TPT:</label>
+                                                    <div class="form-group">
+                                                        <select class="form-control input-sm " id="causaSuspension"
+                                                                name="causaSuspension">
+                                                            {% if tpt.causaSuspension %}
+                                                                <option value="{{ tpt.causaSuspension }}">{{ tpt.causaSuspension }}</option>
+                                                            {% else %}
+                                                                <option value="0">Seleccione la causa</option>
+                                                            {% endif %}
+                                                            <option value="PCT negativa al 2do mes de evaluado">PCT
+                                                                negativa al 2do mes de evaluado
+                                                            </option>
+                                                            <option value="RA que provoca interrupcion del TPT">RA que
+                                                                provoca interrupción del TPT
+                                                            </option>
+                                                            <option value="Diagnostico de TB">Diagnóstico de TB</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div id="mostrarNotificacion"
+                                                     style="display: {{ (tpt.causaSuspension == 'Diagnostico de TB') ? 'block' : 'none' }}">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group" style="margin-left: 50px">
+                                                            <label class="control-label" for="fechaNotificacionTB">Fecha
+                                                                de notificación:</label>
+                                                            <div>
+                                                                <input type="date" id="fechaNotificacionTB"
+                                                                       name="fechaNotificacionTB"
+                                                                       value="{{ (tpt.fechaNotificacionTB) ? tpt.fechaNotificacionTB |date('Y-m-d') }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label " for="noRegistro">N° de
+                                                                registro:</label>
+                                                            <div>
+                                                                <input placeholder="Teclee ..." type="text"
+                                                                       class="form-control input-sm" id="noRegistro"
+                                                                       name="noRegistro" value="{{ tpt.noRegistro }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    {% if (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                    {% endif %}
+                    <button id="btnCancelar" type="button" class="btn btn-primario"> Salir</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.mockjax.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.autocomplete.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            (function () {
+                {% if not (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_VISUALIZADOR")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            })();
+
+            $('#multi-causas').multiSelect();
+
+            $('.ms-list .ms-elem-selectable.misCausas').each(function () {
+                $(this).css('display', 'none');
+                $(this).addClass('ms-hover');
+                $(this).addClass('ms-selected');
+
+            });
+
+            $('.ms-list .ms-elem-selection.misCausas').each(function () {
+                $(this).addClass('ms-selected');
+                $(this).css('display', '');
+            });
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir, #btnCancelar').on('click', function () {
+                var enlace = "{{ path('localizarPacienteContactoCI', {ci:'id'}) }}";
+                var ruta = enlace.replace('id', '{{ ci }}');
+                window.location.href = ruta;
+            });
+
+            //Formulario Buscar persona
+            $('#ci').on("keyup", function () {
+                if ($('#ci').val().trim().length === 11) {
+                    $('#btnBuscar').prop("disabled", false);
+                } else {
+                    $('#btnBuscar').prop("disabled", true);
+                }
+            });
+
+            function limpiar_controles_prescripcion() {
+                $("#medicamento").val(0);
+                $('.ms-list .ms-elem-selectable').each(function () {
+                    $(this).css('display', 'list-item').removeClass('ms-selected');
+                });
+                $('.ms-list .ms-elem-selection').each(function () {
+                    $(this).css('display', 'none').addClass('ms-hover').removeClass('ms-selected');
+                });
+                $("#multi-causas").val('');
+                $("#fechaPrescripcion").val('');
+                $("input[name='duracion']:checked").each(function () {
+                    $(this).prop('checked', false);
+                });
+                $("#mostrarPorque").hide();
+                $("#porque").val('');
+            }
+
+            function limpiar_controles_iniciacion() {
+                $("#fechaPrimeraTPT").val('');
+                $("#fechaUltimaTPT").val('');
+                $("input[name='regimenPrescrito']:checked").each(function () {
+                    $(this).prop('checked', false);
+                });
+                $("#noTabletas").val('');
+                $("#noDias").val('');
+            }
+
+            function limpiar_controles_reaccion() {
+                $("#fechaInicioReaccionAdversa").val('');
+                $("#fechaFinalReaccionAdversa").val('');
+                $("input[name='provocoSuspension']:radio").prop('checked', true);
+                $("input[name='provocoModificacion']:radio").prop('checked', true);
+            }
+
+            $("input[name='prescripcion']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarCausas").hide();
+                    $("#mostrarMedicamentos").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarMedicamentos").hide();
+                    //Limpiar controles
+                    limpiar_controles_prescripcion();
+                    $("#mostrarCausas").show();
+                }
+            });
+
+            $("input[name='duracion']:radio").click(function () {
+                if ($(this).attr("value") == "9") {
+                    $("#mostrarPorque").show();
+                } else if ($(this).attr("value") != "9") {
+                    $("#mostrarPorque").hide();
+                }
+            });
+
+            $("input[name='iniciacion']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarCausaNoIniciacion").hide();
+                    $('#causaNoIniciacion').prop('checked', false);
+                    $("#mostrarIniciacion").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarIniciacion").hide();
+                    //Limpiar controles
+                    limpiar_controles_iniciacion();
+                    $("#mostrarCausaNoIniciacion").show();
+                }
+            });
+
+            $("input[name='reaccionAdversa']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarReaccionAdversa").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarReaccionAdversa").hide();
+                    //limpiar controles
+                    limpiar_controles_reaccion();
+                }
+            });
+
+            $("input[name='administracion']:radio").click(function () {
+                if ($(this).attr("value") == "Existencia de dosis no administradas") {
+                    $("#mostrarNoDosisSaltadas").show();
+                } else if ($(this).attr("value") != "Existencia de dosis no administradas") {
+                    $("#noDosisSaltadas").val('')
+                    $("#mostrarNoDosisSaltadas").hide();
+                }
+            });
+
+            $('#resultado').on("change", function () {
+                if ($('#resultado').val() === '11') {
+                    $("#mostrarSuspension").show();
+                } else {
+                    $("#causaSuspension").val(0)
+                    $("#fechaNotificacionTB").val('');
+                    $("#noRegistro").val('');
+                    $("#mostrarNotificacion").hide();
+                    $("#mostrarSuspension").hide();
+
+                }
+            });
+
+            $('#causaSuspension').on("change", function () {
+                if ($('#causaSuspension').val() === 'Diagnostico de TB') {
+                    $("#mostrarNotificacion").show();
+                } else {
+                    $("#fechaNotificacionTB").val('');
+                    $("#noRegistro").val('');
+                    $("#mostrarNotificacion").hide();
+
+                }
+            });
+
+            $('#btnGuardar').on('click', function () {
+
+                //Validaciones de la prescripción
+                if ($("#peso").val().trim() == '') {
+                    alertify.alert('<strong>El peso del paciente es obligatorio, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+                if ($("#talla").val().trim() == '') {
+                    alertify.alert('<strong>La talla del paciente es obligatoria, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+
+                if ($('input:radio[name=prescripcion]:checked').val() == '0') {
+                    if (!($(' li.ms-elem-selectable ').hasClass('ms-selected'))) {
+                        alertify.alert('<strong>Debe  seleccionar al menos una causa de no prescripción.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Advertencia</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                } else {
+                    if ($("#fechaPrescripcion").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de prescripción del tpt.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaPrescripcion").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de prescripción del tpt no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#medicamento").val() == '0') {
+                        alertify.alert('<strong>Debe seleccionar el medicamento.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if (!$('input:radio[name=duracion]').is(':checked')) {
+                        alertify.alert('<strong>Debe seleccionar la duración del TPT.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                }
+
+                //Validaciones de la Iniciación
+                if ($('input:radio[name=iniciacion]:checked').val() != '0') {
+                    if ($("#fechaPrimeraTPT").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de la primera dosis de tpt.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaPrimeraTPT").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de la primera dosis de tpt no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaUltimaTPT").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de la última dosis de tpt.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#noTabletas").val().trim() == '') {
+                        alertify.alert('<strong>El N° tabletas en cada administración es obligatorio, no puede quedar en blanco.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#noDias").val().trim() == '') {
+                        alertify.alert('<strong>El N° días/semana en TPT es obligatorio, no puede quedar en blanco.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                }
+
+                //Validaciones de la reacción adversa
+                if ($('input:radio[name=reaccionAdversa]:checked').val() == '1') {
+
+                    if ($("#fechaInicioReaccionAdversa").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de inicio de la reacción adversa.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaInicioReaccionAdversa").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de inicio de la reacción adversa no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaFinalReaccionAdversa").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de fin de la reacción adversa.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaFinalReaccionAdversa").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de la fecha de fin de la reacción adversa no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                //Validaciones de la administración
+                if (!$('input:radio[name=administracion]').is(':checked')) {
+                    alertify.alert('<strong>Debe seleccionar la administración de TPT.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                } else if ($('input:radio[name=administracion]:checked').val() == 'Existencia de dosis no administradas') {
+                    if ($("#noDosisSaltadas").val().trim() == '') {
+                        alertify.alert('<strong>El N° de dosis saltadas es obligatorio, no puede quedar en blanco.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                //Validaciones de los resultados
+                if ($("#resultado").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el resultado del TPT.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                } else if ($("#resultado").val() == '11') {
+                    if ($("#causaSuspension").val() == '0') {
+                        alertify.alert('<strong>Debe seleccionar la causa de suspensión de TPT.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    } else if ($("#causaSuspension").val() == 'Diagnostico de TB') {
+                        if ($("#fechaNotificacionTB").val() == '') {
+                            alertify.alert('<strong>Debe seleccionar la fecha de notificación de la TB.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                .set('label', 'Aceptar');
+                            return false;
+                        }
+
+                        if ($("#fechaNotificacionTB").val() > hoy) {
+                            alertify.alert('<strong>Error: la fecha de notificación de la TB no puede ser mayor que la fecha actual.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                .set('label', 'Aceptar');
+                            return false;
+                        }
+
+                        if ($("#noRegistro").val().trim() == '') {
+                            alertify.alert('<strong>El N° de registro es obligatorio, no puede quedar en blanco.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                .set('label', 'Aceptar');
+                            return false;
+                        }
+                    }
+                }
+
+
+                var causaNoIniciacion = 0;
+                if ($('#causaNoIniciacion').prop('checked')) {
+                    causaNoIniciacion = 1;
+                }
+
+                var causas = [];
+
+                $('#ms-multi-causas li.ms-elem-selectable ').each(function () {
+
+                    if ($(this).hasClass('ms-selected')) {
+
+                        var texto = $(this).text();
+                        causas.push(texto);
+                    }
+                });
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    idTPT: {{ tpt.id }},
+                    prescripcion: $('input:radio[name=prescripcion]:checked').val(),
+                    talla: $("#talla").val(),
+                    peso: $("#peso").val(),
+                    medicamento: $("#medicamento").val(),
+                    duracion: $('input:radio[name=duracion]:checked').val(),
+                    porqueDuracion: $("#porque").val().trim(),
+                    fechaPrescripcion: $("#fechaPrescripcion").val(),
+                    iniciacion: $('input:radio[name=iniciacion]:checked').val(),
+                    personaNegada: causaNoIniciacion,
+                    fechaPrimeraDosis: $("#fechaPrimeraTPT").val(),
+                    fechaUltimaDosis: $("#fechaUltimaTPT").val(),
+                    regimenPrescrito: $('input:radio[name=regimenPrescrito]:checked').val(),
+                    noTabletas: $("#noTabletas").val(),
+                    noDias: $("#noDias").val(),
+                    reaccionAdversa: $('input:radio[name=reaccionAdversa]:checked').val(),
+                    fechaInicioReaccionAdversa: $("#fechaInicioReaccionAdversa").val(),
+                    fechaFinalReaccionAdversa: $("#fechaFinalReaccionAdversa").val(),
+                    provocoSuspension: $('input:radio[name=provocoSuspension]:checked').val(),
+                    provocoModificacion: $('input:radio[name=provocoModificacion]:checked').val(),
+                    administracion: $('input:radio[name=administracion]:checked').val(),
+                    noDosisSaltadas: $("#noDosisSaltadas").val(),
+                    resultado: $("#resultado").val(),
+                    causaSuspension: $("#causaSuspension").val(),
+                    fechaNotificacionTB: $("#fechaNotificacionTB").val(),
+                    noRegistro: $("#noRegistro").val(),
+                    contactoCausaNoPrescripcion: causas
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updateTPTContacto") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    $(".preload").addClass('hidden');
+
+                    if (data == 'ok') {
+
+                        alertify.alert('<strong>El TPT para este contacto ha sido modificado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                            .set('label', 'Aceptar')
+                            .set('onok', function () {
+                                var enlace = "{{ path('localizarPacienteContactoCI', {ci:'id'}) }}";
+                                var ruta = enlace.replace('id', '{{ ci }}');
+                                window.location.href = ruta;
+                            });
+                    } else {
+                        alertify.alert('<strong>' + data + '</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar')
+                    }
+                });
+
+            });
+
+
+        });
+    </script>
+{% endblock %}

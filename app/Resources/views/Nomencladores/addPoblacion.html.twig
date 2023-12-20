@@ -1,0 +1,261 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    {% set anno_actual =  "now"|date("Y") %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12  form-cont">
+                    <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                        Agregar Poblacion</h3>
+                    <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                        <fieldset
+                                style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="anno" class="col-lg-1 col-md-1 col-sm-1 control-label text-right">AÑO:</label>
+                                        <select name="anno" id="anno" class="form-control">
+                                            {% for i in range(1990, anno_actual) %}
+                                                <option value="{{ i }}" {% if i == anno_actual|trans %} selected {% endif %}> {{ i }} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                {% if app.user.getNivelAcceso().nivel == 'unidad' %}
+                                    <div class="col-md-4" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().nombre : app.user.hospital.municipio.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elseif app.user.getNivelAcceso().nivel == 'municipal' %}
+                                    <div class="col-md-4" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().nombre : app.user.hospital.municipio.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elseif  app.user.getNivelAcceso().nivel == 'provincial' %}
+                                    <div class="col-md-4" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="municipio" name="municipio">
+                                                <option value="0">Seleccione un municipio</option>
+                                                {% for municipio in  municipios %}
+                                                    <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-4" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="provincia" name="provincia">
+                                                <option value="0">Seleccione una provincia</option>
+                                                {% for provincia in  provincias %}
+                                                    <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="municipio" name="municipio">
+                                                <option value="0">Seleccione un municipio</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="edad">Edad:</label>
+                                        <div>
+                                            <input placeholder="Teclee " type="number"
+                                                   class="form-control input-sm" id="edad"
+                                                   name="edad">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="sexo">Sexo:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="sexo" name="sexo">
+                                                <option value="0">Seleccione el sexo</option>
+                                                <option value="Masculino">Masculino</option>
+                                                <option value="Femenino">Femenino</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="total">Total:</label>
+                                        <div>
+                                            <input placeholder="Teclee " type="number"
+                                                   class="form-control input-sm" id="total"
+                                                   name="total">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <p class="text-center" style="margin-top: 20px">
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                        <button id="btnSalir" type="button" class="btn btn-primario"> Salir</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            function verificarusuario() {
+                {% if not (is_granted("ROLE_ADMINISTRADOR") or is_granted("ROLE_SUPERUSUARIO")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+
+            verificarusuario();
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function () {
+                window.location.href = "{{ path('gestionarPoblaciones') }}";
+
+            });
+
+            {% if  app.user.getNivelAcceso().nivel != 'unidad' %}
+            {{ include('Generales/relacionarSelectProv.html.twig') }}
+            {% endif %}
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function () {
+
+                if ($("#provincia").val() == 0) {
+                    alertify.alert('<strong>Debe seleccionar la provincia.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#municipio").val() == 0) {
+                    alertify.alert('<strong>Debe seleccionar el municipio.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#edad").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la edad.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#sexo").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el sexo.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#total").val() == '') {
+                    alertify.alert('<strong>El campo total es obligatorio, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    anno: $("#anno").val(),
+                    municipio: $("#municipio").val(),
+                    edad: $("#edad").val(),
+                    sexo: $("#sexo").val(),
+                    total: $("#total").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertPoblacion") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $("#total").val('');
+                    $("#edad").val('');
+
+                    $(".preload").addClass('hidden');
+                    if (data == 'ok') {
+
+                        alertify.alert('<strong>El total de población ha sido insertado correctamente.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                            .set('label', 'Aceptar')
+                    } else {
+                        alertify.alert('<strong>' + data + '</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar')
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

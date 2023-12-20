@@ -1,0 +1,44 @@
+function relacionarProvinciaMunicipio(nombre){
+
+    var provincia = $("#provincia"+nombre).val();
+    //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+    var html    = '<option value="0">Seleccione un municipio</option>';
+    var htmlAreaSalud = '<option value="0">Seleccione un centro </option>';
+
+    {% for municipio in  municipios %}
+        var idProvincia = '{{ municipio.getProvincia().id }}';
+
+        if (idProvincia == provincia) {
+            var idMunicipio = '{{ municipio.id }}';
+            var name = '{{ municipio.nombre }}';
+            html += '<option value="' + idMunicipio + '">' + name + '</option>';
+        }
+    {% endfor %}
+
+    $("#municipio"+nombre).html(html);
+    $("#centro"+nombre).html(htmlAreaSalud);
+    $("#centro"+nombre).prop('disabled' , true);
+}
+
+function relacionarMunicipioAreaSalud(nombre){
+
+    var municipio = $("#municipio"+nombre).val();
+
+    //ESTE CICLO ES PARA BUSCAR LOS LABORATORIOS PERTENECIENTES A UN MUNICIPIO
+    var htmlAreaSalud = '<option value="0">Seleccione un centro</option>';
+    var htmlHospital = '<option value="0">Seleccione un hospital</option>';
+
+    {% for unidad in areasSalud %}
+        var idMunicipio = '{{ unidad.getMunicipio().id }}';
+
+        if (idMunicipio == municipio) {
+            var idUnidad = '{{ unidad.id }}';
+            var nameUnidad = '{{ unidad.nombre }}';
+            var tipoUnidad = '{{ unidad.tipoAreaSalud.nombre }}';
+            htmlAreaSalud += '<option value="' + idUnidad +'">' + tipoUnidad + ' - ' + nameUnidad + '</option>';
+        }
+    {% endfor %}
+
+    $("#centro"+nombre).html(htmlAreaSalud);
+    $("#centro"+nombre).prop('disabled' , false);
+}

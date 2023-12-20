@@ -1,0 +1,18 @@
+syntax: glob
+app/config/parameters.yml
+app/cache
+#vendor*
+.idea*
+*.old
+*.db
+*.rej
+*.diff
+*.xlsx
+*.xls
+*.zip
+*.idea
+*.log
+*.exe
+*.txt
+*.bat
+*~

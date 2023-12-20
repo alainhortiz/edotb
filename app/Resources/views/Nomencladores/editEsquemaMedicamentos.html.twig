@@ -1,0 +1,151 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 form-cont">
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Editar Esquema Medicamentos</h3>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" value="{{ esquema.nombre }}" id="nombre">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 15px">
+                        <div  class="col-lg-offset-2" style="border-top: none">
+                            <div class="form-group">
+                                <label class="control-label " for="medicamentos">Seleccione Medicamentos para el Esquema:</label>
+                                <select multiple="multiple" id="medicamentos" name="medicamentos[]" class="form-control">
+
+                                    {% for medicamento in medicamentos %}
+                                        {% if not (medicamento in esquema.medicamentos  )  %}
+                                            <option  value={{ medicamento.id }}>{{ medicamento.nombre }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for medicamento in esquema.medicamentos %}
+                                        <option class="misMedicamentos"  value={{ medicamento.id }}>{{ medicamento.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                    <button id="btnSalir" type="button" class="btn btn-primario"> Salir </button>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not ((is_granted("ROLE_ADMINISTRADOR") and  app.user.getNivelAcceso().nivel == 'nacional')  or is_granted("ROLE_SUPERUSUARIO")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+            $('#medicamentos').multiSelect();
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function ()
+            {
+                window.location.href = "{{ path('gestionarEsquemasMedicamentos') }}";
+
+            });
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function () {
+
+                if($("#nombre").val().trim() == ''){
+                    alertify.alert('<strong>El campo nombre es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                if(!($(' li.ms-elem-selectable ').hasClass('ms-selected')))
+                {
+                    alertify.alert('<strong>Debe  seleccionar al menos un medicamento para conformar el esquema de medicamentos.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                var medicamentos = [];
+
+                $(' li.ms-elem-selectable ').each(function(){
+
+                    if($(this).hasClass('ms-selected')){
+
+                        var valor = $(this).text();
+                        medicamentos.push(valor);
+                    }
+                });
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    idEsquema: '{{ esquema.id }}',
+                    nombre: $("#nombre").val(),
+                    medicamentos: medicamentos
+                };
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updateEsquemaMedicamentos") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $(".preload").addClass('hidden');
+                    if(data == 'ok'){
+
+                        alertify.alert('<strong>El esquema de medicamentos ha sido modificado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+
+            $('.ms-list .ms-elem-selectable.misMedicamentos').each(function(){
+                $(this).css('display', 'none');
+                $(this).addClass('ms-hover');
+                $(this).addClass('ms-selected');
+
+            });
+
+            $('.ms-list .ms-elem-selection.misMedicamentos').each(function(){
+                $(this).addClass('ms-selected');
+                $(this).css('display', '');
+            });
+        });
+    </script>
+{% endblock %}

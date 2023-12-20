@@ -1,0 +1,716 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-2 form-cont">
+                <div class="row">
+                    <div class="col-lg-12" style="padding-bottom: 5px;">
+                        <div class="col-lg-12">
+                            <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                                REPORTE CONTROL DE CALIDAD DEL CULTIVO
+                            </h3>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <label for="id_trimestre">Trimestre:</label>
+                            <select class="form-control" id="id_trimestre">
+                                <option value=0>Seleccione el trimestre</option>
+                                <option value=1>Primero</option>
+                                <option value=2>Segundo</option>
+                                <option value=3>Tercero</option>
+                                <option value=4>Cuarto</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="id_mes">Seleccionar el mes:</label>
+                            <select class="form-control" id="id_mes">
+                                <option value="0">Seleccionar el mes</option>
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="id_anno">Seleccione el año:</label>
+                            <select class="form-control" id="id_anno">
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                            </select>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="id_provincia">Provincia:</label>
+                            <select class="form-control" id="id_provincia">
+                                <option value="0">Seleccione una provincia</option>
+                                {% for provincia in  provincias %}
+                                    <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="id_municipio">Municipio:</label>
+                            <select class="form-control" id="id_municipio">
+                                <option value="0">Seleccione un municipio</option>
+                            </select>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label for="id_select_lab">Seleccionar el laboratorio:</label>
+                            <select class="form-control" id="id_select_lab">
+                                {#{% for lab in laboratorios %}#}
+                                    {#<option value="{{ lab.id }}">{{ lab.nombre }}</option>#}
+                                {#{% endfor %}#}
+                            </select>
+                            <br>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <button type="button" class="btn btn-primary btn-block" id="buscar_lab">Buscar</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clear-fix">
+        <br>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-2 form-cont">
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                    CONTROL DE CALIDAD DEL CULTIVO
+                    <span id="spanFechas" style="float: right;margin-top: 10px;">
+                    </span>
+                </h3>
+
+                <div class="hidden" id="campos_llenables">
+                    <form class="form-horizontal" role="form" style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Baciloscopia y cultivo</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="panel-box-less">
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_mas" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_mas" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_mas" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_nr" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo no realizado:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_nr" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_nr" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_menos_cult_mas" class="col-lg-4 knob-label">Baciloscopia (-) y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_menos_cult_mas" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_menos_cult_mas" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_menos" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo (-):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_menos" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_menos" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_cont" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo contaminado:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_cont" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_cont" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_nr_cult_mas" class="col-lg-4 knob-label">Baciloscopia no realizada y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_nr_cult_mas" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_nr_cult_mas" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="tubos_jesen_inoc" class="col-lg-4 knob-label">Total de tubos de Lowenstein Jensen inoculados:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Cantidad de tubos inoculados" id="tubos_jesen_inoc" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_tubos_jesen_inoc" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="tubos_jesen_cont" class="col-lg-4 knob-label">Total de tubos de Lowenstein Jensen contaminados:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Cantidad de tubos contaminados" id="tubos_jesen_cont" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_tubos_jesen_cont" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Baciloscopia, xpert y cultivo solo muestras de diagnóstico</label>
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="panel-box-less">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_mas_diag" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_mas_diag" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_mas_diag" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_menos_diag" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo (-):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_menos_diag" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_menos_diag" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_cont_diag" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo contaminado:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_cont_diag" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_cont_diag" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="xpert_mas_cult_mas_diag" class="col-lg-4 knob-label">Xpert (+) y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="xpert_mas_cult_mas_diag" disabled>
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_xpert_mas_cult_mas_diag" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Indicadores a Medir</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="acd" class="col-lg-4 control-label">ACD:</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control input-number" id="acd" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bkcu" class="col-lg-4 control-label">%BK (+) CU (-):</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control input-number" id="bkcu" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tc" class="col-lg-4 control-label">TC:</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control input-number" id="tc" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bkxcu" class="col-lg-4 control-label">%BK(+) / Xpert(+) y CU (-):</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control input-number" id="bkxcu" disabled>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col-lg-12" style="padding-top: 10px;">
+                        <button type="button" class="btn btn-primary btn-block" id="imprime_lab">Exportar a Excel</button>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_ADMINISTRADOR") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    {% if not app.user.getNivelAcceso().nivel == 'nacional' %}
+                        window.location.href = "{{ path('login') }}";
+                    {% endif %}
+                {% endif %}
+            }
+            verificarusuario();
+
+            var fechaHoy = new Date();
+            var getMes   = fechaHoy.getMonth();
+            var getAnno  = fechaHoy.getFullYear();
+
+            setSelectedIndex($("#id_mes"),getMes+1);
+            setSelectedIndex($("#id_anno"),getAnno);
+
+            $("#id_select_lab").select2({
+                placeholder: {
+                    id: '0', // the value of the option
+                    text: "Seleccione un laboratorio..."},
+                allowClear: true
+            });
+
+            $("#id_select_lab").select2("val");
+
+            var md = $('#processing-modal');
+
+            //SECCION DE LAS VARIABLES DE ENTRADA
+            $('#bac_mas_cult_mas').val('');
+            $('#bac_mas_cult_nr').val('');
+            $('#bac_menos_cult_mas').val('');
+            $('#bac_mas_cult_menos').val('');
+            $('#bac_mas_cult_cont').val('');
+            $('#bac_nr_cult_mas').val('');
+
+            $('#bac_mas_cult_mas_diag').val('');
+            $('#bac_mas_cult_menos_diag').val('');
+            $('#bac_mas_cult_cont_diag').val('');
+            $('#xpert_mas_cult_mas_diag').val('');
+
+            $('#tubos_jesen_inoc').val('');
+            $('#tubos_jesen_cont').val('');
+
+            $('#acd').val('');
+            $('#bkcu').val('');
+            $('#tc').val('');
+            $('#bkxcu').val('');
+
+            //FIN DE LA SECCION DE LAS VARIABLES DE ENTRADA
+
+            //--------- captar el valor del select de los laboratorios -----------------
+            //$("#id_select_lab").val($("#id_select_lab option:first").val());
+
+            $('#id_select_lab').change(function() {
+
+                var laboratorio = $("#id_select_lab").val();
+
+                if( laboratorio <  1){
+                    $("#spanFechas").html("");
+                    $('#campos_llenables').removeClass('show');
+                    $('#campos_llenables').addClass('hidden');
+                }
+
+            });
+
+            //--------- captar el valor del select del trimestre -----------------
+            //Si selecciona un trimestre se pone el valor cero en los meses
+
+            $('#id_trimestre').change(function() {
+
+                var idTrim = $("#id_trimestre").val();
+
+                if( idTrim >  0){
+                    $("#id_mes").val(0);
+                }
+
+            });
+
+            //--------- captar el valor del select del mes -----------------
+            //Si selecciona un mes se pone el valor cero en el trimestre
+
+            $('#id_mes').change(function() {
+
+                var idMes = $("#id_mes").val();
+
+                if( idMes >  0){
+                    $("#id_trimestre").val(0);
+                }
+
+            });
+
+
+            //--------- ecuaciones para los diferentes calculos        -----------------
+            function calculaFormulaACD(numerador, total){
+                return convierteNumero(numerador,total);
+            }
+            function calculaFormulaBKCU(numerador, total){
+                return convierteNumero(numerador,total);
+            }
+            function calculaFormulaTC(numerador, denominador){
+                return convierteNumero(numerador, denominador);
+            }
+            function calculaFormulaBKXPERTCU(numerador, denominador){
+                return convierteNumero(numerador, denominador);
+            }
+            function cociente(){
+
+                total = parseInt($('#bac_mas_cult_mas').val())   +
+                        parseInt($('#bac_mas_cult_nr').val())    +
+                        parseInt($('#bac_menos_cult_mas').val()) +
+                        parseInt($('#bac_mas_cult_menos').val()) +
+                        parseInt($('#bac_mas_cult_cont').val())  ;
+
+                return total;
+            }
+            function cocienteDiagnostico(){
+
+                totalDiag = parseInt($('#bac_mas_cult_mas_diag').val())   +
+                        parseInt($('#xpert_mas_cult_mas_diag').val()) +
+                        parseInt($('#bac_mas_cult_menos_diag').val()) +
+                        parseInt($('#bac_mas_cult_cont_diag').val())  ;
+
+                return totalDiag;
+            }
+
+            //--------- funcion para obtener un numero con 2 decimales o sin ellos -----
+            function convierteNumero(num_1,num_2) {
+
+                var div = ((parseInt(num_1) / parseInt(num_2))*100).toFixed(2);
+
+                var decimales = div.toString().substr(3,2);
+
+                if( decimales === '00' )
+                    return div.toString().substr(0,2)+' '+'%';
+                return div+' '+'%';
+            }
+
+            $('#buscar_lab').click(function () {
+
+                $('#campos_llenables').removeClass('show');
+                $('#campos_llenables').addClass('hidden');
+
+                if($("#id_mes").val() > 0 && ( $("#id_select_lab").val() === null || $("#id_select_lab").val() === "null" ))
+                {
+                    alertify.alert('<strong>Debe escoger un laboratorio para el mes escogido.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar')
+                    return false;
+                }
+
+                var lab_id = $("#id_select_lab").val() === null ? 0 : parseInt( $("#id_select_lab").val() );
+                buscarLAB(
+                        lab_id,
+                        parseInt( $("#id_mes").val() ),
+                        parseInt( $("#id_anno").val() ),
+                        parseInt( $("#id_trimestre").val() ),
+                        parseInt( $("#id_provincia").val() ),
+                        parseInt( $("#id_municipio").val() )
+                );
+
+            });
+
+            function buscarLAB(id,mes,anno,trimestre,provincia,municipio){
+
+                md.modal({
+                    backdrop: 'static',
+                    keyboard: false
+                },'show');
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("reporteCalidadCultivoJson") }}',
+                    data: {id_lab:id, id_mes:mes, id_anno:anno, id_trimestre:trimestre, id_provincia:provincia, id_municipio: municipio}
+                }).done(function (data) {
+
+                    md.modal('hide');
+                    if($.isEmptyObject(data))
+                    {
+                        alertify.alert('<strong>No existen datos del laboratorio para este mes.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                            .set('label','Aceptar')
+
+                        $("#spanFechas").html("");
+
+                        $('#campos_llenables').removeClass('show');
+                        $('#campos_llenables').addClass('hidden');
+                    }
+                    else
+                    {
+                        asignarValores(data);
+                        $('#campos_llenables').removeClass('hidden');
+                        $('#campos_llenables').addClass('show');
+                    }
+                }).fail(function (jqXHR, textStatus) {
+                    md.modal('hide');
+                    alertify.alert('<strong>Ha habido un problema en el servidor. Intente volver a conectarse.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                            .set('label','Aceptar')
+                });
+            }
+
+            function asignarValores(datos){
+
+                $("#bac_mas_cult_mas").val(datos.b_Mas_c_Mas);
+                $("#bac_mas_cult_nr").val(datos.b_Mas_c_Nr);
+                $("#bac_menos_cult_mas").val(datos.b_Menos_c_Mas);
+                $("#bac_mas_cult_menos").val(datos.b_Mas_c_Menos);
+                $("#bac_mas_cult_cont").val(datos.b_Mas_c_Cont);
+                $("#bac_nr_cult_mas").val(datos.b_Nr_c_Mas);
+                $("#tubos_jesen_inoc").val(datos.total_LJ_Inoc);
+                $("#tubos_jesen_cont").val(datos.total_LJ_Cont);
+
+                $('#bac_mas_cult_mas_diag').val(datos.b_mas_c_mas_diag);
+                $('#bac_mas_cult_menos_diag').val(datos.b_mas_c_menos_diag);
+                $('#bac_mas_cult_cont_diag').val(datos.b_mas_c_cont_diag);
+                $('#xpert_mas_cult_mas_diag').val(datos.xpert_mas_c_mas_diag);
+
+                if( datos.fechaInicialTrim === undefined ){
+                    var fechaEntrada    = datos.fechaEntrada;
+                    var fechaModificada = datos.fechaModificada;
+
+                    $("#spanFechas").html("<h5>ENTRADA:<span style='color: #0c0c0c; padding-right: 10px'>"+fechaEntrada+"</span>" +
+                            "MODIFICADA:<span style='color: #0c0c0c'> "+fechaModificada+"</span></h5>");
+                }
+                else{
+                    var fechaEntrada = datos.fechaInicialTrim;
+                    var fechaFinal   = datos.fechaFinalTrim;
+
+                    $("#spanFechas").html("<h5>INICIO:<span style='color: #0c0c0c; padding-right: 10px'>"+fechaEntrada+"</span>" +
+                            "FINAL:<span style='color: #0c0c0c'> "+fechaFinal+"</span></h5>");
+                }
+
+
+
+                $('#acd').val( calculaFormulaACD($('#bac_menos_cult_mas').val(), cociente()) );
+
+                $('#bkcu').val( calculaFormulaBKCU($('#bac_mas_cult_menos').val(), cociente()) );
+
+                $('#tc').val( calculaFormulaTC($('#tubos_jesen_cont').val(), $('#tubos_jesen_inoc').val()) );
+
+                $('#bkxcu').val(
+                        calculaFormulaBKXPERTCU(
+                                ( parseInt($('#bac_mas_cult_mas_diag').val()) + parseInt($('#xpert_mas_cult_mas_diag').val()) ),
+                                cocienteDiagnostico() )
+                );
+            }
+
+            function setSelectedIndex(s, valsearch){
+
+                //Recorrer todos los elementos del select
+                for (var i = 0; i< s[0].options.length; i++)
+                {
+                    if (s[0].options[i].value == valsearch)
+                    {
+                        // Item is found. Set its property and exit
+                        s[0].options[i].selected = true;
+                        break;
+                    }
+                }
+                return;
+            }
+
+            //----------Relacionar selects --------------------------
+            $('#id_provincia').on('change', function () {
+
+                var provincia = $(this).val();
+
+                $("#id_select_lab").select2("val");
+
+                //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+                var html    = '<option class="select_municipio" value="0">Seleccione un municipio</option>';
+                var htmlLab = '<option value="null"></option>';
+
+                {#if($(this).val() == 0)#}
+                {#{#}
+                    {#{% for lab in laboratorios %}#}
+                        {#var idLab = "{{ lab.id }}";#}
+                        {#var nameLab = "{{ lab.nombre }}";#}
+                        {#htmlLab += '<option value="' + idLab +'">' + nameLab + '</option>';#}
+                    {#{% endfor %}#}
+                {#}#}
+
+                {% for municipio in  municipios %}
+                    var idProvincia = "{{ municipio.getProvincia().id }}";
+
+                    if (idProvincia == provincia) {
+                        var idMunicipio = "{{ municipio.id }}";
+                        var name        = "{{ municipio.nombre }}";
+                        html += '<option value="' + idMunicipio + '">' + name + '</option>';
+
+                        {#{% for lab in laboratorios %}#}
+                            {#var idLabMunicipio = "{{ lab.getMunicipio().id }}";#}
+                            {#var idLab = "{{ lab.id }}";#}
+                            {#var nameLab = "{{ lab.nombre }}";#}
+                            {#if( idMunicipio == idLabMunicipio )#}
+                                {#htmlLab += '<option value="' + idLab +'">'+nameLab+'</option>';#}
+                        {#{% endfor %}#}
+                    }
+                {% endfor %}
+
+                $("#id_municipio").html(html);
+                $("#id_select_lab").html(htmlLab);
+            });
+
+            $('#id_municipio').on('change', function () {
+
+                var municipio = $(this).val();
+//                var id_provincia_seleccionada = $('#id_provincia').val();
+
+                $("#id_select_lab").select2("val");
+
+
+                //ESTE CICLO ES PARA BUSCAR LOS LABORATORIOS PERTENECIENTES A UN MUNICIPIO
+                var htmlLab = '<option value="null"></option>';
+
+                {#if($(this).val() == 0)#}
+                {#{#}
+                    {#{% for municipio in  municipios %}#}
+
+                    {#var idProvincia = '{{ municipio.getProvincia().id }}';#}
+
+                    {#if (idProvincia == id_provincia_seleccionada) {#}
+                        {#var idMunicipio = '{{ municipio.id }}';#}
+
+                        {#{% for lab in laboratorios %}#}
+                            {#var idLabMunicipio = "{{ lab.getMunicipio().id }}";#}
+                            {#var idLab = "{{ lab.id }}";#}
+                            {#var nameLab = "{{ lab.nombre }}";#}
+                            {#if( idMunicipio == idLabMunicipio )#}
+                                {#htmlLab += '<option value="' + idLab +'">' + nameLab + '</option>';#}
+                        {#{% endfor %}#}
+                    {#}#}
+                    {#{% endfor %}#}
+
+                    {#$("#id_select_lab").html(htmlLab);#}
+                {#}#}
+
+
+                {% for lab in laboratorios %}
+                    var idMunicipio = "{{ lab.getMunicipio().id }}";
+
+                    if (idMunicipio == municipio) {
+                        var idLab   = "{{ lab.id }}";
+                        var nameLab = "{{ lab.nombre }}";
+                        htmlLab += '<option value="' + idLab +'">' + nameLab + '</option>';
+                    }
+                {% endfor %}
+
+                $("#id_select_lab").html(htmlLab);
+            });
+
+            //----------Exportar a excel el reporte------------------
+            $('#imprime_lab').click(function () {
+
+                var anno        = $("#id_anno").val();
+                var mes         = $("#id_mes").val();
+                var trimestre   = $("#id_trimestre").val();
+                var idLab       = $("#id_select_lab").val();
+                var provincia   = $("#id_provincia").val();
+                var municipio   = $("#id_municipio").val();
+                var ruta_actual = window.location.href;
+                var ruta_rpte   = ruta_actual.replace('reporteCalidadCultivo','impExcelCalidadCultivo/'+ idLab +'/'+ anno +'/'+mes +'/'+ trimestre +'/'+ provincia +'/'+ municipio );
+                window.open(ruta_rpte);
+            });
+
+        });
+    </script>
+{% endblock %}

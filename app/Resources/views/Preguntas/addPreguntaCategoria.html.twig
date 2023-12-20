@@ -1,0 +1,125 @@
+{% extends 'comun.html.twig' %}
+
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3 form-cont">
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Agregar
+                    Pregunta</h3>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+
+                    <label class="control-label " for="tipoHospital">Categoría:</label>
+                    <input disabled type="text" class="form-control" value="{{ categoriaPregunta.nombre }}">
+
+                    <div style="margin-top: 10px"></div>
+
+                    <label for="pregunta">Pregunta:</label>
+                    <input type="text" class="form-control" placeholder="Teclee la pregunta" id="pregunta">
+
+                    <div style="margin-top: 10px"></div>
+
+                    <label for="respuesta">Respuesta:</label>
+                    <textarea class="form-control maxlength-handler" rows="10" id="respuesta"
+                              name="addAsunto" maxlength="2000"></textarea>
+
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                    <button id="btnSalir" type="button" class="btn btn-primario"> Salir</button>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            (function(){
+                {% if not ((is_granted("ROLE_ADMINISTRADOR") and  app.user.getNivelAcceso().nivel == 'nacional')  or is_granted("ROLE_SUPERUSUARIO")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            })();
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function () {
+                window.location.href = "{{ path('gestionarPreguntasCategoria' , {idCategoriaPregunta:categoriaPregunta.id}) }}";
+            });
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function () {
+
+                if ($("#categoriaPregunta").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar la categoría a la que pertenece la pregunta.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#pregunta").val().trim() == '') {
+                    alertify.alert('<strong>El campo pregunta es obligatorio, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#respuesta").val().trim() == '') {
+                    alertify.alert('<strong>El campo respuesta es obligatorio, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    pregunta: $("#pregunta").val(),
+                    respuesta: $("#respuesta").val(),
+                    categoriaPregunta: {{ categoriaPregunta.id}}
+                };
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertPregunta") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $('input').each(function () {
+                        $(this).val('');
+                    });
+                    $('textarea').each(function () {
+                        $(this).val('');
+                    });
+                    $(".preload").addClass('hidden');
+
+                    if (data == 'ok') {
+
+                        alertify.alert('<strong>La pregunta ha sido insertada correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                            .set('label', 'Aceptar')
+                            .set('onok', function(){
+                                window.location.href = "{{ path('gestionarPreguntasCategoria' , {idCategoriaPregunta:categoriaPregunta.id}) }}";
+                            });
+                    } else {
+                        alertify.alert('<strong>' + data + '</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar')
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,774 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="form-cont">
+            <div class="row" style="padding: 20px">
+                <h2 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Registrar Paciente Sintomático</h2>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <div role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul style="margin-bottom: 10px" class="nav nav-tabs" role="tablist" id="myTab">
+                            <li role="presentation" class="active">
+                                <a  href="#generalesTab" aria-controls="generalesTab" role="tab" data-toggle="tab">
+                                    <strong>Generales</strong>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#seguimientoTab" aria-controls="seguimientoTab" role="tab" data-toggle="tab">
+                                    <strong>Seguimiento</strong>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#tratamientoTab" aria-controls="tratamientoTab" role="tab" data-toggle="tab">
+                                    <strong>Tratamiento</strong>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="generalesTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <h2 style="margin: 5px; padding-bottom: 7px;  color: #717070; text-align: center"><strong>Datos Generales</strong></h2>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="carnetIdentidad">Carnet de Identidad:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.carnetIdentidad }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="nombre">Nombre:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.nombre }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="primerApellido">Primer Apellido:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.primerApellido }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="segundoApellido">Segundo Apellido:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.segundoApellido }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="edad">Edad:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.edad }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="sexo">Sexo:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.sexo }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="fechaDiagnostico">Fecha de Diagnóstico:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaDiagnostico" name="fechaDiagnostico">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="fechaNotificacion">Fecha de Notificación:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaNotificacion" name="fechaNotificacion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="telefono">Teléfono del Paciente:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee el teléfono del paciente" type="tel"  class="form-control input-sm" id="telefono" name="telefono">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="pais">País de Residencia:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.getPais().nombre }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="direccion">Dirección del Paciente:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.getDireccionPaciente().direccion }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="border-top: none">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="provinciaResid">Provincia de Residencia:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.getDireccionPaciente().getMunicipio().getProvincia.nombre }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <div class="form-group">
+                                                    <label  class="control-label" for="municipioResid">Municipio de Residencia:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.getDireccionPaciente().getMunicipio().nombre }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label class="control-label " for="observaciones">Observaciones:</label>
+                                                <textarea style="width: 100%; resize: none ; height: 195px ; margin-top: 2px" id="observaciones"></textarea>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="seguimientoTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <h3 style="margin: 5px; padding-bottom: 7px;  color: #717070; text-align: center"><strong>Seguimiento Paciente</strong></h3>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="definicionCaso">Definición del Caso:</label>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <strong>{{'Bacteriológicamente confirmado'}}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="localizacionAnatomica">Localización Anatómica:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="localizacionAnatomica"  name="localizacionAnatomica">
+                                                        <option value="0">Seleccione la localización anatómica</option>
+                                                        <option value="Pulmonar">Pulmonar</option>
+                                                        <option value="Extrapulmonar">Extrapulmonar</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="rayosX">RayosX:</label>
+                                                    <input  type="checkbox" class="form-control input-sm" id="rayosX" name="rayosX ">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="anatomiaPatologica">Anatomía Patológica:</label>
+                                                    <input type="checkbox" class="form-control input-sm" id="anatomiaPatologica" name="anatomiaPatologica">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="xpert">Resultado del Xpert:</label>
+                                                    <div>
+                                                        <strong>{{ resultXpert == null ? 'No Realizado' : resultXpert.getXpert().descripcion~' ('~resultXpert.getXpert().clasificacion~')' }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="baciloscopia">Resultado de la Baciloscopía:</label>
+                                                    <div>
+                                                        <strong>{{ resultBaciloscopia == null ? 'Sin Resultado' : resultBaciloscopia.getBaciloscopia().descripcion~' ('~resultBaciloscopia.getBaciloscopia().clasificacion~')' }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="baciloscopia2">Resultado Segunda Baciloscopía:</label>
+                                                    <div>
+                                                        <strong>{{ 'Sin Resultado' }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="cultivo">Codificación del Cultivo:</label>
+                                                    <div>
+                                                        <strong>{{ resultCultivo == null ? 'Sin Resultado' : resultCultivo.getCultivo().descripcion~' ('~resultCultivo.getCultivo().clasificacion~')' }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="salidaCultivo">Resultado del Cultivo:</label>
+                                                    <div>
+                                                        <strong>{{  resultCultivo == null ? 'No realizado' : 'Complejo Mycobacterium tuberculosis' }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="biopsia">Biopsia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="biopsia" name="biopsia">
+                                                        <option value="vacio">Seleccione un resultado</option>
+                                                        {% for biopsia in  biopsias %}
+                                                            <option value="{{ biopsia.clasificacion }}">{{ biopsia.descripcion }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="orina">Parcial de Orina:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="orina" name="orina">
+                                                        <option value="vacio">Seleccione un resultado</option>
+                                                        {% for orina in  orinas %}
+                                                            <option value="{{ orina.clasificacion }}">{{  orina.descripcion  }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="fechaVIH">Fecha de diagnóstico VIH:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaVIH" name="fechaVIH">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="diagnosticoVIH">Estado de  VIH:</label>
+                                                <div class="form-group">
+                                                    <select disabled class="form-control input-sm" id="diagnosticoVIH"  name="diagnosticoVIH">
+                                                        <option value="0">Seleccione un estado de VIH</option>
+                                                        <option value="desconocido">desconocido</option>
+                                                        <option value="positivo">positivo</option>
+                                                        <option value="negativo">negativo</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="tARV">TARV:</label>
+                                                    <input type="checkbox" class="form-control input-sm" id="tARV" name="tARV ">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="tCP">TCP:</label>
+                                                    <input type="checkbox" class="form-control input-sm" id="tCP" name="tCP ">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="pruebaSensibilidad">Prueba de Sensibilidad:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="pruebaSensibilidad"  name="pruebaSensibilidad">
+                                                        <option value="0">Seleccione una prueba</option>
+                                                        {% for prueba in  pruebas %}
+                                                            <option value="{{ prueba.nombre }}">{{ prueba.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="resistencia">Resistencia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="resistencia"  name="resistencia">
+                                                        <option value="0">Seleccione una resistencia</option>
+                                                        {% for resistencia in  resistencias %}
+                                                            <option value="{{ resistencia.clasificacion }}">{{ resistencia.descripcion }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="grupoVulnerable">Grupos Vulnerables:</label>
+                                                    <div>
+                                                        <strong>{{ paciente.getGrupoVulnerable().grupo }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="tipoEnfermo">Tipo de Enfermo:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="tipoEnfermo"  name="tipoEnfermo">
+                                                        <option value="0">Seleccione el Tipo de Enfermo</option>
+                                                        {% for tipo in  tiposEnfermo %}
+                                                            <option value="{{ tipo.id }}">{{ tipo.tipo }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="provincia">Provincia:</label>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <strong>{{  paciente.getAreaSalud() != null ? paciente.getAreaSalud().getMunicipio().getProvincia().nombre : paciente.hospital.municipio.provincia.nombre }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="municipio">Municipio:</label>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <strong>{{ paciente.getAreaSalud() != null ? paciente.getAreaSalud().getMunicipio().nombre : paciente.hospital.municipio.nombre }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="areaSalud">Centro de Atención:</label>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <strong>{{ paciente.getAreaSalud() != null ? paciente.getAreaSalud().nombre }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="hospital">Hospital:</label>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <strong>{{ paciente.hospital != null ? paciente.hospital.nombre }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="tratamientoTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <h4 style="margin-bottom: 10px">Esquemas de Medicamentos:</h4>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group" style="margin-left: 25%">
+                                                    <label class="control-label " for="medicamentos">Seleccione los  Medicamentos:</label>
+                                                    <select multiple="multiple" id="medicamentos" name="medicamentos[]" class="form-control" >
+                                                        {% for medicamento in medicamentos %}
+
+                                                            <option value={{ medicamento.id }}>{{ medicamento.nombre }}</option>
+
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="fechaInicioTrat">Inicio del  Tratamiento:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaInicioTrat" name="fechaInicioTrat">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button type="button" class="btn" id="agregarBtnEsquemaMedicamento">Agregar
+                                                    Esquema
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <table id="esquemasMedicamento" class="table table-bordered"
+                                                   style="margin-top: 17px ; margin-left: 15px ; width: 97%">
+                                                <thead>
+                                                <tr style="color: #2bc7c7">
+                                                    <th>Fecha Inicio</th>
+                                                    <th>Medicamentos</th>
+                                                    <th>Acción</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tbody"></tbody>
+                                            </table>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                    <button id="btnSalir" type="button" class="btn btn-primario"> Salir</button>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            function verificarusuario() {
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+
+            verificarusuario();
+            $('#medicamentos').multiSelect();
+
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function () {
+                window.location.href = "{{ path('pacientesPendientesRegistro') }}";
+
+            });
+            //----------Relacionar selects --------------------------
+
+            $("#pruebaSensibilidad").on('change', function(){
+
+                $("#resistencia").val('0').prop('disabled', false);
+                if($(this).val() == 'Ninguna'){
+                    $("#resistencia").val('Desconocida').prop('disabled', true);
+                }
+            });
+
+            $("#diagnosticoVIH").val('desconocido').prop('disabled' , true);
+
+            $("#fechaVIH").on('change' ,function () {
+
+                if($(this).val() == ''){
+                    $("#diagnosticoVIH").val('desconocido').prop('disabled' , true);
+                }
+                else { $("#diagnosticoVIH").val('0').prop('disabled' , false)}
+            });
+
+            //funcion que agrega un esquema de medicamento y lo visualiza en la tabla
+            var pacienteEsquemas = [];
+            var I = 0;
+            $('#agregarBtnEsquemaMedicamento').on('click', function(){
+
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+                if( $('#medicamentos').val() == null ){
+                    alertify.alert('<strong>Debe seleccionar medicamentos para agregar un esquema.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                }else if($("#fechaInicioTrat").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de inicio del tratamiento.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                }else if ($("#fechaInicioTrat").val() != '' && $("#fechaInicioTrat").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de inicio del tratamiento no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }else if ($("#fechaInicioTrat").val() != '' &&  $("#fechaInicioTrat").val() < $("#fechaDiagnostico").val()) {
+                    alertify.alert('<strong>Error: la fecha de inicio del tratamiento no puede ser menor que la fecha de diagnóstico.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }else if ($("#fechaInicioTrat").val() != '' && $("#fechaInicioTrat").val() < $("#fechaNotificacion").val()) {
+                    alertify.alert('<strong>Error: la fecha de inicio del tratamiento no puede ser menor que la fecha de notificación.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+
+                }else if(pacienteEsquemas.length != 0 && $("#fechaInicioTrat").val() < pacienteEsquemas[pacienteEsquemas.length - 1]['fechaInicioTratamiento']) {
+                    alertify.alert('<strong>La fecha del tratamiento actual no puede ser menor que la del tratamiento anterior.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                }else{
+                    var fechaInicioTratamiento =  $("#fechaInicioTrat").val();
+                    var text = '';
+                    var medicamentos = $('#medicamentos').val();
+
+                    $('#ms-medicamentos .ms-list .ms-elem-selectable').each(function () {
+                        if($(this).hasClass('ms-selected')){
+
+                            text += $(this).text()+' - ';
+                        }
+                    });
+
+                    $('.ms-list .ms-elem-selectable').each(function(){
+                        $(this).css('display', 'list-item').removeClass('ms-selected');
+                    });
+
+                    $('.ms-list .ms-elem-selection').each(function(){
+                        $(this).css('display', 'none').addClass('ms-hover').removeClass('ms-selected');
+                    });
+
+                    $("#fechaInicioTrat").val('');
+                    $('#medicamentos').val(null);
+
+                    text = text.substring(0,text.lastIndexOf('-')-1);
+                    $('#esquemasMedicamento tbody').append('<tr data-id="'+I+'"><td>'+ fechaInicioTratamiento +'</td><td>'+ text +'</td><td>' +
+                        '<span class="glyphicon glyphicon-minus-sign borrar" style="font-size: 25px"  data-toggle="tooltip" data-placement="bottom"  title="Eliminar"></span>' +
+                        '</td></tr>');
+
+                    pacienteEsquemas.push({
+                        medicamentos: medicamentos,
+                        fechaInicioTratamiento: fechaInicioTratamiento,
+                    });
+
+                    $('[data-toggle="tooltip"]').tooltip();
+                    I++;
+
+                }
+            });
+            //funcion que elimina un esquema de medicamento del arreglo y de  la tabla
+            $('#esquemasMedicamento tbody').on('click', '.borrar', function () {
+                var row = $(this).parents('tr');
+                id = row.data('id');
+                row.fadeOut();
+                pacienteEsquemas.splice(id,1);
+            });
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function () {
+
+
+                if ($("#fechaDiagnostico").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de diagnóstico del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaNotificacion").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de notificación del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+
+                if ($("#fechaDiagnostico").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de diagnóstico no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaNotificacion").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de notificación no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaNotificacion").val() < $("#fechaDiagnostico").val()) {
+                    alertify.alert('<strong>Error: la fecha de notificación no puede ser menor que la fecha de diagnóstico.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#localizacionAnatomica").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar la localización  anatómica de la enfermedad.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#biopsia").val() == 'vacio') {
+                    alertify.alert('<strong>Debe seleccionar el resultado de la biopsia.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#orina").val() == 'vacio') {
+                    alertify.alert('<strong>Debe seleccionar el resultado del parcial de orina.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#tipoEnfermo").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el tipo de enfermo.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#diagnosticoVIH").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar  el diagnóstico de VIH del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if($("#fechaVIH").val() == '' && $("#diagnosticoVIH").val() != 'desconocido')
+                {
+                    alertify.alert('<strong>Si hay un diagnóstico de VIH entonces debe seleccionar la fecha de ese diagnóstico.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaVIH").val() != '' && $("#fechaVIH").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de resultado del VIH no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#pruebaSensibilidad").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar  una prueba de sensibilidad.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#resistencia").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar  una resistencia.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#medicamento").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el esquema de medicamentos.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                var rayosX = 0;
+                if ($('#rayosX').prop('checked')) {
+                    rayosX = 1;
+                }
+                var anatomiaPatologica = 0;
+                if ($('#anatomiaPatologica').prop('checked')) {
+                    anatomiaPatologica = 1;
+                }
+                var tARV = 0;
+                if ($('#tARV').prop('checked')) {
+                    tARV = 1;
+                }
+                var tCP = 0;
+                if ($('#tCP').prop('checked')) {
+                    tCP = 1;
+                }
+
+                var telefono  = $("#telefono").val();
+                if(telefono == ''){
+                    telefono = 'No tiene'
+                }
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    carnetIdentidad: '{{ paciente.carnetIdentidad }}',
+                    nombre: '{{ paciente.nombre }}',
+                    primerApellido: '{{ paciente.primerApellido }}',
+                    segundoApellido: '{{ paciente.segundoApellido }}',
+                    edad: '{{ paciente.edad }}',
+                    sexo:'{{ paciente.sexo }}',
+                    fechaNotificacion: $("#fechaNotificacion").val(),
+                    fechaDiagnostico: $("#fechaDiagnostico").val(),
+                    telefono: telefono,
+                    pais: '{{ paciente.getPais().id }}',
+                    direccion: '{{ paciente.getDireccionPaciente().direccion }}',
+                    municipioResid: '{{ paciente.getDireccionPaciente().getMunicipio().id }}',
+                    definicionCaso: 'Bacteriológicamente confirmado',
+                    rayosX: rayosX,
+                    anatomiaPatologica: anatomiaPatologica,
+                    xpert: '{{ resultXpert == null ? 'NRX' : resultXpert.getXpert().clasificacion }}',
+                    baciloscopia: {{ resultBaciloscopia == null ? 'SB' : resultBaciloscopia.getBaciloscopia().clasificacion }},
+                    baciloscopia2: 'SB',
+                    cultivo: '{{ resultCultivo == null ? 'SC' : resultCultivo.getCultivo().clasificacion }}',
+                    salidaCultivo: '{{ resultCultivo == null ? 'No realizado' : 'Complejo Mycobacterium tuberculosis' }}',
+                    biopsia: $("#biopsia").val(),
+                    orina: $("#orina").val(),
+                    localizacionAnatomica: $("#localizacionAnatomica").val(),
+                    tipoEnfermo: $("#tipoEnfermo").val(),
+                    fechaVIH: $("#fechaVIH").val(),
+                    diagnosticoVIH: $("#diagnosticoVIH").val(),
+                    tARV: tARV,
+                    tCP: tCP,
+                    pruebaSensibilidad: $("#pruebaSensibilidad").val(),
+                    resistencia: $("#resistencia").val(),
+                    grupoVulnerable: '{{ paciente.getGrupoVulnerable().id }}',
+                    areaSalud: '{{ paciente.getAreaSalud() != null ? paciente.getAreaSalud().id : 0 }}',
+                    hospital: '{{ paciente.hospital() != null ? paciente.hospital().id : 0 }}',
+                    medicamento: $("#medicamento").val(),
+                    cambiarEstado: 'registrado',
+                    esquemasMedicamentos: pacienteEsquemas,
+                    observaciones: $("#observaciones").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertPaciente") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $(".preload").addClass('hidden');
+                    if(data == 'ok'){
+
+                        alertify.alert('<strong>El paciente ha sido insertado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                            .set('onok', function(){
+
+                                $(".preload").removeClass('hidden');
+                                window.location.href = "{{ path('pacientesPendientesRegistro') }}";
+                            });
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

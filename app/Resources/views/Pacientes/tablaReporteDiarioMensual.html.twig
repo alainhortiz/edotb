@@ -1,0 +1,238 @@
+<div id="report">
+    <div class="container-fluid">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="form-cont">
+                    <div class="row" style="margin-bottom: 20px">
+                        {#<div class="col-md-1">
+                            <div class="btn-toolbar">
+                                <div class="btn-group">
+                                    <a id="imp_rpt_mod_46203" class="btn btn-default"><span class="glyphicon glyphicon-print"></span></a>
+                                </div>
+                            </div>
+                        </div>#}
+                        <div class="col-md-10">
+                            <h2  align="center">REPORTE DIARIO - MENSUAL</h2>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="top-datatable" style="background: #3c7673; padding: 5px">
+                            <div class="row" style="margin-bottom: 10px ; color: whitesmoke">
+                                <div class="col-lg-2">
+                                    <strong>Mes: {{ tablaReporteDiarioMensual[0].fecha|date("m") }}</strong>
+                                </div>
+                                <div class="col-lg-2">
+                                    <strong>Año: {{ tablaReporteDiarioMensual[0].fecha|date("Y") }}</strong>
+                                </div>
+                                <div class="col-lg-8">
+                                    <strong>Grupo Vulnerable: {{ tablaReporteDiarioMensual[0].getGrupoVulnerable().grupo }}</strong>
+                                </div>
+                            </div>
+                            <div  id="titulo" class="row" style="margin-bottom: 10px ; color: whitesmoke">
+                                <div class="col-lg-4">
+                                    <strong class="hidden" id="provinciaTitulo">Provincia: {{ tablaReporteDiarioMensual[0].getAreaSalud().getMunicipio().getProvincia().nombre }}</strong>
+                                </div>
+                                <div class="col-lg-4">
+                                    <strong class="hidden" id="municipioTitulo">Municipio: {{ tablaReporteDiarioMensual[0].getAreaSalud().getMunicipio().nombre }}</strong>
+                                </div>
+                                <div class="col-lg-4">
+                                    <strong class="hidden" id="unidadTitulo">Unidad: {{ tablaReporteDiarioMensual[0].getAreaSalud().nombre }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <table  class="table table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">Dia</th>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">Identificados</th>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                    <th colspan="4" style="text-align: center; vertical-align: middle">Pruebas de Tuberculina</th>
+                                    <th colspan="4" style="text-align: center; vertical-align: middle">Terapia Preventiva con Isoniazida</th>
+                                    {% if tablaReporteDiarioMensual[0].getGrupoVulnerable().numero == '3'%}
+                                        <th rowspan="2" style="text-align: center; vertical-align: middle">Cotrimoxazol a pacientes coinfectados</th>
+                                    {% endif %}
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; vertical-align: middle">Realizadas</th>
+                                    <th style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                    <th style="text-align: center; vertical-align: middle">Positivas</th>
+                                    <th style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                    <th style="text-align: center; vertical-align: middle">Iniciaron</th>
+                                    <th style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                    <th style="text-align: center; vertical-align: middle">Terminaron</th>
+                                    <th style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set pos = 0 %}
+                                {% set identificados = 0 %}
+                                {% set identificadosMenoresCinco = 0 %}
+                                {% set tuberculinasRealizadas = 0 %}
+                                {% set tuberculinasRealizadasMenoresCinco = 0 %}
+                                {% set tuberculinasPositivas = 0 %}
+                                {% set tuberculinasPositivasMenoresCinco = 0 %}
+                                {% set terapiaPreventivaIsoniazidaIniciadas = 0 %}
+                                {% set terapiaPreventivaIsoniazidaIniciadasMenoresCinco = 0 %}
+                                {% set terapiaPreventivaIsoniazidaTerminadas = 0 %}
+                                {% set terapiaPreventivaIsoniazidaTerminadasMenoresCinco = 0 %}
+                                {% set cotrimoxazolPacientesCoinfectados = 0 %}
+                                {% set totalIdentificados = 0 %}
+                                {% set totalIdentificadosMenoresCinco = 0 %}
+                                {% set totalTuberculinasRealizadas = 0 %}
+                                {% set totalTuberculinasRealizadasMenoresCinco = 0 %}
+                                {% set totalTuberculinasPositivas = 0 %}
+                                {% set totalTuberculinasPositivasMenoresCinco = 0 %}
+                                {% set totalTerapiaPreventivaIsoniazidaIniciadas = 0 %}
+                                {% set totalTerapiaPreventivaIsoniazidaIniciadasMenoresCinco = 0 %}
+                                {% set totalTerapiaPreventivaIsoniazidaTerminadas = 0 %}
+                                {% set totalTerapiaPreventivaIsoniazidaTerminadasMenoresCinco = 0 %}
+                                {% set totalCotrimoxazolPacientesCoinfectados = 0 %}
+
+                                {% for i in range(1,diasMes) %}
+
+                                    {% set identificadosFila =  0 %}
+                                    {% set identificadosMenoresCincoFila =  0 %}
+                                    {% set tuberculinasRealizadasFila =  0 %}
+                                    {% set tuberculinasRealizadasMenoresCincoFila =  0 %}
+                                    {% set tuberculinasPositivasFila =  0 %}
+                                    {% set tuberculinasPositivasMenoresCincoFila =  0 %}
+                                    {% set terapiaPreventivaIsoniazidaIniciadasFila =  0 %}
+                                    {% set terapiaPreventivaIsoniazidaIniciadasMenoresCincoFila =  0 %}
+                                    {% set terapiaPreventivaIsoniazidaTerminadasFila =  0 %}
+                                    {% set terapiaPreventivaIsoniazidaTerminadasMenoresCincoFila =  0 %}
+                                    {% set cotrimoxazolPacientesCoinfectadosFila =  0 %}
+
+                                    {%  set x = 0 %}
+                                    {% for parte in tablaReporteDiarioMensual %}
+
+                                        {% if i == parte.fecha|date("d") %}
+
+                                            {% set identificadosFila =  identificadosFila + parte.identificados %}
+                                            {% set identificadosMenoresCincoFila =  identificadosMenoresCincoFila + parte.identificadosMenoresCinco %}
+                                            {% set tuberculinasRealizadasFila =  tuberculinasRealizadasFila + parte.tuberculinasRealizadas %}
+                                            {% set tuberculinasRealizadasMenoresCincoFila =  tuberculinasRealizadasMenoresCincoFila + parte.tuberculinasRealizadasMenoresCinco %}
+                                            {% set tuberculinasPositivasFila =  tuberculinasPositivasFila +  parte.tuberculinasPositivas%}
+                                            {% set tuberculinasPositivasMenoresCincoFila =  tuberculinasPositivasMenoresCincoFila + parte.tuberculinasPositivasMenoresCinco %}
+                                            {% set terapiaPreventivaIsoniazidaIniciadasFila =  terapiaPreventivaIsoniazidaIniciadasFila + parte.terapiaPreventivaIsoniazidaIniciadas %}
+                                            {% set terapiaPreventivaIsoniazidaIniciadasMenoresCincoFila =  terapiaPreventivaIsoniazidaIniciadasMenoresCincoFila + parte.terapiaPreventivaIsoniazidaIniciadasMenoresCinco %}
+                                            {% set terapiaPreventivaIsoniazidaTerminadasFila =  terapiaPreventivaIsoniazidaTerminadasFila + parte.terapiaPreventivaIsoniazidaTerminadas %}
+                                            {% set terapiaPreventivaIsoniazidaTerminadasMenoresCincoFila =  terapiaPreventivaIsoniazidaTerminadasMenoresCincoFila + parte.terapiaPreventivaIsoniazidaTerminadasMenoresCinco %}
+                                            {% set cotrimoxazolPacientesCoinfectadosFila =  cotrimoxazolPacientesCoinfectadosFila + parte.cotrimoxazolPacientesCoinfectados %}
+                                            
+                                            {% set identificados = identificados + parte.identificados %}
+                                            {% set identificadosMenoresCinco = identificadosMenoresCinco + parte.identificadosMenoresCinco %}
+                                            {% set tuberculinasRealizadas = tuberculinasRealizadas + parte.tuberculinasRealizadas %}
+                                            {% set tuberculinasRealizadasMenoresCinco = tuberculinasRealizadasMenoresCinco + parte.tuberculinasRealizadasMenoresCinco %}
+                                            {% set tuberculinasPositivas = tuberculinasPositivas +  parte.tuberculinasPositivas%}
+                                            {% set tuberculinasPositivasMenoresCinco = tuberculinasPositivasMenoresCinco + parte.tuberculinasPositivasMenoresCinco %}
+                                            {% set terapiaPreventivaIsoniazidaIniciadas = terapiaPreventivaIsoniazidaIniciadas + parte.terapiaPreventivaIsoniazidaIniciadas %}
+                                            {% set terapiaPreventivaIsoniazidaIniciadasMenoresCinco = terapiaPreventivaIsoniazidaIniciadasMenoresCinco + parte.terapiaPreventivaIsoniazidaIniciadasMenoresCinco %}
+                                            {% set terapiaPreventivaIsoniazidaTerminadas = terapiaPreventivaIsoniazidaTerminadas + parte.terapiaPreventivaIsoniazidaTerminadas %}
+                                            {% set terapiaPreventivaIsoniazidaTerminadasMenoresCinco = terapiaPreventivaIsoniazidaTerminadasMenoresCinco + parte.terapiaPreventivaIsoniazidaTerminadasMenoresCinco %}
+                                            {% set cotrimoxazolPacientesCoinfectados = cotrimoxazolPacientesCoinfectados + parte.cotrimoxazolPacientesCoinfectados %}
+                                            {%  set x = 1 %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if x == 0 %}
+                                        <tr>
+                                            <td style="text-align: center; vertical-align: middle">{{ i }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            {% if tablaReporteDiarioMensual[0].getGrupoVulnerable().numero == '3'%}
+                                                <td></td>
+                                            {% endif %}
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td style="text-align: center; vertical-align: middle">{{ i }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ identificadosFila }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ identificadosMenoresCincoFila }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ tuberculinasRealizadasFila }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ tuberculinasRealizadasMenoresCincoFila }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ tuberculinasPositivasFila }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ tuberculinasPositivasMenoresCincoFila }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ terapiaPreventivaIsoniazidaIniciadasFila }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ terapiaPreventivaIsoniazidaIniciadasMenoresCincoFila }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ terapiaPreventivaIsoniazidaTerminadasFila }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ terapiaPreventivaIsoniazidaTerminadasMenoresCincoFila }}</td>
+                                            {% if tablaReporteDiarioMensual[0].getGrupoVulnerable().numero == '3'%}
+                                                <td style="text-align: center; vertical-align: middle">{{ cotrimoxazolPacientesCoinfectadosFila }}</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endif %}
+                                    {% if i == 10 or i == 20 or i == diasMes %}
+                                        <tr style="border: solid 2px #3c7673">
+                                            <td style="text-align: center; vertical-align: middle"><strong>SUBTOTAL</strong></td>
+                                            <td style="text-align: center; vertical-align: middle">{{ identificados }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ identificadosMenoresCinco }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ tuberculinasRealizadas }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ tuberculinasRealizadasMenoresCinco }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ tuberculinasPositivas }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ tuberculinasPositivasMenoresCinco }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ terapiaPreventivaIsoniazidaIniciadas }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ terapiaPreventivaIsoniazidaIniciadasMenoresCinco }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ terapiaPreventivaIsoniazidaTerminadas }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ terapiaPreventivaIsoniazidaTerminadasMenoresCinco }}</td>
+                                            {% if tablaReporteDiarioMensual[0].getGrupoVulnerable().numero == '3'%}
+                                                <td style="text-align: center; vertical-align: middle">{{ cotrimoxazolPacientesCoinfectados }}</td>
+                                            {% endif %}
+                                        </tr>
+                                        {% set totalIdentificados = totalIdentificados + identificados %}
+                                        {% set totalIdentificadosMenoresCinco = totalIdentificadosMenoresCinco + identificadosMenoresCinco %}
+                                        {% set totalTuberculinasRealizadas = totalTuberculinasRealizadas + tuberculinasRealizadas %}
+                                        {% set totalTuberculinasRealizadasMenoresCinco = totalTuberculinasRealizadasMenoresCinco + tuberculinasRealizadasMenoresCinco %}
+                                        {% set totalTuberculinasPositivas = totalTuberculinasPositivas + tuberculinasPositivas %}
+                                        {% set totalTuberculinasPositivasMenoresCinco = totalTuberculinasPositivasMenoresCinco + tuberculinasRealizadasMenoresCinco %}
+                                        {% set totalTerapiaPreventivaIsoniazidaIniciadas = totalTerapiaPreventivaIsoniazidaIniciadas + terapiaPreventivaIsoniazidaIniciadas %}
+                                        {% set totalTerapiaPreventivaIsoniazidaIniciadasMenoresCinco = totalTerapiaPreventivaIsoniazidaIniciadasMenoresCinco + terapiaPreventivaIsoniazidaIniciadasMenoresCinco %}
+                                        {% set totalTerapiaPreventivaIsoniazidaTerminadas = totalTerapiaPreventivaIsoniazidaTerminadas + terapiaPreventivaIsoniazidaTerminadas %}
+                                        {% set totalTerapiaPreventivaIsoniazidaTerminadasMenoresCinco = totalTerapiaPreventivaIsoniazidaTerminadasMenoresCinco + terapiaPreventivaIsoniazidaTerminadasMenoresCinco %}
+                                        {% set totalCotrimoxazolPacientesCoinfectados = totalCotrimoxazolPacientesCoinfectados + cotrimoxazolPacientesCoinfectados %}
+                                        {% set identificados = 0 %}
+                                        {% set identificadosMenoresCinco = 0 %}
+                                        {% set tuberculinasRealizadas = 0 %}
+                                        {% set tuberculinasRealizadasMenoresCinco = 0 %}
+                                        {% set tuberculinasPositivas = 0 %}
+                                        {% set tuberculinasPositivasMenoresCinco = 0 %}
+                                        {% set terapiaPreventivaIsoniazidaIniciadas = 0 %}
+                                        {% set terapiaPreventivaIsoniazidaIniciadasMenoresCinco = 0 %}
+                                        {% set terapiaPreventivaIsoniazidaTerminadas = 0 %}
+                                        {% set terapiaPreventivaIsoniazidaTerminadasMenoresCinco = 0 %}
+                                        {% set cotrimoxazolPacientesCoinfectados = 0 %}
+
+                                    {% endif %}
+                                    {% if i == diasMes %}
+                                        <tr style="border: solid 2px #3c7673">
+                                            <td style="text-align: center; vertical-align: middle"><strong>TOTAL</strong></td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalIdentificados }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalIdentificadosMenoresCinco }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalTuberculinasRealizadas }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalTuberculinasRealizadasMenoresCinco }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalTuberculinasPositivas }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalTuberculinasPositivasMenoresCinco }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalTerapiaPreventivaIsoniazidaIniciadas }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalTerapiaPreventivaIsoniazidaIniciadasMenoresCinco }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalTerapiaPreventivaIsoniazidaTerminadas }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ totalTerapiaPreventivaIsoniazidaTerminadasMenoresCinco }}</td>
+                                            {% if tablaReporteDiarioMensual[0].getGrupoVulnerable().numero == '3'%}
+                                                <td style="text-align: center; vertical-align: middle">{{ totalCotrimoxazolPacientesCoinfectados }}</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,103 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="top-datatable" style="background: #434242; padding: 5px">
+        <div class="row" style=" margin-right: auto">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 class="no-padding" style="color: #70cbb1">Pacientes Sintomáticos pendientes de pasar al Registro</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div id="todos" class="row" style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242;">
+            <div class="col-md-12">
+                <table id="dataPaciente" class="display" cellspacing="0" width="100%" >
+                    <thead>
+                    <tr>
+                        {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+                            <th>Provincia</th>
+                        {% endif %}
+                        {% if app.user.getNivelAcceso().id > 2 %}
+                            <th>Municipio</th>
+                        {% endif %}
+                        {% if app.user.getNivelAcceso().id >= 2 %}
+                            <th>Unidad</th>
+                        {% endif %}
+                        <th>Nombre</th>
+                        <th>Primer Apellido</th>
+                        <th>Segundo Apellido</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for paciente in pacientes %}
+                        <tr  data-id ="{{ paciente.id }}">
+                            {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+                                {% if  paciente.getAreaSalud() != null %}
+                                    <td>{{ paciente.getAreaSalud().getMunicipio().getProvincia().codigo~'-'~paciente.getAreaSalud().getMunicipio().getProvincia().nombre  }}</td>
+                                {% else %}
+                                    <td>{{ paciente.hospital.getMunicipio().getProvincia().codigo~'-'~paciente.hospital.getMunicipio().getProvincia().nombre  }}</td>
+                                {% endif %}
+                            {% endif %}
+                            {% if app.user.getNivelAcceso().id > 2 %}
+                                {% if  paciente.getAreaSalud() != null %}
+                                    <td>{{ paciente.getAreaSalud().getMunicipio().codigo~'-'~paciente.getAreaSalud().getMunicipio().nombre  }}</td>
+                                {% else %}
+                                    <td>{{ paciente.hospital.getMunicipio().codigo~'-'~paciente.hospital.getMunicipio().nombre  }}</td>
+                                {% endif %}
+                            {% endif %}
+                            {% if app.user.getNivelAcceso().id >= 2 %}
+                                {% if  paciente.getAreaSalud() != null %}
+                                    <td>{{ paciente.getAreaSalud().codigo~'-'~paciente.getAreaSalud().nombre  }}</td>
+                                {% else %}
+                                    <td>{{ paciente.hospital.codigo~'-'~paciente.hospital.nombre  }}</td>
+                                {% endif %}
+                            {% endif %}
+                            <td>{{ paciente.nombre }}</td>
+                            <td>{{ paciente.primerApellido }}</td>
+                            <td>{{ paciente.segundoApellido }}</td>
+                            <td>
+                                {% if  is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO") %}
+                                    <div class="btn-opt" id="laboratorio" style="background: #717b81; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Registrar">
+                                        <a href="{{ path('registrarPacienteSintomatico' , {idPaciente:paciente.id }) }}" style="text-decoration: none; color: #ffffff">
+                                            <i class="glyphicon glyphicon-edit" style="font-size: 20px"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_VISUALIZADOR")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+            $('#dataPaciente').DataTable();
+            $('#dataPaciente thead th').addClass('text-center');
+            $('#dataPaciente tbody td').addClass('text-center');
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,495 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+
+    {% set tasa_fp  = '%.2f'|format((controlCalidad.getFalsosPositivos() / controlCalidad.getNumPositivas()) * 100 ) %}
+    {% set tasa_fn  = '%.2f'|format((controlCalidad.getFalsosNegativos() / controlCalidad.getNumNegativas()) * 100 ) %}
+    {% set tasa_ec  = '%.2f'|format((controlCalidad.getErroresCod()      / controlCalidad.getNumPositivas()) * 100 ) %}
+    {% set pc_concordancia  = '%.2f'|format((controlCalidad.getLaminasConcord()      / controlCalidad.getTotalMuestraEval()) * 100 ) %}
+    {% set pc_lta   = '%.2f'|format((controlCalidad.getLta() / controlCalidad.getTotalMuestraEval()) * 100 ) %}
+    {% set pc_lea   = '%.2f'|format((controlCalidad.getLea() / controlCalidad.getTotalMuestraEval()) * 100 ) %}
+    {% set pc_lca   = '%.2f'|format((controlCalidad.getLca() / controlCalidad.getTotalMuestraEval()) * 100 ) %}
+
+<div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-2 form-cont">
+
+                <div class="col-lg-12" style="padding-bottom: 20px;">
+                    <label for="id_select_lab">Laboratorio:</label>
+                    <input type="text" class="form-control input-number" id="id_select_lab" value="{{ controlCalidad.laboratorio.getNombre() }}" disabled>
+                </div>
+
+                <div class="col-lg-6">
+                    <label for="id_mes">Mes:</label>
+                    <input type="text" class="form-control input-number" id="id_mes" value="{{ controlCalidad.getFechaModificada()|localizeddate('none', 'none', 'es_ES', null, "MMMM")|capitalize}}" disabled>
+                </div>
+                <div class="col-lg-6">
+                    <label for="id_anno">Año:</label>
+                    <input type="text" class="form-control input-number" id="id_anno" value="{{ controlCalidad.getFechaModificada()|date('Y') }}" disabled>
+                    <br>
+                </div>
+                <div class="col-lg-6">
+                    <label for="id_provincia">Provincia:</label>
+                    <input type="text" class="form-control input-number" id="id_provicnia" value="{{ controlCalidad.laboratorio.getMunicipio().getProvincia().getNombre() }}" disabled>
+                    <br>
+                </div>
+                <div class="col-lg-6">
+                    <label for="id_municipio">Municipio:</label>
+                    <input type="text" class="form-control input-number" id="id_municipio" value="{{ controlCalidad.laboratorio.getMunicipio().getNombre() }}" disabled>
+                    <br>
+                </div>
+
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">CONTROL DE CALIDAD DEL CULTIVO
+                    <span style="float: right;">FECHA: {{ "now"|date("d-m-Y") }}</span>
+                </h3>
+
+                <div id="campos_llenables">
+
+                    <form class="form-row" style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Muestras Evaluadas</label>
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="panel-box-less">
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-12">
+                                            <label for="muestras_evaluadas">Total de muestras evaluadas:</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="muestras_evaluadas" value="{{ controlCalidad.getTotalMuestraEval() }}">
+                                            <div>
+                                                <span id="sp_muestras_evaluadas" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <label for="num_positivas">Número de positivas:</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras positivas" id="num_positivas" value="{{ controlCalidad.getNumPositivas() }}">
+                                            <div>
+                                                <span id="sp_num_positivas" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="num_negativas">Número de negativas:</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras negativas" id="num_negativas" value="{{ controlCalidad.getNumNegativas() }}">
+                                            <div>
+                                                <span id="sp_num_negativas" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <label for="falsos_positivos">Falsos positivos (FP):</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras FP" id="falsos_positivos" value="{{ controlCalidad.getFalsosPositivos() }}">
+                                            <div>
+                                                <span id="sp_falsos_positivos" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="falsos_negativos">Falsos negativos (FN):</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras FN" id="falsos_negativos" value="{{ controlCalidad.getFalsosNegativos() }}">
+                                            <div>
+                                                <span id="sp_falsos_negativos" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-12">
+                                            <label for="errores">Errores de codificación:</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de errores" id="errores" value="{{ controlCalidad.getErroresCod() }}">
+                                            <div>
+                                                <span id="sp_errores" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Láminas</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group col-lg-12">
+                                    <label for="laminas_concordantes">Láminas concordantes:</label>
+                                    <input type="text" class="form-control input-number" placeholder="Número de láminas concordantes" id="laminas_concordantes" value="{{ controlCalidad.getLaminasConcord() }}">
+                                    <div>
+                                        <span id="sp_laminas_concordantes" class="hidden text-danger">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="lta">LTA: No. Láminas con tinción de Zielh Neelsen (ZN) adecuada:</label>
+                                    <input type="text" class="form-control input-number" placeholder="Número de láminas LTA" id="lta" value="{{ controlCalidad.getLta() }}">
+                                    <div>
+                                        <span id="sp_lta" class="hidden text-danger">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="lea">LEA: No. Láminas con extensión adecuada:</label>
+                                    <input type="text" class="form-control input-number" placeholder="Número de láminas LEA" id="lea" value="{{ controlCalidad.getLea() }}">
+                                    <div>
+                                        <span id="sp_lea" class="hidden text-danger">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="lca">LCA: No. Láminas con calidad adecuada (muestras mucosas y mucupurulentas):</label>
+                                    <input type="text" class="form-control input-number" placeholder="Número de láminas LCA" id="lca" value="{{ controlCalidad.getLca() }}">
+                                    <div>
+                                        <span id="sp_lca" class="hidden text-danger">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Indicadores a Medir</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group col-lg-6">
+                                    <label for="tasa_fp">Tasa FP:</label>
+                                    <input type="text" class="form-control" id="tasa_fp" disabled value="{{ tasa_fp }}">
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="tasa_fn">Tasa FN:</label>
+                                    <input type="text" class="form-control" id="tasa_fn" disabled value="{{ tasa_fn }}">
+                                </div>
+
+                                <div class="form-group col-lg-12">
+                                    <label for="tasa_ec">Tasa EC:</label>
+                                    <input type="text" class="form-control" id="tasa_ec" disabled value="{{ tasa_ec }}">
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="pc_concordancia">% concordancia:</label>
+                                    <input type="text" class="form-control" id="pc_concordancia" disabled value="{{ pc_concordancia }}">
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="pc_lta">% láminas con extensión adecuada: </label>
+                                    <input type="text" class="form-control" id="pc_lta" disabled value="{{ pc_lta }}">
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="pc_lea">% de láminas con ZN adecuada:</label>
+                                    <input type="text" class="form-control" id="pc_lea" disabled value="{{ pc_lea }}">
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="pc_lca">% láminas con calidad adecuada:</label>
+                                    <input type="text" class="form-control" id="pc_lca" disabled value="{{ pc_lca }}">
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <button type="button" class="btn btn-primary btn-block" id="calculo_porciento">Calcular</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <p class="text-center" style="margin-top: 20px">
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                        <button id="btnSalir" type="button" class="btn btn-primario"> Salir </button>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_ADMINISTRADOR") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    {% if not app.user.getNivelAcceso().nivel == 'nacional' %}
+                        window.location.href = "{{ path('login') }}";
+                    {% endif %}
+                {% endif %}
+            }
+            verificarusuario();
+
+            var md = $('#processing-modal');
+
+            //FIN DE LA SECCION DE LAS VARIABLES DE ENTRADA
+
+            //--------- validar que solo entren numeros en los campos  -----------------
+            $('.input-number').on('input', function () {
+                this.value = this.value.replace(/[^0-9]/g,'');
+            });
+
+            //--------- funcion para realizar los claculos de las ecuaciones -----------
+            $('#calculo_porciento').click(function () {
+
+                if(
+                    $('#muestras_evaluadas').val()   > 0 &&
+                    $('#num_positivas').val()        > 0 &&
+                    $('#num_negativas').val()        > 0 &&
+                    $('#falsos_positivos').val()     > 0 &&
+                    $('#falsos_negativos').val()     > 0 &&
+                    $('#errores').val()              > 0 &&
+                    $('#laminas_concordantes').val() > 0 &&
+                    $('#lta').val()                  > 0 &&
+                    $('#lea').val()                  > 0 &&
+                    $('#lca').val()                  > 0
+                ){
+                    //OCULTO LOS MENSAJES DE ERROR QUE HAYAN QUEDADO
+                    OcultarErroresMsg();
+
+                    $('#tasa_fp').val( calculaFormulaTasaFP($('#num_positivas').val(), $('#falsos_positivos').val()) );
+
+                    $('#tasa_fn').val( calculaFormulaTasaFN($('#num_negativas').val(), $('#falsos_negativos').val()) );
+
+                    $('#tasa_ec').val( calculaFormulaTasaEC($('#num_positivas').val(), $('#errores').val()) );
+
+                    $('#pc_concordancia').val( calculaFormulaConcordancia($('#muestras_evaluadas').val(), $('#laminas_concordantes').val()) );
+
+                    $('#pc_lta').val( calculaFormulaLTA($('#muestras_evaluadas').val(), $('#lta').val()) );
+
+                    $('#pc_lea').val( calculaFormulaLEA($('#muestras_evaluadas').val(), $('#lea').val()) );
+
+                    $('#pc_lca').val( calculaFormulaLCA($('#muestras_evaluadas').val(), $('#lca').val()) );
+                }
+                else
+                {
+                    erroresFormulario();
+
+                    alertify.alert('<strong>Existen campos vacíos.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                        .set('label','Aceptar')
+                }
+            });
+
+            //--------- ecuaciones para los diferentes calculos        -----------------
+            function calculaFormulaTasaFP(totalPositivas, cantFP){
+                return convierteNumero(cantFP,totalPositivas);
+            }
+            function calculaFormulaTasaFN(totalNegativas, cantFN){
+                return convierteNumero(cantFN,totalNegativas);
+            }
+            function calculaFormulaTasaEC(totalPositivas, cantEC){
+                return convierteNumero(cantEC,totalPositivas);
+            }
+            function calculaFormulaConcordancia(totalEvaluadas,cantConcordante){
+                return convierteNumero(cantConcordante,totalEvaluadas);
+            }
+            function calculaFormulaLTA(totalEvaluadas,cantLTA){
+                return convierteNumero(cantLTA,totalEvaluadas);
+            }
+            function calculaFormulaLEA(totalEvaluadas,cantLEA){
+                return convierteNumero(cantLEA,totalEvaluadas);
+            }
+            function calculaFormulaLCA(totalEvaluadas,cantLCA){
+                return convierteNumero(cantLCA,totalEvaluadas);
+            }
+
+            //--------- funcion para obtener un numero con 2 decimales o sin ellos -----
+            function convierteNumero(num_1,num_2) {
+
+                var div = ((parseInt(num_1) / parseInt(num_2))*100).toFixed(2);
+
+                var decimales = div.toString().substr(3,2);
+
+                if( decimales === '00' )
+                    return div.toString().substr(0,2)+' '+'%';
+                return div+' '+'%';
+            }
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function ()
+            {
+                window.location.href = "{{ path('listarCalidadBaciloscopia') }}";
+            });
+
+            {#//--------- enviar el formulario -----------------#}
+            $('#btnGuardar').click(function () {
+
+                if(erroresFormulario()>0)
+                    return false;
+
+                var mat_datos = {
+                    total_muestras_eval:  $("#muestras_evaluadas").val(),
+                    num_positivas:        $("#num_positivas").val(),
+                    num_negativas:        $("#num_negativas").val(),
+                    falsos_positivos:     $("#falsos_positivos").val(),
+                    falsos_negativos:     $("#falsos_negativos").val(),
+                    errores_cod:          $("#errores").val(),
+                    laminas_concordantes: $("#laminas_concordantes").val(),
+                    lta:                  $("#lta").val(),
+                    lea:                  $("#lea").val(),
+                    lca:                  $("#lca").val(),
+                    id_laboratorio:       "{{ controlCalidad.getId() }}"
+                };
+
+                md.modal({
+                    backdrop: 'static',
+                    keyboard: false
+                },'show');
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updateControlCB") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    if(data==='ok'){
+
+                        $('input').each(function(){
+                            $(this).val('');
+                        });
+                        md.modal('hide');
+                        alertify.alert('<strong>El Control de Calidad de la Baciloscopia ha sido actualizado con éxito.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                            .set('label','Aceptar').set('onok', function(closeEvent){
+                                window.location.href = "{{ path('listarCalidadBaciloscopia') }}";
+                            });
+                    }
+                    else{
+                        md.modal('hide');
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar');
+                    }
+
+                }).fail(function (jqXHR, textStatus) {
+                    md.modal('hide');
+                    alertify.alert('<strong>Ha habido un problema en el servidor. Intente volver a conectarse.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                            .set('label','Aceptar')
+                });
+            });
+
+            {#//--------- errores del formulario (campos vacios)-----------------#}
+            function erroresFormulario() {
+
+                OcultarErroresMsg();
+                MostrarErroresMsg();
+
+                var campos_formulario = [
+                    $("#muestras_evaluadas"),
+                    $("#num_positivas"),
+                    $("#num_negativas"),
+                    $("#falsos_positivos"),
+                    $("#falsos_negativos"),
+                    $("#errores"),
+                    $("#laminas_concordantes"),
+                    $("#lta"),
+                    $("#lea"),
+                    $("#lca")
+                ];
+
+                var tiene_error = 0;
+                for (var i = 0; i < campos_formulario.length; i++) {
+                    if(campos_formulario[i].val()=='' || campos_formulario[i].val() == null)
+                    {
+                        tiene_error++;
+                        campos_formulario[i].focus();
+                        break;
+                    }
+                }
+
+                return tiene_error;
+            }
+
+            function OcultarErroresMsg()
+            {
+                $("#sp_muestras_evaluadas").addClass('hidden');
+                $("#sp_num_positivas").addClass('hidden');
+                $("#sp_num_negativas").addClass('hidden');
+                $("#sp_falsos_positivos").addClass('hidden');
+                $("#sp_falsos_negativos").addClass('hidden');
+                $("#sp_errores").addClass('hidden');
+                $("#sp_laminas_concordantes").addClass('hidden');
+                $("#sp_lta").addClass('hidden');
+                $("#sp_lea").addClass('hidden');
+                $("#sp_lca").addClass('hidden');
+            }
+
+            function MostrarErroresMsg()
+            {
+                if($("#muestras_evaluadas").val() == ''){
+                    $("#sp_muestras_evaluadas").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#num_positivas").val() == ''){
+                    $("#sp_num_positivas").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#num_negativas").val() == ''){
+                    $("#sp_num_negativas").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#falsos_positivos").val() == ''){
+                    $("#sp_falsos_positivos").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#falsos_negativos").val() == ''){
+                    $("#sp_falsos_negativos").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#errores").val() == ''){
+                    $("#sp_errores").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#laminas_concordantes").val() == ''){
+                    $("#sp_laminas_concordantes").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#lta").val() == ''){
+                    $("#sp_lta").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#lea").val() == ''){
+                    $("#sp_lea").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#lca").val() == ''){
+                    $("#sp_lca").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+            }
+
+        });
+    </script>
+{% endblock %}

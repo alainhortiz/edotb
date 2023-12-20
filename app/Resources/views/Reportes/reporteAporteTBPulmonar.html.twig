@@ -1,0 +1,209 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-2 form-cont">
+                <div class="row">
+                    <div class="col-lg-12" style="padding-bottom: 5px;">
+                        <div class="col-lg-12">
+                            <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                                REPORTE APORTE DEL CULTIVO AL DIAGNÓSTICO DE CASOS DE TB PULMONAR
+                            </h3>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <label for="">Seleccione:</label>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="aport_baciloscopia" value="1" checked>
+                                    En relación a la BACILOSCOPIA
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="aport_xpert" value="2">
+                                    En relación a XPERT MTB/RIF
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6" style="padding-bottom: 10px;">
+                            <label for="id_anno">Seleccione el año:</label>
+                            <select class="form-control" id="id_anno">
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                            </select>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-6" style="padding-bottom: 10px;">
+                            <label for="id_periodo">Periodo:</label>
+                            <select class="form-control" id="id_periodo">
+                                <option value=0> Seleccione el periodo</option>
+                                <option value=1> Primer Trimestre</option>
+                                <option value=2> Segundo Trimestre</option>
+                                <option value=3> Tercer Trimestre</option>
+                                <option value=4> Cuarto Trimestre</option>
+                                <option value=5> Primer Semestre</option>
+                                <option value=6> Segundo Semestre</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-12" style="padding-bottom: 25px;">
+                            <label for="resultado_aporte">Resultado:</label>
+                            <input type="text" class="form-control" placeholder="Resultado" id="resultado_aporte" disabled>
+
+                        </div>
+
+                        <div class="col-lg-6">
+                            <button type="button" class="btn btn-primary btn-block" id="calcular_aporte">Calcular</button>
+                        </div>
+                        <div class="col-lg-6">
+                            <button type="button" class="btn btn-success btn-block" id="btnSalir">Limpiar</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clear-fix">
+        <br>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    {% if not app.user.getNivelAcceso().nivel == 'nacional' %}
+                        window.location.href = "{{ path('login') }}";
+                    {% endif %}
+                {% endif %}
+            }
+            verificarusuario();
+
+            var fechaHoy  = new Date();
+            var getAnno   = fechaHoy.getFullYear();
+            var idPeriodo = 0;
+            var md        = $('#processing-modal');
+
+            setSelectedIndex($("#id_anno"),getAnno);
+
+
+            //SECCION DE LAS VARIABLES DE ENTRADA
+            $('#resultado_aporte').val('');
+
+            //--------- captar el valor del select del periodo, anno y radio buttons ----
+
+            $('#id_periodo').change(function() {
+                idPeriodo = $("#id_periodo").val();
+                $('#resultado_aporte').val('');
+            });
+
+            $('#id_anno').change(function() {
+                $('#resultado_aporte').val('');
+            });
+
+            $('input[name=optionsRadios]').change(function() {
+//                $('input[name=optionsRadios]:checked').val();
+                $('#resultado_aporte').val('');
+            });
+
+            //--------- calcular el aporte -----------------------------
+            $('#calcular_aporte').on('click', function ()
+            {
+                $('#resultado_aporte').val('');
+
+                md.modal({
+                    backdrop: 'static',
+                    keyboard: false
+                },'show');
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("reporteAporteTBPulmonarCalc") }}',
+                    data: {id_anno: $('#id_anno').val(), id_periodo: idPeriodo, id_radioCaso: $('input[name=optionsRadios]:checked').val()}
+                }).done(function (data) {
+
+                    md.modal('hide');
+                    if($.isEmptyObject(data))
+                    {
+                        alertify.alert('<strong>No existen datos del laboratorio para este mes.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                                .set('label','Aceptar')
+                    }
+                    else
+                    {
+                        $('#resultado_aporte').val(data.resultado);
+                    }
+                }).fail(function (jqXHR, textStatus) {
+
+                    md.modal('hide');
+                    alertify.alert('<strong>Ha habido un problema en el servidor. Intente volver a conectarse.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                            .set('label','Aceptar')
+                });
+
+            });
+
+            function setSelectedIndex(s, valsearch){
+
+                //Recorrer todos los elementos del select
+                for (var i = 0; i< s[0].options.length; i++)
+                {
+                    if (s[0].options[i].value == valsearch)
+                    {
+                        // Item is found. Set its property and exit
+                        s[0].options[i].selected = true;
+                        break;
+                    }
+                }
+                return;
+            }
+
+            //--------- abandonar el reporte -----------------
+            $('#btnSalir').on('click', function ()
+            {
+                $('#resultado_aporte').val('');
+                {#window.location.href = "{{ path('inicio' }}";#}
+
+            });
+
+        });
+    </script>
+{% endblock %}

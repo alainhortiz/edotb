@@ -1,0 +1,20 @@
+
+$('#provincia').on('change', function () {
+
+    var provincia = $(this).val();
+
+    //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+    var html    = '<option value="0">Seleccione un municipio</option>';
+
+    {% for municipio in  municipios %}
+        var idProvincia = '{{ municipio.getProvincia().id }}';
+
+        if (idProvincia == provincia) {
+        var idMunicipio = '{{ municipio.id }}';
+        var name = '{{ municipio.nombre }}';
+        html += '<option value="' + idMunicipio + '">' + name + '</option>';
+        }
+    {% endfor %}
+
+    $("#municipio").html(html);
+});

@@ -1,0 +1,27 @@
+<div class="modal fade" id="checkCISintomatico"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header mh" style="background-color: #717070; color: whitesmoke;">
+                <span class="glyphicon glyphicon-user" style="font-size: 20px"></span>
+                <h4 class="modal-title" style="display: inline-block; margin-left: 5px">Nuevo Paciente Sintomático</h4>
+            </div>
+            <div class="modal-body">
+                <div id="errorCISintomatico" class="alert alert-danger hidden"  role="alert">
+                    <div class="container"></div>
+                </div>
+                <form  id="formCISintomatico"   method="post" action="{{ path('buscarPacienteSintomatico') }}">
+                    <div class="row" style="margin-top: 20px">
+                        <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <input type="text" placeholder="Teclee el carnet de identidad del paciente" class="form-control" name="ciSintomatico" id="ciSintomatico">
+                        </div>
+                    </div >
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-primario" id="maceptarSintomatico"  value="ACEPTAR" >
+                        <input type="button" class="btn btn-primario" id="mcerrarSintomatico" value="CERRAR" data-dismiss="modal" style="cursor: default">
+                    </div>
+                </form>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

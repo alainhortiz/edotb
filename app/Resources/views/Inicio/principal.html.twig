@@ -1,0 +1,370 @@
+{% extends 'comun.html.twig' %}
+
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            {# AQUI COMIENZA EL ACORDION #}
+            <div class="col-lg-3" style="height: 70% ; overflow-y: auto">
+                <div>
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        {# ELEMENTOS DEL ACORDION #}
+                        {% if is_granted("ROLE_VISUALIZADOR") or is_granted("ROLE_SUPERUSUARIO") %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading drop-header" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <span class="glyphicon glyphicon-duplicate" style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="font-weight: bold; vertical-align: super">
+                                            Reportes
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                    <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                        <ul style="padding: 0; margin: 0" class="opciones">
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteMod46203') }}" style="font-size: 15px; font-weight: bold">MODELO 241-462-04</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteCohorteCriteriosEntrada') }}" style="font-size: 15px; font-weight: bold">COHORTE POR CRITERIOS DE ENTRADA</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteCohorteCritEntGruposVulnerables') }}" style="font-size: 15px; font-weight: bold">COHORTE POR GRUPOS VULNERABLES</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteCohorteBaciloscopiaFinPrimeraEtapa') }}" style="font-size: 15px; font-weight: bold">COHORTE BACILOSCOPIA FIN PRIMERA ETAPA</a></li>
+                                            {#<li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteMod49004') }}" style="font-size: 15px; font-weight: bold">MODELO 241-490-04</a></li>#}
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteCalidadCultivo') }}" style="font-size: 15px; font-weight: bold">CONTROL DE CALIDAD DEL CULTIVO</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteCalidadBaciloscopia') }}" style="font-size: 15px; font-weight: bold">CONTROL DE CALIDAD DE BACILOSCOPIA</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteDiarioMensual') }}" style="font-size: 15px; font-weight: bold">REPORTE DIARIO - MENSUAL</a></li>
+                                            {#{% if is_granted("ROLE_EDITOR_LABORATORIO") %}#}
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteAporteTBPulmonar') }}" style="font-size: 15px; font-weight: bold">REPORTE APORTE DEL CULTIVO</a></li>
+                                            {#{% endif %}#}
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteCasosNuevosCriteriosEntrada') }}" style="font-size: 15px; font-weight: bold">REPORTE CASOS NUEVOS</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteRecaidasCriteriosEntrada') }}" style="font-size: 15px; font-weight: bold">REPORTE RECAÍDAS NOTIFICADAS</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteVIHCriteriosEntrada') }}" style="font-size: 15px; font-weight: bold">REPORTE CASOS COINFECCIÓN TB-VIH</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="#" style="font-size: 15px; font-weight: bold">INCIDENCIAS-TASA DE LA TB</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteContactosNuevosCriteriosEntrada') }}" style="font-size: 15px; font-weight: bold">REPORTE CONTACTOS NUEVOS</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteContactosFactoresCriteriosEntrada') }}" style="font-size: 15px; font-weight: bold">REPORTE CONTACTOS CON FACTORES DE RIESGO</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteContactosPCTCriteriosEntrada') }}" style="font-size: 15px; font-weight: bold">REPORTE CONTACTOS CON PCT-IGRA</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteContactosSintomasCriteriosEntrada') }}" style="font-size: 15px; font-weight: bold">REPORTE CONTACTOS CON SÍNTOMAS</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteContactosCasosResistentes') }}" style="font-size: 15px; font-weight: bold">REPORTE CONTACTOS DE CASOS RESISTENTES</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteContactosTBFactoresCriteriosEntrada') }}" style="font-size: 15px; font-weight: bold">REPORTE CONTACTOS TB CON FACTORES DE RIESGO</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteContactosSinPruebas') }}" style="font-size: 15px; font-weight: bold">REPORTE CONTACTOS SIN PRUEBAS</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('reporteContactosTPTGrupoEdades') }}" style="font-size: 15px; font-weight: bold">REPORTE CONTACTOS TPT POR GRUPOS DE EDADES</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading drop-header" role="tab" id="headingNine">
+                                    <h4 class="panel-title">
+                                        <span class="glyphicon glyphicon-signal" style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine" style="font-weight: bold; vertical-align: super">
+                                            Gráficos
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+                                    <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                        <ul style="padding: 0; margin: 0" class="opciones">
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-stats" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('graficoCasos') }}" style="font-size: 15px; font-weight: bold">GRÁFICO DE CASOS</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-stats" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('mapaCasos') }}" style="font-size: 15px; font-weight: bold">MAPA DE CASOS</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_SUPERUSUARIO") %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading drop-header" role="tab" id="headingFour">
+                                    <h4 class="panel-title">
+                                        <span class="glyphicon glyphicon-eye-open" style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="font-weight: bold; vertical-align: super">
+                                            Laboratorio
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                                    <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                        <ul style="padding: 0; margin: 0" class="opciones">
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-open-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('ccbaciloscopia') }}" style="font-size: 15px; font-weight: bold">Registrar control de  calidad de la baciloscopía</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-open-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('cccultivo') }}" style="font-size: 15px; font-weight: bold">Registrar control de  calidad del cultivo</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-certificate" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('listarCalidadCultivo') }}" style="font-size: 15px; font-weight: bold">Gestionar control de  calidad del cultivo</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-certificate" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('listarCalidadBaciloscopia') }}" style="font-size: 15px; font-weight: bold">Gestionar control de  calidad de la baciloscopía</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-copy" style="margin-right: 10px ;font-size: 18px"></span><a href="#" data-toggle="modal" data-target="#checkCISintomatico" style="font-size: 15px; font-weight: bold">Registrar nuevo paciente sintomático</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesSintomaticos') }}" style="font-size: 15px; font-weight: bold">Listado de Pacientes Sintomáticos</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesSusceptHechos') }}" style="font-size: 15px; font-weight: bold">Pacientes con Estudios de Susceptibilidad</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if is_granted("ROLE_ADMINISTRADOR") or is_granted("ROLE_SUPERUSUARIO") %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading drop-header" role="tab" id="headingTwo">
+                                    <h4 class="panel-title">
+                                        <span class="glyphicon glyphicon-align-center" style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="font-weight: bold; vertical-align: super">
+                                            Nomencladores
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                    <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                        <ul style="padding: 0; margin: 0" class="opciones">
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarUsuarios') }}" style="font-size: 15px; font-weight: bold">Gestionar Usuarios</a></li>
+                                            {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-plane" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarPaises') }}" style="font-size: 15px; font-weight: bold">Gestionar Países</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-stats" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarProvincias') }}" style="font-size: 15px; font-weight: bold">Gestionar Provincias</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-equalizer" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarMunicipios') }}" style="font-size: 15px; font-weight: bold">Gestionar Municipios</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarPoblaciones') }}" style="font-size: 15px; font-weight: bold">Gestionar Poblaciones</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-search" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarPruebasSensibilidad') }}" style="font-size: 15px; font-weight: bold">Gestionar Pruebas de Sensibilidad</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-lock" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarResistencias') }}" style="font-size: 15px; font-weight: bold">Gestionar Resistencias</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-home" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarAreasSalud') }}" style="font-size: 15px; font-weight: bold">Gestionar Unidades</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-home" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarTipoHospital') }}" style="font-size: 15px; font-weight: bold">Gestionar Tipo de Hospitales</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-home" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarHospitales') }}" style="font-size: 15px; font-weight: bold">Gestionar Hospitales</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-th" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarPrisiones') }}" style="font-size: 15px; font-weight: bold">Gestionar Prisiones</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-home" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarHogaresAncianos') }}" style="font-size: 15px; font-weight: bold">Gestionar Hogares de Ancianos</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-home" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarHogaresMaternos') }}" style="font-size: 15px; font-weight: bold">Gestionar Hogares Maternos</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-alert" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarGruposVulnerable') }}" style="font-size: 15px; font-weight: bold">Gestionar Grupos Vulnerables</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-text-size" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarTiposEnfermo') }}" style="font-size: 15px; font-weight: bold">Gestionar Tipos de Enfermo</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-tint" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarMedicamentos') }}" style="font-size: 15px; font-weight: bold">Gestionar Medicamentos</a></li>
+                                                {#<li style="padding: 5px"><span class="glyphicon glyphicon-tint" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarEsquemasMedicamentos') }}" style="font-size: 15px; font-weight: bold">Gestionar Esquemas de Medicamentos</a></li>#}
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-certificate" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarBaciloscopias') }}" style="font-size: 15px; font-weight: bold">Resultados de Baciloscopia</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-certificate" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarCultivos') }}" style="font-size: 15px; font-weight: bold">Resultados de Cultivo</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-certificate" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarXperts') }}" style="font-size: 15px; font-weight: bold">Resultados de Xpert</a></li>
+                                                {% if is_granted("ROLE_SUPERUSUARIO")  %}
+                                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarResultadosTratamiento') }}" style="font-size: 15px; font-weight: bold">Resultados Finales del Tratamiento</a></li>
+                                                {% endif %}
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-signal" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarSemanasEstadisticas') }}" style="font-size: 15px; font-weight: bold">Gestionar Semanas Estadísticas</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-signal" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarEstadosGraficos') }}" style="font-size: 15px; font-weight: bold">Gestionar Estados Gráficos</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-copyright-mark" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarOcupaciones') }}" style="font-size: 15px; font-weight: bold">Gestionar Ocupaciones</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-copyright-mark" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarNivelesEducacionales') }}" style="font-size: 15px; font-weight: bold">Gestionar Niveles Educacionales</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-copyright-mark" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarParentescos') }}" style="font-size: 15px; font-weight: bold">Gestionar Parentesco</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-copyright-mark" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarFactoresRiesgos') }}" style="font-size: 15px; font-weight: bold">Gestionar Factores de Riesgos</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-copyright-mark" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarCausasNoPrescripciones') }}" style="font-size: 15px; font-weight: bold">Gestionar Causas de No Prescripción TPT</a></li>
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-list-alt" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('trazas') }}" style="font-size: 15px; font-weight: bold">TRAZAS</a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>l
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if  is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_VISUALIZADOR") %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading drop-header" role="tab" id="headingThree">
+                                    <h4 class="panel-title">
+                                        <span class="glyphicon glyphicon-plus-sign" style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="font-weight: bold; vertical-align: super">
+                                            Seguimiento de Pacientes
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                    <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                        <ul style="padding: 0; margin: 0" class="opciones">
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesPendientesRegistro') }}" style="font-size: 15px; font-weight: bold">Pacientes Pendientes de pasar al Registro</a></li>
+                                            {% if  is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO")  %}
+                                                <li style="padding: 5px"><span class="glyphicon glyphicon-copy" style="margin-right: 10px ;font-size: 18px"></span><a href="#" data-toggle="modal" data-target="#checkCI" style="font-size: 15px; font-weight: bold">Registrar nuevo paciente</a></li>
+                                            {% endif %}
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesEnTratamiento') }}" style="font-size: 15px; font-weight: bold">Pacientes en tratamiento</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesConTratamientoTerminado') }}" style="font-size: 15px; font-weight: bold">Pacientes con Tratamiento Terminado</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesEnFracasoAlTratamiento') }}" style="font-size: 15px; font-weight: bold">Pacientes en Fracaso al Tratamiento</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesEnPerdidaDeSeguimiento') }}" style="font-size: 15px; font-weight: bold">Pacientes en Pérdida de Seguimiento</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesTransferidos') }}" style="font-size: 15px; font-weight: bold">Pacientes Transferidos</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesFueraTratamiento') }}" style="font-size: 15px; font-weight: bold">Pacientes pasivos</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesNotificadosAnno') }}" style="font-size: 15px; font-weight: bold">Pacientes Notificados en un Año</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesResistentes') }}" style="font-size: 15px; font-weight: bold">Pacientes resistentes</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if  is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_CONTACTO") or is_granted("ROLE_VISUALIZADOR") %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading drop-header" role="tab" id="headingEith">
+                                    <h4 class="panel-title">
+                                        <span class="glyphicon glyphicon-tags" style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEith" aria-expanded="false" aria-controls="collapseEith" style="font-weight: bold; vertical-align: super">
+                                            Contactos de Pacientes
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseEith" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEith">
+                                    <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                        <ul style="padding: 0; margin: 0" class="opciones">
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('formPacienteContacto') }}" style="font-size: 15px; font-weight: bold">Gestionar Contactos</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-user" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('formSeguimientosContacto') }}" style="font-size: 15px; font-weight: bold">Gestionar Seguimientos</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('contactosEnSeguimiento') }}" style="font-size: 15px; font-weight: bold">Contactos en seguimiento</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('contactosPasivos') }}" style="font-size: 15px; font-weight: bold">Contactos pasivos</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-file" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('contactosPerdidasSeguimiento') }}" style="font-size: 15px; font-weight: bold">Contactos en pérdida de seguimiento</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if  is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO")  %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading drop-header" role="tab" id="headingFive">
+                                    <h4 class="panel-title">
+                                        <span class="glyphicon glyphicon-search" style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="font-weight: bold; vertical-align: super">
+                                            Estudio a Grupos Vulnerables
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                                    <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                        <ul style="padding: 0; margin: 0" class="opciones">
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-list-alt" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('addParteDiarioEstudioGruposVulnerables', {origen:'inicio'}) }}" style="font-size: 15px; font-weight: bold">Registrar nuevo parte diario</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-list" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarPartesDiariosEstudioGruposVulnerables') }}" style="font-size: 15px; font-weight: bold">Listado de partes diarios</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if is_granted("ROLE_SUPERUSUARIO")  %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading drop-header" role="tab" id="headingSix">
+                                    <h4 class="panel-title">
+                                        <span class="glyphicon glyphicon-hourglass" style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseFive" style="font-weight: bold; vertical-align: super">
+                                            Administrar en Producción
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                                    <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                        <ul style="padding: 0; margin: 0" class="opciones">
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-hourglass" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('pacientesSinEvolucion') }}" style="font-size: 15px; font-weight: bold">Pacientes sin Evolucion</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading drop-header" role="tab" id="headingSeven">
+                                <h4 class="panel-title">
+                                    <span class="glyphicon glyphicon-question-sign" style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="font-weight: bold; vertical-align: super">
+                                        Preguntas y Respuestas frecuentes
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+                                <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                    <ul style="padding: 0; margin: 0" class="opciones">
+                                        <li style="padding: 5px"><span class="glyphicon glyphicon-question-sign" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('listarPreguntas') }}" style="font-size: 15px; font-weight: bold">Listar Preguntas y Respuestas frecuentes</a></li>
+                                        {% if app.user.getNivelAcceso().nivel == 'nacional' and (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO")) %}
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-list-alt" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarCategoriaPregunta') }}" style="font-size: 15px; font-weight: bold">Administrar Categorías de Preguntas</a></li>
+                                            <li style="padding: 5px"><span class="glyphicon glyphicon-book" style="margin-right: 10px ;font-size: 18px"></span><a href="{{ path('gestionarPreguntas') }}" style="font-size: 15px; font-weight: bold">Administrar Preguntas y Respuestas frecuentes</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                        <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                        <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                        <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+                        <li data-target="#carousel-example-generic" data-slide-to="4"></li>
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <img src="{{ asset('img/01.jpg') }}">
+                        </div>
+                        <div class="item">
+                            <img src="{{ asset('img/02.jpg') }}">
+                        </div>
+                        <div class="item">
+                            <img src="{{ asset('img/03.1.jpg') }}">
+                        </div>
+                        <div class="item">
+                            <img src="{{ asset('img/04.1.jpg') }}">
+                        </div>
+                        <div class="item">
+                            <img src="{{ asset('img/05.jpg') }}">
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                        {#<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>#}
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                        {#<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>#}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ include('Pacientes/modalCI.html.twig') }}
+    {{ include('Laboratorio/modalCISintomatico.html.twig') }}
+    {{ include('Inicio/modalNotificaciones.html.twig') }}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function()
+        {
+            $('.collapse').collapse('hide');
+
+            $("#maceptar").on('click',function(){
+
+                var ci = $("#ci").val();
+                if(ci.trim() == '')
+                {
+                    $("#errorCI").text('Debe teclear el carnet de identidad del paciente').removeClass('hidden');
+                    $("#ci").focus();
+                    return false;
+                }
+
+                $("#formCI").submit();
+                $("#maceptar").prop('disabled' , true);
+            });
+            $("#mcerrar").on('click' , function()
+            {
+                $("#errorCI").addClass('hidden');
+                $('#checkCI').modal('hide');
+            });
+            $("#msalir").on('click' , function()
+            {
+                $('#checkNotificaciones').modal('hide');
+            });
+            {% if not (cantFracasostratamiento == '0' and cantPerdidasSeguimiento == '0' and cantTratamientoTerminado == '0' and cantPendientesRegistro == '0' and cantPosiblesPerdidasSeguimiento == '0') %}
+                $('#mano').removeClass('hidden');
+                $('#notificaciones').removeClass('hidden');
+            {% endif %}
+
+
+            //----------------------Laboratorio------------------
+            $("#maceptarSintomatico").on('click',function(){
+
+                var ci = $("#ciSintomatico").val();
+                if(ci.trim() == '')
+                {
+                    $("#errorCISintomatico").text('Debe teclear el carnet de identidad del paciente').removeClass('hidden');
+                    $("#ciSintomatico").focus();
+                    return false;
+                }
+
+                $("#formCISintomatico").submit();
+                $("#ciSintomatico").prop('disabled' , true);
+            });
+
+            $("#mcerrarSintomatico").on('click' , function()
+            {
+                $('#ciSintomatico').val('');
+                $("#errorCISintomatico").addClass('hidden');
+                $('#checkCISintomatico').modal('hide');
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,1305 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/jquery_ui/jquery-ui.css') }}"/>
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3 form-cont" style="margin: 0px 5px;">
+                <div class="" id="camp_inf_paciente">
+
+                    <form class="form-row" role="form" style="margin-top: 10px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+
+                        <div class="panel panel-success" id="datosPaciente">
+                            <div class="panel-heading ">
+                                <label for="">DATOS DEL PACIENTE</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="panel-box-less">
+                                    <form role="form">
+                                        <div class="form-group">
+                                            <label for="nombrePaciente">Nombre</label>
+                                            <span class="form-control" disabled="" style="color: #5C5C5C">{{ paciente[0].getPaciente().getNombre() }}</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="apellidoPaciente">Apellidos</label>
+                                            <span class="form-control" disabled="" style="color: #5C5C5C">{{ paciente[0].getPaciente().getPrimerApellido()~' '~paciente[0].getPaciente().getSegundoApellido() }} </span>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+                <div class="" id="list_lab_pac">
+
+                    <form class="form-row" role="form" style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+
+                        <div class="panel panel-success" id="listadoAnalisis">
+                            <div class="panel-heading ">
+                                <label for="">LISTADO EN LABORATORIO</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="panel-box-less">
+                                    {% for analisis in listadoAnalisis %}
+                                        <p>
+                                            <label for="">Análisis {{ loop.index }}: {{ analisis.getFechaModificadaFila()|date("d-m-Y") }}</label>
+                                            <a href="{{ path('susceptibiliad_analisis' , {idEvolucion:paciente[0].getId(),idSuscept:analisis.getId()}) }}" class="btn btn-primary btn-sm btn-block">{{ analisis.getCodigoMuestra() }}</a>
+                                        </p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+            <div class="col-sm-6 form-cont" style="margin: 0px 5px;padding-right: 10px;padding-left: 10px;">
+
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">ESTUDIO DE SUSCEPTIBILIDAD A FÁRMACOS ANTITUBERCULOSOS</h3>
+
+                <div class="panel panel-success">
+                    <div class="panel-heading" style="padding-bottom: 0px;">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label for="codigo_Muestra" class="col-sm-6 control-label">CODIGO DE LA MUESTRA:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="codigo_Muestra" placeholder="Código de la muestra">
+                                    <span id="sp_codigo_Muestra" class="text-danger hidden"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="" id="campos_llenables">
+                    <form class="form-row" role="form" style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+
+                        <div class="panel panel-success" id="llenar_feno_nitratasa">
+                            <div class="panel-heading ">
+                                <label for="">RESULTADO FENOTÍPICO:
+                                    <span style="color: #5C5C5C">Método de la Nitratasa</span>
+                                </label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="panel-box-less">
+                                    <div class="row">
+                                        <span id="sp_date_metodo_nitratasa" class="hidden text-danger col-sm-5 col-sm-offset-7"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco H</label>
+                                            <div class="col-sm-3">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_nitra_H" id="radio_nitra_Hs" value="1">
+                                                        S
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_nitra_H" id="radio_nitra_Hr" value="2">
+                                                        R
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" id="date_metodo_nitratasa" placeholder="Seleccione una fecha">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco R</label>
+                                            <div class="col-sm-3">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_nitra_R" id="radio_nitra_Rs" value="1">
+                                                        S
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_nitra_R" id="radio_nitra_Rr" value="2">
+                                                        R
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-12" style="margin-top: 15px; margin-bottom: 0px">
+                                            <label for="">Patrón de Resistencia Parcial</label>
+                                            <select class="form-control" id="id_select_res_parc_nitra">
+                                                {% for resistencia in resistencias %}
+                                                    <option value="{{ resistencia.id }}">{{ resistencia.descripcion }} -- ({{ resistencia.clasificacion }})</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="">
+                                                <span id="sp_patron_metodo_nitratasa" class="hidden text-danger"></span>
+                                            </div>
+                                            <div class="" style="text-align: right; margin-top: 15px; font-size: small">
+                                                <button type="button" class="btn btn-success" id="btn_radio_nitra">Limpiar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success" id="llenar_feno_proporcional">
+                            <div class="panel-heading ">
+                                <label for="">RESULTADO FENOTÍPICO:
+                                    <span style="color: #5C5C5C">Método Proporcional</span>
+                                </label>
+                            </div>
+                            <div class="panel-body" id="blockMethodProp">
+                                <div class="panel-box-less">
+                                    <div class="row">
+                                        <span id="sp_date_metodo_proporcional_S" class="hidden text-danger col-sm-5 col-sm-offset-7"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco S</label>
+                                            <div class="col-sm-3">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_S" id="radio_prop_Ss" value="1">
+                                                        S
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_S" id="radio_prop_Sr" value="2">
+                                                        R
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" id="date_metodo_proporcional_S" placeholder="Seleccione una fecha" style="margin-bottom: 8px;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {#<div class="row">#}
+                                    {#<span id="sp_date_metodo_proporcional_E" class="hidden text-danger col-sm-7 col-sm-offset-5"></span>#}
+                                    {#</div>#}
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco E</label>
+                                            <div class="col-sm-3">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_E" id="radio_prop_Es" value="1">
+                                                        S
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_E" id="radio_prop_Er" value="2">
+                                                        R
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                {#<input type="text" class="form-control hidden" id="date_metodo_proporcional_E" placeholder="Seleccione una fecha" style="margin-bottom: 8px;">#}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {#<div class="row">#}
+                                    {#<span id="sp_date_metodo_proporcional_AM" class="hidden text-danger col-sm-7 col-sm-offset-5"></span>#}
+                                    {#</div>#}
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco Amk</label>
+                                            <div class="col-sm-3">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_AM" id="radio_prop_AMs" value="1">
+                                                        S
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_AM" id="radio_prop_AMr" value="2">
+                                                        R
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                {#<input type="text" class="form-control hidden" id="date_metodo_proporcional_AM" placeholder="Seleccione una fecha" style="margin-bottom: 8px;">#}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {#<div class="row">#}
+                                    {#<span id="sp_date_metodo_proporcional_KM" class="hidden text-danger col-sm-7 col-sm-offset-5"></span>#}
+                                    {#</div>#}
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco Kan</label>
+                                            <div class="col-sm-3">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_KM" id="radio_prop_KMs" value="1">
+                                                        S
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_KM" id="radio_prop_KMr" value="2">
+                                                        R
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                {#<input type="text" class="form-control hidden" id="date_metodo_proporcional_KM" placeholder="Seleccione una fecha" style="margin-bottom: 8px;">#}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {#<div class="row">#}
+                                    {#<span id="sp_date_metodo_proporcional_CM" class="hidden text-danger col-sm-7 col-sm-offset-5"></span>#}
+                                    {#</div>#}
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco Cam</label>
+                                            <div class="col-sm-3">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_CM" id="radio_prop_CMs" value="1">
+                                                        S
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_CM" id="radio_prop_CMr" value="2">
+                                                        R
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                {#<input type="text" class="form-control hidden" id="date_metodo_proporcional_CM" placeholder="Seleccione una fecha" style="margin-bottom: 8px;">#}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {#<div class="row">#}
+                                    {#<span id="sp_date_metodo_proporcional_MFX" class="hidden text-danger col-sm-7 col-sm-offset-5"></span>#}
+                                    {#</div>#}
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco Mfx</label>
+                                            <div class="col-sm-3">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_MFX" id="radio_prop_MFXs" value="1">
+                                                        S
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_MFX" id="radio_prop_MFXr" value="2">
+                                                        R
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                {#<input type="text" class="form-control hidden" id="date_metodo_proporcional_MFX" placeholder="Seleccione una fecha" style="margin-bottom: 8px;">#}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-12" style="margin-top: 15px; margin-bottom: 0px">
+                                            <label for="">Patrón de Resistencia Parcial</label>
+                                            <select class="form-control" id="id_select_res_parc_prop">
+                                                {% for resistencia in resistencias %}
+                                                    <option value="{{ resistencia.id }}">{{ resistencia.descripcion }} -- ({{ resistencia.clasificacion }})</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="">
+                                                <span id="sp_patron_metodo_proporcional" class="hidden text-danger"></span>
+                                            </div>
+                                            <div class="" style="text-align: right; margin-top: 15px; font-size: small">
+                                                <button type="button" class="btn btn-success" id="btn_radio_prop">Limpiar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success" id="llenar_geno_mtbdrplus">
+                            <div class="panel-heading ">
+                                <label for="">RESULTADO GENOTÍPICO:
+                                    <span style="color: #5C5C5C">Genotype MTBDRplus</span>
+                                </label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="panel-box-less">
+                                    <div class="row">
+                                        <span id="sp_date_genotype_mtbdrplus" class="hidden text-danger col-sm-5 col-sm-offset-7"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco H</label>
+                                            <div class="col-sm-4">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_mtbdrplus_H" id="radio_mtbdrplus_Hs" value="1">
+                                                        RND
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_mtbdrplus_H" id="radio_mtbdrplus_Hr" value="2">
+                                                        RI
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_mtbdrplus_H" id="radio_mtbdrplus_Hnc" value="3">
+                                                        RD
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" id="date_genotype_mtbdrplus" placeholder="Seleccione una fecha">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco R</label>
+                                            <div class="col-sm-4">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_mtbdrplus_R" id="radio_mtbdrplus_Rs" value="1">
+                                                        RND
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_mtbdrplus_R" id="radio_mtbdrplus_Rr" value="2">
+                                                        RI
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_mtbdrplus_R" id="radio_mtbdrplus_Rnc" value="3">
+                                                        RD
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                {#<input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_mas">#}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-12" style="margin-top: 15px; margin-bottom: 0px">
+                                            <label for="">Patrón de Resistencia Parcial</label>
+                                            <select class="form-control" id="id_select_res_parc_mtbdrplus">
+                                                {% for resistencia in resistencias %}
+                                                    <option value="{{ resistencia.id }}">{{ resistencia.descripcion }} -- ({{ resistencia.clasificacion }})</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="">
+                                                <span id="sp_patron_metodo_mtbdrplus" class="hidden text-danger"></span>
+                                            </div>
+                                            <div class="" style="text-align: right; margin-top: 15px; font-size: small">
+                                                <button type="button" class="btn btn-success" id="btn_radio_mtbdrplus">Limpiar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success" id="llenar_geno_mtbdrsl">
+                            <div class="panel-heading ">
+                                <label for="">RESULTADO GENOTÍPICO:
+                                    <span style="color: #5C5C5C">Genotype MTBDRsl</span>
+                                </label>
+
+                            </div>
+                            <div class="panel-body" id="blockMethodMTBDRsl">
+                                <div class="panel-box-less">
+                                    <div class="row">
+                                        <span id="sp_date_genotype_mtbdrsl" class="hidden text-danger col-sm-5 col-sm-offset-7"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco FQ</label>
+                                            <div class="col-sm-4">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_FQ" id="radio_prop_FQs" value="1">
+                                                        RND
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_FQ" id="radio_prop_FQr" value="2">
+                                                        RI
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_FQ" id="radio_prop_FQnc" value="3">
+                                                        RD
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input type="text" class="form-control" id="date_genotype_mtbdrsl" placeholder="Seleccione una fecha">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco AG/PC</label>
+                                            <div class="col-sm-4">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_AGCP" id="radio_prop_AGCPs" value="1">
+                                                        RND
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_AGCP" id="radio_prop_AGCPr" value="2">
+                                                        RI
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_AGCP" id="radio_prop_AGCPnc" value="3">
+                                                        RD
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                {#<input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_mas">#}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="form-group">
+                                            <label for="" class="col-sm-3 knob-label">Fármaco Kan</label>
+                                            <div class="col-sm-4">
+                                                <div>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_KANSL" id="radio_prop_KANSLs" value="1">
+                                                        RND
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_KANSL" id="radio_prop_KANSLr" value="2">
+                                                        RI
+                                                    </label>
+
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="radio_prop_KANSL" id="radio_prop_KANSLnc" value="3">
+                                                        RD
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                {#<input type="text" class="form-control" id="date_genotype_mtbdrsl" placeholder="Seleccione una fecha">#}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-12" style="margin-top: 15px; margin-bottom: 0px">
+                                            <label for="">Patrón de Resistencia Parcial</label>
+                                            <select class="form-control" id="id_select_res_parc_mtbdrsl">
+                                                {% for resistencia in resistencias %}
+                                                    <option value="{{ resistencia.id }}">{{ resistencia.descripcion }} -- ({{ resistencia.clasificacion }})</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="">
+                                                <span id="sp_patron_metodo_mtbdrsl" class="hidden text-danger"></span>
+                                            </div>
+                                            <div class="" style="text-align: right; margin-top: 15px; font-size: small">
+                                                <button type="button" class="btn btn-success" id="btn_radio_mtbdrsl">Limpiar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">PATRÓN DE RESISTENCIA FINAL</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <select class="form-control" id="id_select_res">
+                                        {% for resistencia in resistencias %}
+                                            <option value="{{ resistencia.id }}">{{ resistencia.descripcion }} -- ({{ resistencia.clasificacion }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">OBSERVACIONES</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <textarea style=" width: 100%; resize: none ; height: 195px ; margin-top: 2px" id="observaciones"></textarea>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" id="chk_aislado" name="chk_aislado"> Aislado sin estudio de sensibilidad
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <p class="text-center" style="margin-top: 20px">
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                        <button id="btnSalir" type="button" class="btn btn-primario"> Salir </button>
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm-2" style="padding-left: 5px;padding-right: 5px;">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    {# ELEMENTOS DEL ACORDION #}
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne" style="background-color: #dff0d8;">
+                            <h4 class="panel-title">
+                                <span class="glyphicon glyphicon-th-list" style="margin-right: 10px ; font-size: 25px; color: #3c763d"></span>
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="font-weight: bold; vertical-align: super; color: #3c763d;">
+                                    LEYENDA
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="panel-body" style="padding: 15px; background: #fff;padding-right: 5px;">
+                                <ul style="padding: 0; margin: 0" class="opciones">
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">H - Isoniacida</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">R - Rifampicina</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">S - Estreptomicina</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">E - Etambutol</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">Amk - Amikacina</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">Kan - Kanamicina</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">Cap - Capreomicina</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">Mfx - Moxifloxacina</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">FQ - Fluoroquinolona</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">AG/PC - Aminoglucósidos/</p><p style="font-size: 14px; font-weight: bold; color: #3c763d;">Péptidos cíclicos</p></li>
+                                    <li style="padding: 5px"><span class="glyphicon glyphicon-pencil" style="margin-right: 5px ;font-size: 12px; color: #3c763d;"></span><p style="font-size: 14px; font-weight: bold; display: inline; color: #3c763d;">NC - No concluyente</p></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-block" style="text-align: left;background-color: #a7d0a8;border-color: #a7d0a8;" id="historico_pac">
+                        <span class="glyphicon glyphicon-align-left" style="margin-right: 10px; font-size: 25px; color: #033507bf;padding-left: 5px;"></span>
+                        <h4 style="font-weight: bold; vertical-align: super; color: #033507bf;display: inline;">
+                            Histórico
+                        </h4>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal modal-static fade" id="repo-historico" style="width: 350px;">
+        <div class="" style="margin: 0px 5px;">
+            <div class="" id="list_lab_pac">
+                <form class="form-row" role="form" style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <div class="panel panel-success" id="listadoAnalisis">
+                        <div class="panel-heading ">
+                            <label for="">ANALISIS SUSCEPTIBILIDAD DEL PACIENTE</label>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel-box-less">
+                                {#{% for analisis in listadoAnalisis %}#}
+                                    {#<p>#}
+                                        {#<a href="{{ path('susceptibiliad_analisis' , {idEvolucion:paciente[0].getId(),idSuscept:analisis.getId()}) }}" class="btn btn-primary btn-sm btn-block">{{ analisis.getCodigoMuestra() }}</a>#}
+                                    {#</p>#}
+                                {#{% endfor %}#}
+                                <div id="replaceAnalisis"></div>
+                                <p class="text-center" style="margin-top: 20px">
+                                    <button id="btnSalirModal" type="button" class="btn btn-default"> Salir </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/jquery_ui/jquery-ui.js') }}"></script>
+    <script>
+
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_ADMINISTRADOR") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    {% if not app.user.getNivelAcceso().nivel == 'nacional' %}
+                        window.location.href = "{{ path('login') }}";
+                    {% endif %}
+                {% endif %}
+            }
+            verificarusuario();
+            $.datepicker.regional['es'] = {
+                closeText: 'Cerrar',
+                prevText: '< Ant',
+                nextText: 'Sig >',
+                currentText: 'Hoy',
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+                dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+                weekHeader: 'Sm',
+                dateFormat: 'dd-mm-yy',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['es']);
+/* El 27-05-2019 se comentaron las fechas del metodo proporcional solo dejando una para registrar la fecha de entrada
+* #date_metodo_proporcional_S. El resto no es necesario pero quedarna aqui para un futuro.
+*/
+//            $( "#date_metodo_nitratasa, " +
+//                    "#date_metodo_proporcional_S, #date_metodo_proporcional_E, #date_metodo_proporcional_AM, #date_metodo_proporcional_KM, #date_metodo_proporcional_CM, #date_metodo_proporcional_MFX, " +
+//                    "#date_genotype_mtbdrplus, #date_genotype_mtbdrsl" ).datepicker({
+//                firstDay: 1,
+//                dateFormat:'dd-mm-yy',
+//                changeMonth: true,
+//                changeYear: true
+//            });
+            $( "#date_metodo_nitratasa, #date_metodo_proporcional_S, #date_genotype_mtbdrplus, #date_genotype_mtbdrsl" ).datepicker({
+                firstDay: 1,
+                dateFormat:'dd-mm-yy',
+                changeMonth: true,
+                changeYear: true
+            });
+
+            $("#id_select_res, #id_select_res_parc_nitra, #id_select_res_parc_prop, #id_select_res_parc_mtbdrplus, #id_select_res_parc_mtbdrsl").select2({
+                placeholder: "Seleccione tipo de resistencia...",
+                allowClear: true
+            });
+
+            $("#id_select_res, #id_select_res_parc_nitra, #id_select_res_parc_prop, #id_select_res_parc_mtbdrplus, #id_select_res_parc_mtbdrsl").select2("val");
+
+            $('input:radio').prop("checked", false);
+
+            $("#codigo_Muestra").val('');
+
+            var md = $('#processing-modal');
+            var md_pac = $('#repo-historico');
+            var idPacEvolucion = '{{ paciente[0].getId() }}';
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function (){
+                $('#btnGuardar').prop( "disabled", true );
+                $('#btnSalir').prop( "disabled", true );
+                window.location.href = "{{ path('pacientesEnTratamiento') }}";
+            });
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function () {
+
+                $('#btnGuardar').prop( "disabled", true );
+                $('#btnSalir').prop( "disabled", true );
+
+
+                if( $('input[name=chk_aislado]').is(':checked') && $("#observaciones").val()=='' ){
+
+                    {% import 'mensajes/msg_info.html.twig' as confirmacion %}
+                    {{ confirmacion.aislado() }}
+
+                    $('#btnGuardar').prop( "disabled", false );
+                    $('#btnSalir').prop( "disabled", false );
+                    $('#chk_aislado').focus();
+                    return false;
+                }
+
+
+                var radios = $('input:radio:checked').length;
+
+                if(radios<1 && !$('input[name=chk_aislado]').is(':checked')){
+
+                    {% import 'mensajes/msg_info.html.twig' as confirmacion %}
+                    {{ confirmacion.ninguna_opcion_escogida() }}
+
+                    $('#btnGuardar').prop( "disabled", false );
+                    $('#btnSalir').prop( "disabled", false );
+                    return false;
+                }
+
+                if($("#id_select_res").val() == null && !$('input[name=chk_aislado]').is(':checked')){
+
+                    {% import 'mensajes/msg_info.html.twig' as confirmacion %}
+                    {{ confirmacion.resistencia_final_no_escogida() }}
+
+                    $('#btnGuardar').prop( "disabled", false );
+                    $('#btnSalir').prop( "disabled", false );
+                    return false;
+                }
+
+                if($("#codigo_Muestra").val() == null || $("#codigo_Muestra").val() == ''){
+
+                    $("#sp_codigo_Muestra").addClass('hidden');
+                    $("#sp_codigo_Muestra").text('Debe escribir un código de muestra.').removeClass('hidden');
+                    $('#codigo_Muestra').focus();
+                    $('#btnGuardar').prop( "disabled", false );
+                    $('#btnSalir').prop( "disabled", false );
+                    return false;
+                }
+
+                $("#sp_codigo_Muestra").addClass('hidden');
+
+                if(erroresFormulario()>0)
+                {
+                    $('#btnGuardar').prop( "disabled", false );
+                    $('#btnSalir').prop( "disabled", false );
+                    return false;
+                }
+
+                limpiarCamposNoSelleccionados();
+
+                var mat_datos = {
+                    radio_nitra_H: $('input[name=radio_nitra_H]:checked').length < 1 ? 0 : $('input[name=radio_nitra_H]:checked').val(),
+                    radio_nitra_R: $('input[name=radio_nitra_R]:checked').length < 1 ? 0 : $('input[name=radio_nitra_R]:checked').val(),
+                    date_metodo_nitratasa: $('#date_metodo_nitratasa').val() === '' ? '' : $('#date_metodo_nitratasa').val(),
+
+                    radio_prop_S: $('input[name=radio_prop_S]:checked').length < 1 ? 0 : $('input[name=radio_prop_S]:checked').val(),
+                    radio_prop_E: $('input[name=radio_prop_E]:checked').length < 1 ? 0 : $('input[name=radio_prop_E]:checked').val(),
+                    radio_prop_AM: $('input[name=radio_prop_AM]:checked').length < 1 ? 0 : $('input[name=radio_prop_AM]:checked').val(),
+                    radio_prop_KM: $('input[name=radio_prop_KM]:checked').length < 1 ? 0 : $('input[name=radio_prop_KM]:checked').val(),
+                    radio_prop_CM: $('input[name=radio_prop_CM]:checked').length < 1 ? 0 : $('input[name=radio_prop_CM]:checked').val(),
+                    radio_prop_MFX: $('input[name=radio_prop_MFX]:checked').length < 1 ? 0 : $('input[name=radio_prop_MFX]:checked').val(),
+                    //--------------------------------------------------------------------------------------------------
+                    //Estas fechas estan comentariadas en el codigo pero se dejaran para el futuro.
+                    //Por defecto tendran valor '' para no cambiar la BD actual y se guarden sin fecha.
+                    //--------------------------------------------------------------------------------------------------
+                    date_metodo_proporcional_S: $('#date_metodo_proporcional_S').val() === '' ? '' : $('#date_metodo_proporcional_S').val(),
+                    //date_metodo_proporcional_E: $('#date_metodo_proporcional_E').val() === '' ? '' : $('#date_metodo_proporcional_E').val(),
+                    //date_metodo_proporcional_AM: $('#date_metodo_proporcional_AM').val() === '' ? '' : $('#date_metodo_proporcional_AM').val(),
+                    //date_metodo_proporcional_KM: $('#date_metodo_proporcional_KM').val() === '' ? '' : $('#date_metodo_proporcional_KM').val(),
+                    //date_metodo_proporcional_CM: $('#date_metodo_proporcional_CM').val() === '' ? '' : $('#date_metodo_proporcional_CM').val(),
+                    //date_metodo_proporcional_MFX: $('#date_metodo_proporcional_MFX').val() === '' ? '' : $('#date_metodo_proporcional_MFX').val(),
+                    date_metodo_proporcional_E:   '' ,
+                    date_metodo_proporcional_AM:  '' ,
+                    date_metodo_proporcional_KM:  '' ,
+                    date_metodo_proporcional_CM:  '' ,
+                    date_metodo_proporcional_MFX: '' ,
+                    //--------------------------------------------------------------------------------------------------
+                    //--------------------------------------------------------------------------------------------------
+
+                    radio_mtbdrplus_H: $('input[name=radio_mtbdrplus_H]:checked').length < 1 ? 0 : $('input[name=radio_mtbdrplus_H]:checked').val(),
+                    radio_mtbdrplus_R: $('input[name=radio_mtbdrplus_R]:checked').length < 1 ? 0 : $('input[name=radio_mtbdrplus_R]:checked').val(),
+                    date_genotype_mtbdrplus: $('#date_genotype_mtbdrplus').val() === '' ? '' : $('#date_genotype_mtbdrplus').val(),
+
+                    radio_prop_FQ: $('input[name=radio_prop_FQ]:checked').length < 1 ? 0 : $('input[name=radio_prop_FQ]:checked').val(),
+                    radio_prop_AGCP: $('input[name=radio_prop_AGCP]:checked').length < 1 ? 0 : $('input[name=radio_prop_AGCP]:checked').val(),
+                    radio_prop_KANSL: $('input[name=radio_prop_KANSL]:checked').length < 1 ? 0 : $('input[name=radio_prop_KANSL]:checked').val(),
+                    date_genotype_mtbdrsl: $('#date_genotype_mtbdrsl').val() === '' ? '' : $('#date_genotype_mtbdrsl').val(),
+
+                    id_resistencia: $('input[name=chk_aislado]').is(':checked') ? 0 : $("#id_select_res").val(),
+
+                    id_resistencia_parc_nitra:     $('input[name=chk_aislado]').is(':checked') ? 0 : ( $("#id_select_res_parc_nitra").val()     == null ? 0 : $("#id_select_res_parc_nitra").val() ),
+                    id_resistencia_parc_prop:      $('input[name=chk_aislado]').is(':checked') ? 0 : ( $("#id_select_res_parc_prop").val()      == null ? 0 : $("#id_select_res_parc_prop").val() ),
+                    id_resistencia_parc_mtbdrplus: $('input[name=chk_aislado]').is(':checked') ? 0 : ( $("#id_select_res_parc_mtbdrplus").val() == null ? 0 : $("#id_select_res_parc_mtbdrplus").val() ),
+                    id_resistencia_parc_mtbdrsl:   $('input[name=chk_aislado]').is(':checked') ? 0 : ( $("#id_select_res_parc_mtbdrsl").val()   == null ? 0 : $("#id_select_res_parc_mtbdrsl").val() ),
+
+                    id_PacienteEvol: "{{ paciente[0].getId() }}",
+                    codigo_Muestra: $("#codigo_Muestra").val().trim(),
+
+                    observaciones: $("#observaciones").val(),
+                    idTablaPac: {{ paciente[0].getPaciente().getId() }}
+                };
+
+                md.modal({
+                    backdrop: 'static',
+                    keyboard: false
+                },'show');
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertSusceptibiliadPaciente") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    if(data === 'ok'){
+
+                        $('input:radio').prop("checked", false);
+                        $("#codigo_Muestra").val('');
+                        $("#id_select_res, #id_select_res_parc_nitra, #id_select_res_parc_prop, #id_select_res_parc_mtbdrplus, #id_select_res_parc_mtbdrsl").select2("val");
+                        $( "#date_metodo_nitratasa, #date_metodo_proporcional_S, #date_genotype_mtbdrplus, #date_genotype_mtbdrsl" ).val('');
+                        md.modal('hide');
+                        window.location.href = "{{ path('susceptibiliad_paciente',{idEvolucion:paciente[0].getId()}) }}";
+                    }
+                    else{
+
+                        md.modal('hide');
+
+                        {% from 'mensajes/msg_info.html.twig' import data as confirmacion %}
+                        {{ confirmacion.error_analisis_insertar( 'data' ) }}
+
+                        $('#btnGuardar').prop( "disabled", false );
+                        $('#btnSalir').prop( "disabled", false );
+                    }
+
+                }).fail(function (jqXHR, textStatus) {
+
+                    md.modal('hide');
+
+                    {% import 'mensajes/msg_info.html.twig' as confirmacion %}
+                    {{ confirmacion.error_servidor_500() }}
+
+                    $('#btnGuardar').prop( "disabled", false );
+                    $('#btnSalir').prop( "disabled", false );
+                });
+            });
+
+            //--------- mostrar el modal del historico -------
+            $('#historico_pac').click(function () {
+
+                md.modal({
+                    backdrop: 'static',
+                    keyboard: false
+                },'show');
+
+                var html = '';
+                html = '<div id="replaceAnalisis">';
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("analisisSusceptHechosPac") }}',
+                    data: {idPacEvolucion:idPacEvolucion}
+                }).done(function (data) {
+
+                    if(data.length > 0){
+
+                        var ruta_actual = location.href;
+                        var ruta_rpte = ruta_actual.replace('susceptibiliad_paciente','rpteSusceptHechosPac');
+
+                        for(var i=0; i < data.length; i++){
+                            html += '<p style="margin: 10px;"><a href="'+ruta_rpte + '/'+  0 + '/' + data[i].id +'" class="btn btn-sm btn-block" style="font-size: 18px; color: #225c0b;background-color: #dff0d8;font-weight: bold;"><span class="glyphicon glyphicon-open-file" style="margin-right: 10px ;font-size: 18px"></span>'+data[i].codigoMuestra+'</a></p>';
+                        }
+
+                        html += '<p style="margin: 10px; margin-top: 20px;"><a href="'+ruta_rpte + '/'+  1 + '/' + -1 +'" class="btn btn-sm btn-block" style="font-size: 18px; color: #dff0d8;background-color: #225c0b;font-weight: bold;"><span class="glyphicon glyphicon-open-file" style="margin-right: 10px ;font-size: 18px"></span>TODOS</a></p>';
+                        html += '</div>';
+
+                        $("#replaceAnalisis").replaceWith(html);
+
+                        md.modal('hide');
+
+                        md_pac.modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        },'show');
+                    }
+                    else{
+                        md.modal('hide');
+
+                        {% import 'mensajes/msg_info.html.twig' as confirmacion %}
+                        {{ confirmacion.analisis_susceptibilidad_vacio() }}
+                    }
+
+                }).fail(function (jqXHR, textStatus) {
+                    md.modal('hide');
+
+                    {% import 'mensajes/msg_info.html.twig' as confirmacion %}
+                    {{ confirmacion.error_servidor_500() }}
+                });
+            });
+
+            //--------- esconder el modal del historico ------
+            $('#btnSalirModal').on('click', function (){
+                html = '<div id="replaceAnalisis"></div>';
+                $("#replaceAnalisis").replaceWith(html);
+                md_pac.modal('hide');
+            });
+
+
+
+            {#//--------- errores del formulario (campos vacios)-----------------#}
+            function erroresFormulario() {
+
+                $("#sp_date_metodo_nitratasa").addClass('hidden');
+                $("#sp_date_metodo_proporcional_S").addClass('hidden');
+                //$("#sp_date_metodo_proporcional_E").addClass('hidden');
+                //$("#sp_date_metodo_proporcional_AM").addClass('hidden');
+                //$("#sp_date_metodo_proporcional_KM").addClass('hidden');
+                //$("#sp_date_metodo_proporcional_CM").addClass('hidden');
+                //$("#sp_date_metodo_proporcional_MFX").addClass('hidden');
+                $("#sp_date_genotype_mtbdrplus").addClass('hidden');
+                $("#sp_date_genotype_mtbdrsl").addClass('hidden');
+
+                $("#sp_patron_metodo_nitratasa").addClass('hidden');
+                $("#sp_patron_metodo_proporcional").addClass('hidden');
+                $("#sp_patron_metodo_mtbdrplus").addClass('hidden');
+                $("#sp_patron_metodo_mtbdrsl").addClass('hidden');
+
+                var tiene_error = 0;
+
+                //-------------------------------------------------------------------------------------------------------------------------------
+                //---------------------------------------------SECCION NITRATASA ----------------------------------------------------------------
+
+
+                if( ( $('input[name=radio_nitra_H]:checked').length > 0 || $('input[name=radio_nitra_R]:checked').length > 0 ) && $('#date_metodo_nitratasa').val() === '')
+                {
+                    $("#sp_date_metodo_nitratasa").text('Debe escoger una fecha.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_nitra_Hs').focus();
+                }
+
+                if( ( $('input[name=radio_nitra_H]:checked').length > 0 || $('input[name=radio_nitra_R]:checked').length > 0 ) && $("#id_select_res_parc_nitra").val() == null)
+                {
+                    $("#sp_patron_metodo_nitratasa").text('Debe escoger un patrón de resistencia.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_nitra_Hs').focus();
+                }
+
+
+                //-------------------------------------------------------------------------------------------------------------------------------
+                //---------------------------------------------SECCION PROPORCIONAL -------------------------------------------------------------
+
+                if( ( $('input[name=radio_prop_S]:checked').length > 0 ) && $('#date_metodo_proporcional_S').val() === '')
+                {
+                    $("#sp_date_metodo_proporcional_S").text('Debe escoger una fecha.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_prop_Ss').focus();
+                }
+
+                //-----------------------------------------------------------------------------------------------------
+                //En lo adelante solo verificare la fecha del caso S, el resto no es necesario ahora.
+                //Y mostrare el span del mismo caso. El resto esta comentariado en codigo para un futuro.
+                //-----------------------------------------------------------------------------------------------------
+                if( ( $('input[name=radio_prop_E]:checked').length > 0 ) && $('#date_metodo_proporcional_S').val() === '')
+                {
+                    //$("#sp_date_metodo_proporcional_E").text('Debe escoger una fecha.').removeClass('hidden');
+                    //tiene_error++;
+                    //$('#radio_prop_Es').focus();
+                    $("#sp_date_metodo_proporcional_S").text('Debe escoger una fecha.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_prop_Ss').focus();
+                }
+
+                if( ( $('input[name=radio_prop_AM]:checked').length > 0 ) && $('#date_metodo_proporcional_S').val() === '')
+                {
+                    //$("#sp_date_metodo_proporcional_AM").text('Debe escoger una fecha.').removeClass('hidden');
+                    //tiene_error++;
+                    //$('#radio_prop_AMs').focus();
+                    $("#sp_date_metodo_proporcional_S").text('Debe escoger una fecha.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_prop_Ss').focus();
+                }
+
+                if( ( $('input[name=radio_prop_KM]:checked').length > 0 ) && $('#date_metodo_proporcional_S').val() === '')
+                {
+                    //$("#sp_date_metodo_proporcional_KM").text('Debe escoger una fecha.').removeClass('hidden');
+                    //tiene_error++;
+                    //$('#radio_prop_KMs').focus();
+                    $("#sp_date_metodo_proporcional_S").text('Debe escoger una fecha.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_prop_Ss').focus();
+                }
+
+                if( ( $('input[name=radio_prop_CM]:checked').length > 0 ) && $('#date_metodo_proporcional_S').val() === '')
+                {
+                    //$("#sp_date_metodo_proporcional_CM").text('Debe escoger una fecha.').removeClass('hidden');
+                    //tiene_error++;
+                    //$('#radio_prop_CMs').focus();
+                    $("#sp_date_metodo_proporcional_S").text('Debe escoger una fecha.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_prop_Ss').focus();
+                }
+
+                if( ( $('input[name=radio_prop_MFX]:checked').length > 0 ) && $('#date_metodo_proporcional_S').val() === '')
+                {
+                    //$("#sp_date_metodo_proporcional_MFX").text('Debe escoger una fecha.').removeClass('hidden');
+                    //tiene_error++;
+                    //$('#radio_prop_MFXs').focus();
+                    $("#sp_date_metodo_proporcional_S").text('Debe escoger una fecha.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_prop_Ss').focus();
+                }
+
+                if( (
+                        $('input[name=radio_prop_S]:checked').length > 0 ||
+                        $('input[name=radio_prop_E]:checked').length > 0 ||
+                        $('input[name=radio_prop_AM]:checked').length > 0 ||
+                        $('input[name=radio_prop_KM]:checked').length > 0 ||
+                        $('input[name=radio_prop_CM]:checked').length > 0 ||
+                        $('input[name=radio_prop_MFX]:checked').length > 0 ) &&
+                        $('#id_select_res_parc_prop').val() == null)
+                {
+                    $("#sp_patron_metodo_proporcional").text('Debe escoger un patrón de resistencia.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_prop_Ss').focus();
+                }
+
+                //-------------------------------------------------------------------------------------------------------------------------------
+                //---------------------------------------------SECCION Genotype MTBDRplus -------------------------------------------------------
+
+                if( ( $('input[name=radio_mtbdrplus_H]:checked').length > 0 || $('input[name=radio_mtbdrplus_R]:checked').length > 0 ) && $('#date_genotype_mtbdrplus').val() === '')
+                {
+                    $("#sp_date_genotype_mtbdrplus").text('Debe escoger una fecha.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_mtbdrplus_Hs').focus();
+                }
+
+                if( ( $('input[name=radio_mtbdrplus_H]:checked').length > 0 || $('input[name=radio_mtbdrplus_R]:checked').length > 0 ) && $('#id_select_res_parc_mtbdrplus').val() == null)
+                {
+                    $("#sp_patron_metodo_mtbdrplus").text('Debe escoger un patrón de resistencia.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_mtbdrplus_Hs').focus();
+                }
+
+
+                //-------------------------------------------------------------------------------------------------------------------------------
+                //---------------------------------------------SECCION Genotype MTBDRsl ---------------------------------------------------------
+
+                if( ( $('input[name=radio_prop_FQ]:checked').length > 0 || $('input[name=radio_prop_AGCP]:checked').length > 0 || $('input[name=radio_prop_KANSL]:checked').length > 0) && $('#date_genotype_mtbdrsl').val() === '')
+                {
+                    $("#sp_date_genotype_mtbdrsl").text('Debe escoger una fecha.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_prop_FQs').focus();
+                }
+
+                if( ( $('input[name=radio_prop_FQ]:checked').length > 0 || $('input[name=radio_prop_AGCP]:checked').length > 0 || $('input[name=radio_prop_KANSL]:checked').length > 0) && $('#id_select_res_parc_mtbdrsl').val() == null)
+                {
+                    $("#sp_patron_metodo_mtbdrsl").text('Debe escoger un patrón de resistencia.').removeClass('hidden');
+                    tiene_error++;
+                    $('#radio_prop_FQs').focus();
+                }
+
+                return tiene_error;
+            }
+
+
+//---------------------------------------------------------------------------------------------------------------------
+//----------- SECCION DE BLOQUES PARA LIMPIAR LOS RADIO BUTTONS DE CADA PANEL DE LA VISTA -----------------------------
+//----------- Y LOS CAMPOS DE FECHA CORRESPONDIENTES A ESOS RADIOS BUTTONS  -------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+            //--------- RESULTADO FENOTÍPICO: Método de la Nitratasa ------
+            $('#btn_radio_nitra').click( function (){
+                $('input[name=radio_nitra_H], input[name=radio_nitra_R]').prop("checked", false);
+                $('#date_metodo_nitratasa').val('');
+                $("#sp_date_metodo_nitratasa").addClass('hidden');
+                $("#sp_patron_metodo_nitratasa").addClass('hidden');
+                $("#id_select_res_parc_nitra").select2("val");
+            });
+
+            //--------- RESULTADO FENOTÍPICO: Método Proporcional ------
+            $('#btn_radio_prop').click( function (){
+                $('input[name=radio_prop_S], input[name=radio_prop_E], input[name=radio_prop_AM], input[name=radio_prop_KM], input[name=radio_prop_CM], input[name=radio_prop_MFX]').prop("checked", false);
+                $('#date_metodo_proporcional_S').val('');
+                $("#sp_date_metodo_proporcional_S").addClass('hidden');
+                $("#sp_patron_metodo_proporcional").addClass('hidden');
+                $("#id_select_res_parc_prop").select2("val");
+            });
+
+            //--------- RESULTADO GENOTÍPICO: Genotype MTBDRplus ------
+            $('#btn_radio_mtbdrplus').click( function (){
+                $('input[name=radio_mtbdrplus_H], input[name=radio_mtbdrplus_R]').prop("checked", false);
+                $('#date_genotype_mtbdrplus').val('');
+                $("#sp_date_genotype_mtbdrplus").addClass('hidden');
+                $("#sp_patron_metodo_mtbdrplus").addClass('hidden');
+                $("#id_select_res_parc_mtbdrplus").select2("val");
+            });
+
+            //--------- RESULTADO GENOTÍPICO: Genotype MTBDRsl ------
+            $('#btn_radio_mtbdrsl').click( function (){
+                $('input[name=radio_prop_FQ], input[name=radio_prop_AGCP], input[name=radio_prop_KANSL]').prop("checked", false);
+                $('#date_genotype_mtbdrsl').val('');
+                $("#sp_date_genotype_mtbdrsl").addClass('hidden');
+                $("#sp_patron_metodo_mtbdrsl").addClass('hidden');
+                $("#id_select_res_parc_mtbdrsl").select2("val");
+            });
+
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------------------------------------------------
+//----------- SECCION DEL CHECKBOX DE CASOS AISLADOS ------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+            $('#chk_aislado').click( function (){
+
+                if($('input[name=chk_aislado]').is(':checked')){
+                    limpiarErrores();
+                    anularRadiosButtons();
+                    anularFechas();
+                    anularResistencia();
+                }
+                else {
+                    habilitarRadiosButtons();
+                    habilitarFechas();
+                    habilitarResistencia();
+                }
+
+            });
+
+
+            function anularRadiosButtons(){
+                $('input:radio').prop("checked", false);
+                $('input:radio').prop("disabled", true);
+            }
+            function anularFechas(){
+                $('#date_metodo_nitratasa').prop("disabled", true);
+                $('#date_metodo_proporcional_S').prop("disabled", true);
+                $('#date_genotype_mtbdrplus').prop("disabled", true);
+                $('#date_genotype_mtbdrsl').prop("disabled", true);
+
+
+                $('#date_metodo_nitratasa').val('');
+                $('#date_metodo_proporcional_S').val('');
+                $('#date_genotype_mtbdrplus').val('');
+                $('#date_genotype_mtbdrsl').val('');
+            }
+            function anularResistencia(){
+                $("#id_select_res").select2("val");
+                $("#id_select_res_parc_nitra").select2("val");
+                $("#id_select_res_parc_prop").select2("val");
+                $("#id_select_res_parc_mtbdrplus").select2("val");
+                $("#id_select_res_parc_mtbdrsl").select2("val");
+
+                $("#id_select_res").prop("disabled", true);
+                $("#id_select_res_parc_nitra").prop("disabled", true);
+                $("#id_select_res_parc_prop").prop("disabled", true);
+                $("#id_select_res_parc_mtbdrplus").prop("disabled", true);
+                $("#id_select_res_parc_mtbdrsl").prop("disabled", true);
+            }
+
+
+            function habilitarRadiosButtons(){
+                $('input:radio').prop("disabled", false);
+            }
+            function habilitarFechas(){
+                $('#date_metodo_nitratasa').prop("disabled", false);
+                $('#date_metodo_proporcional_S').prop("disabled", false);
+                $('#date_genotype_mtbdrplus').prop("disabled", false);
+                $('#date_genotype_mtbdrsl').prop("disabled", false);
+            }
+            function habilitarResistencia(){
+                $("#id_select_res").prop("disabled", false);
+                $("#id_select_res_parc_nitra").prop("disabled", false);
+                $("#id_select_res_parc_prop").prop("disabled", false);
+                $("#id_select_res_parc_mtbdrplus").prop("disabled", false);
+                $("#id_select_res_parc_mtbdrsl").prop("disabled", false);
+            }
+
+            function limpiarErrores(){
+                $("#sp_date_metodo_nitratasa").addClass('hidden');
+                $("#sp_date_metodo_proporcional_S").addClass('hidden');
+                $("#sp_date_genotype_mtbdrplus").addClass('hidden');
+                $("#sp_date_genotype_mtbdrsl").addClass('hidden');
+            }
+
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+            //Esta funcion limpiara los campos fecha y patron de resistencia parciales si son seleccionados con datos
+            //y al mismo tiempo no son escogidos ninguno de los radio button de las respectivas secciones de los metodos.
+            function limpiarCamposNoSelleccionados(){
+
+
+                //-------------------------------------------------------------------------------------------------------------------------------
+                //---------------------------------------------SECCION NITRATASA ----------------------------------------------------------------
+
+                if( ( $('input[name=radio_nitra_H]:checked').length < 1 && $('input[name=radio_nitra_R]:checked').length < 1 ) && ( $('#date_metodo_nitratasa').val() != '' || $('#date_metodo_nitratasa').val() != null ))
+                {
+                    $('#date_metodo_nitratasa').val('');
+                }
+                if( $('input[name=radio_nitra_H]:checked').length < 1 && $('input[name=radio_nitra_R]:checked').length < 1  && $("#id_select_res_parc_nitra").val() == null )
+                {
+                    $("#id_select_res_parc_nitra").select2("val");
+                }
+
+                //-------------------------------------------------------------------------------------------------------------------------------
+                //---------------------------------------------SECCION PROPORCIONAL -------------------------------------------------------------
+
+                if(
+                        $('input[name=radio_prop_S]:checked').length   < 1  &&
+                        $('input[name=radio_prop_E]:checked').length   < 1  &&
+                        $('input[name=radio_prop_AM]:checked').length  < 1  &&
+                        $('input[name=radio_prop_KM]:checked').length  < 1  &&
+                        $('input[name=radio_prop_CM]:checked').length  < 1  &&
+                        $('input[name=radio_prop_MFX]:checked').length < 1  &&
+                        ( $('#date_metodo_proporcional_S').val() != '' || $('#date_metodo_proporcional_S').val() != null ) )
+                {
+                    $('#date_metodo_proporcional_S').val('')
+                }
+                if(
+                        $('input[name=radio_prop_S]:checked').length   < 1  &&
+                        $('input[name=radio_prop_E]:checked').length   < 1  &&
+                        $('input[name=radio_prop_AM]:checked').length  < 1  &&
+                        $('input[name=radio_prop_KM]:checked').length  < 1  &&
+                        $('input[name=radio_prop_CM]:checked').length  < 1  &&
+                        $('input[name=radio_prop_MFX]:checked').length < 1  &&
+                        $('#id_select_res_parc_prop').val() != null )
+                {
+                    $("#id_select_res_parc_prop").select2("val");
+                }
+
+
+                //-------------------------------------------------------------------------------------------------------------------------------
+                //---------------------------------------------SECCION Genotype MTBDRplus -------------------------------------------------------
+
+                if( ( $('input[name=radio_mtbdrplus_H]:checked').length < 1 && $('input[name=radio_mtbdrplus_R]:checked').length < 1 ) && ( $('#date_genotype_mtbdrplus').val() != '' || $('#date_genotype_mtbdrplus').val() != null ))
+                {
+                    $('#date_genotype_mtbdrplus').val('');
+                }
+
+                if( $('input[name=radio_mtbdrplus_H]:checked').length < 1 && $('input[name=radio_mtbdrplus_R]:checked').length < 1 && $('#id_select_res_parc_mtbdrplus').val() != null)
+                {
+                    $("#id_select_res_parc_mtbdrplus").select2("val");
+                }
+
+
+                //-------------------------------------------------------------------------------------------------------------------------------
+                //---------------------------------------------SECCION Genotype MTBDRsl ---------------------------------------------------------
+
+                if( ( $('input[name=radio_prop_FQ]:checked').length < 1 && $('input[name=radio_prop_AGCP]:checked').length < 1 && $('input[name=radio_prop_KANSL]:checked').length < 1 ) && ( $('#date_genotype_mtbdrsl').val() != '' || $('#date_genotype_mtbdrsl').val() != null ))
+                {
+                    $('#date_genotype_mtbdrsl').val('');
+                }
+
+                if( $('input[name=radio_prop_FQ]:checked').length < 1 && $('input[name=radio_prop_AGCP]:checked').length < 1 && $('input[name=radio_prop_KANSL]:checked').length < 1 && $('#id_select_res_parc_mtbdrsl').val() != null)
+                {
+                    $("#id_select_res_parc_mtbdrsl").select2("val");
+                }
+            }
+
+        });
+    </script>
+{% endblock %}

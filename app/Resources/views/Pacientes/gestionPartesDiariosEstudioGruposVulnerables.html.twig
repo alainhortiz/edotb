@@ -1,0 +1,151 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="top-datatable" style="background: #434242; padding: 5px">
+        <div class="row" style=" margin-right: auto">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 class="no-padding" style="color: #70cbb1">Partes Diarios del Estudio a Grupos Vulnerables</h2>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 style="float: right">
+                            <a href="{{ path('addParteDiarioEstudioGruposVulnerables', {origen:'gestionarPartesDiariosEstudioGruposVulnerables'}) }}" style="text-decoration: none; color: #70cbb1;">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                AGREGAR
+                            </a>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row" style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242;">
+            <div class="col-md-12">
+                {% if app.user.getNivelAcceso().nivel == 'unidad' %}
+                    <h4 style=" margin-bottom: -20px" class="text-center"><strong>Unidad: </strong>{{ app.user.getAreaSalud().nombre }}</h4>
+                {% endif %}
+                {% if app.user.getNivelAcceso().nivel == 'municipal' %}
+                    <h4 style=" margin-bottom: -20px" class="text-center"><strong>Municipio: </strong>{{ app.user.getAreaSalud().getMunicipio().nombre }}</h4>
+                {% endif %}
+                {% if app.user.getNivelAcceso().nivel == 'provincial' %}
+                    <h4 style=" margin-bottom: -20px" class="text-center"><strong>Provincia: </strong>{{ app.user.getAreaSalud().getMunicipio().getProvincia().nombre }}</h4>
+                {% endif %}
+                <table id="dataPartesDiarios" class="display" cellspacing="0" width="100%" >
+                    <thead>
+                    <tr>
+                        <th class="hidden"></th>
+                        <th>Fecha</th>
+                        {% if not (app.user.getNivelAcceso().nivel == 'unidad') %}
+                            {% if not (app.user.getNivelAcceso().nivel == 'municipal') %}
+                                {% if not (app.user.getNivelAcceso().nivel == 'provincial') %}
+                                    <th>Provincia</th>
+                                {% endif %}
+                                <th>Municipio</th>
+                            {% endif %}
+                            <th>Unidad</th>
+                        {% endif %}
+                        <th>Grupo Vulnerable</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% set indiceP  = 1 %}
+                    {% for parte in partesDiariosEstudioGruposVulnerables %}
+                        <tr data-id ="{{ parte.id }}">
+                            <td class="hidden">{{ indiceP }}</td>
+                            <td>{{ parte.fecha|date('Y-m-d') }}</td>
+                            {% if not (app.user.getNivelAcceso().nivel == 'unidad') %}
+                                {% if not (app.user.getNivelAcceso().nivel == 'municipal') %}
+                                    {% if not (app.user.getNivelAcceso().nivel == 'provincial') %}
+                                        <td>{{ parte.getAreaSalud().getMunicipio().getProvincia().nombre }}</td>
+                                    {% endif %}
+                                    <td>{{ parte.getAreaSalud().getMunicipio.nombre }}</td>
+                                {% endif %}
+                                <td>{{ parte.getAreaSalud().nombre }}</td>
+                            {% endif %}
+                            <td>{{ parte.getGrupoVulnerable().grupo }}</td>
+                            <td>
+                                <a href="{{ path('editParteDiarioEstudioGV' , {idParteDiarioEstudioGV:parte.id}) }}" class="btn btn-sm edit">Editar</a>
+                                <a href="#" class="btn btn-sm btn-danger delete ">Borrar</a>
+                            </td>
+                        </tr>
+                        {% set indiceP = indiceP + 1 %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+            $('#dataPartesDiarios').DataTable();
+
+            $('#dataPartesDiarios tbody').on('click', '.delete', function () {
+
+                var row = $(this).parents('tr');
+
+                var mat_datos = { idParteDiarioEstudioGruposVulnerables: row.data('id') };
+
+                alertify.confirm('Basic: false').set('message', 'Seguro que desea eliminar el parte seleccionado').set('onok', function(){
+
+                    $(".preload").removeClass('hidden');
+                    $("#mensaje").replaceWith('<div id="mensaje"></div>');
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "html",
+                        url: '{{ path("deleteParteDiarioEstudioGruposVulnerables") }}',
+                        data: mat_datos
+                    }).done(function (data) {
+
+                        $(".preload").addClass('hidden');
+
+                        if(data == 'ok'){
+
+                            alertify.alert('<strong>El parte ha sido eliminado correctamente</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                                .set('onok', function(){
+
+                                    row.fadeOut();
+                                });
+                        }else {
+                            alertify.alert('<strong>'+data+'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

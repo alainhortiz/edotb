@@ -1,0 +1,82 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+
+    <div id="mensaje"></div>
+    <div class="top-datatable" style="background: #434242; padding: 5px">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 class="no-padding" style="color: #70cbb1">Control de Calidad de la Baciloscopia</h2>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 style="float: right">
+                            <a href="{{ path('ccbaciloscopia') }}" style="text-decoration: none; color: #70cbb1;">
+                                <span class="glyphicon glyphicon-plus"></span>
+                                AGREGAR
+                            </a>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row" style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242;">
+            <div class="col-md-12">
+                <table id="dataLabCalidadCultivo" class="display" cellspacing="0" width="100%" >
+                    <thead>
+                    <tr>
+                        <th>Nombre Laboratorio</th>
+                        <th>Provincia</th>
+                        <th>Municipio</th>
+                        <th>Fecha Entrada</th>
+                        <th>Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for lab in laboratorios %}
+                        <tr data-id ="{{ lab.id }}">
+                            <td>{{ lab.laboratorio.getNombre() }}</td>
+                            <td>{{ lab.laboratorio.getMunicipio().getProvincia().nombre }}</td>
+                            <td>{{ lab.laboratorio.getMunicipio().nombre }}</td>
+                            <td>{{ lab.getFechaModificada()|date("d-m-Y") }}</td>
+                            <td>
+                                <a href="{{ path('buscarLabCalidadBaciloscopia' , {id:lab.id}) }}" class="btn btn-sm edit">Editar</a>
+                                {#<a href="#" class="btn btn-sm edit">Editar</a>#}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_ADMINISTRADOR") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    {% if not app.user.getNivelAcceso().nivel == 'nacional' %}
+                        window.location.href = "{{ path('login') }}";
+                    {% endif %}
+                {% endif %}
+            }
+            verificarusuario();
+
+            $('#dataLabCalidadCultivo').DataTable();
+        });
+    </script>
+{% endblock %}

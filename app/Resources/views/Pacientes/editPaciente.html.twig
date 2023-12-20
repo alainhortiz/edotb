@@ -1,0 +1,1406 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="form-cont">
+            <div class="row" style="padding: 20px">
+                <h2 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Actualizar datos del Paciente</h2>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <div role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul style="margin-bottom: 10px" class="nav nav-tabs" role="tablist" id="myTab">
+                            <li role="presentation" class="active">
+                                <a  href="#generalesTab" aria-controls="generalesTab" role="tab" data-toggle="tab">
+                                    <strong>Generales</strong>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a  href="#localizacionTab" aria-controls="localizacionTab" role="tab" data-toggle="tab">
+                                    <strong>Localización</strong>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#seguimientoTab" aria-controls="seguimientoTab" role="tab" data-toggle="tab">
+                                    <strong>Seguimiento</strong>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#tratamientoTab" aria-controls="tratamientoTab" role="tab" data-toggle="tab">
+                                    <strong>Tratamiento</strong>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="generalesTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <h3 style="margin: 5px; padding-bottom: 7px;  color: #717070; text-align: center"><strong>Datos Generales</strong></h3>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="carnetIdentidad">Carnet de Identidad:</label>
+                                                    <div>
+                                                        <input value="{{ evolucion.getPaciente().carnetIdentidad }}" type="text" class="form-control input-sm" id="carnetIdentidad" name="carnetIdentidad">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="nombre">Nombre:</label>
+                                                    <div>
+                                                        <input value="{{ evolucion.getPaciente().nombre }}"  type="text" class="form-control input-sm" id="nombre" name="nombre">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="primerApellido">Primer Apellido:</label>
+                                                    <div>
+                                                        <input value="{{ evolucion.getPaciente().primerApellido }}" type="text" class="form-control input-sm" id="primerApellido" name="primerApellido">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="segundoApellido">Segundo Apellido:</label>
+                                                    <div>
+                                                        <input value="{{ evolucion.getPaciente().segundoApellido }}" type="text" class="form-control input-sm" id="segundoApellido" name="segundoApellido">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="edad">Edad:</label>
+                                                    <div>
+                                                        <input value="{{ evolucion.edad }}" type="number" id="edad" name="edad">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="sexo">Sexo:</label>
+                                                    <div class="form-group">
+                                                        <select class="form-control input-sm" id="sexo" name="sexo">
+                                                            <option value="{{ evolucion.getPaciente().sexo }}">{{ evolucion.getPaciente().sexo }}</option>
+                                                            <option value="Masculino">Masculino</option>
+                                                            <option value="Femenino">Femenino</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="fechaDiagnostico">Fecha de Diagnóstico:</label>
+                                                    <div>
+                                                        <input value="{{ evolucion.fechaDiagnostico()|date('Y-m-d') }}" type="date" id="fechaDiagnostico" name="fechaDiagnostico">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="fechaNotificacion">Fecha de Notificación:</label>
+                                                    <div>
+                                                        <input value="{{ evolucion.fechaNotificacion()|date('Y-m-d') }}" type="date" id="fechaNotificacion" name="fechaNotificacion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="telefono">Teléfono del Paciente:</label>
+                                                    <div>
+                                                        <input value="{{ evolucion.telefono }}" type="tel"  class="form-control input-sm" id="telefono" name="telefono">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="pais">País de Residencia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm " id="pais"  name="pais">
+                                                        <option value="{{ evolucion.getPais().id }}">{{ evolucion.getPais().codigo }}-{{ evolucion.getPais().nombre }}</option>
+                                                        {% for pais in  paises %}
+                                                            <option value="{{ pais.id }}">{{ pais.codigo }}-{{ pais.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label class="control-label " for="observaciones">Observaciones:</label>
+                                                <textarea  style="width: 100%; resize: none ; height: 195px ; margin-top: 2px" id="observaciones">
+                                                    {{ evolucion.observaciones }}
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="localizacionTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <h3 style="margin: 5px; padding-bottom: 7px;  color: #717070; text-align: center"><strong>Localización</strong></h3>
+                                        <div class="row">
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="provinciaCarnet">Provincia de Carnet:</label>
+                                                <div class="form-group">
+                                                    {% set provinciaCarnet =  evolucion.direccionCarnet != null ? evolucion.direccionCarnet.municipio.provincia : null %}
+                                                    <select class="form-control input-sm" id="provinciaCarnet"  name="provinciaCarnet">
+                                                        <option value="0">Seleccione una provincia</option>
+                                                        {% for provincia in  provincias %}
+                                                            <option {{ (provinciaCarnet != null and provincia.id == provinciaCarnet.id) ? "selected" }}
+                                                                    value="{{ provincia.id }}">{{ provincia.nombre }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label  class="control-label" for="municipioCarnet">Municipio de Carnet:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="municipioCarnet" name="municipioCarnet">
+                                                        <option value="0">Seleccione un municipio</option>
+                                                        {% if provinciaCarnet != null  %}
+                                                            {% for municipio in municipios  %}
+                                                                {% if municipio.provincia.id == provinciaCarnet.id %}
+                                                                    <option {{ municipio.id == evolucion.direccionCarnet.municipio.id ? "selected" }}
+                                                                            value="{{ municipio.id }}">{{ municipio.nombre }}
+                                                                    </option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="direccionCarnet">Dirección Carnet:</label>
+                                                    {% if evolucion.direccionCarnet != null  %}
+                                                        <div>
+                                                            <input  value="{{ evolucion.direccionCarnet.direccion }}"  type="text" class="form-control input-sm" id="direccionCarnet" name="direccionCarnet">
+                                                        </div>
+                                                    {% else %}
+                                                        <div>
+                                                            <input  placeholder="Teclee la dirección de carnet"  type="text" class="form-control input-sm" id="direccionCarnet" name="direccionCarnet">
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="provinciaResidencia">Provincia de Residencia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="provinciaResidencia"  name="provinciaResidencia">
+                                                        {% set provinciaResidencia =  evolucion.direccionPaciente != null ? evolucion.direccionPaciente.municipio.provincia : null %}
+                                                        <option value="0">Seleccione una provincia</option>
+                                                        {% for provincia in  provincias %}
+                                                            <option {{ (provinciaResidencia != null and provincia.id == provinciaResidencia.id) ? "selected" }}
+                                                                    value="{{ provincia.id }}">{{ provincia.nombre }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label  class="control-label" for="municipioResidencia">Municipio de Residencia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="municipioResidencia" name="municipioResidencia">
+                                                        <option  value="0">Seleccione un municipio </option>
+                                                        {% if provinciaResidencia != null  %}
+                                                            {% for municipio in municipios  %}
+                                                                {% if municipio.provincia.id == provinciaResidencia.id %}
+                                                                    <option {{ municipio.id == evolucion.direccionPaciente.municipio.id ? "selected" }}
+                                                                            value="{{ municipio.id }}">{{ municipio.nombre }}
+                                                                    </option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="centroResidencia">Centro de Residencia:</label>
+                                                <div class="form-group">
+                                                    <select  class="form-control input-sm " id="centroResidencia" name="centroResidencia">
+                                                        <option  value="0">Seleccione un centro </option>
+                                                        {% if  evolucion.direccionPaciente != null  %}
+                                                            {% for centro in areasSalud  %}
+                                                                {% if evolucion.direccionPaciente.municipio.id == centro.municipio.id %}
+                                                                    <option {{ (evolucion.centroResidencia != null and centro.id ==  evolucion.centroResidencia.id) ? "selected" }}
+                                                                            value="{{ centro.id }}">{{ centro.tipoAreaSalud.nombre~' - '~centro.nombre }}
+                                                                    </option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="direccionResidencia">Dirección de Residencia:</label>
+                                                    {% if evolucion.direccionPaciente != null  %}
+                                                        <div>
+                                                            <input  value="{{ evolucion.direccionPaciente.direccion }}"  type="text" class="form-control input-sm" id="direccionResidencia" name="direccionResidencia">
+                                                        </div>
+                                                    {% else %}
+                                                        <div>
+                                                            <input placeholder="Teclee la dirección de residencia" type="text" class="form-control input-sm" id="direccionResidencia" name="direccionResidencia">
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="provinciaDiagnostico">Provincia de Diagnóstico:</label>
+                                                <div class="form-group">
+                                                    {% set provinciaDiagnostico =  evolucion.centroDiagnostico != null ? evolucion.centroDiagnostico.municipio.provincia : null %}
+                                                    <select class="form-control input-sm" id="provinciaDiagnostico"  name="provinciaDiagnostico">
+                                                        <option value="0">Seleccione una provincia </option>
+                                                        {% for provincia in  provincias %}
+                                                            <option {{ (provinciaDiagnostico != null and provincia.id == provinciaDiagnostico.id) ? "selected" }}
+                                                                    value="{{ provincia.id }}">{{ provincia.nombre }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label  class="control-label" for="municipioDiagnostico">Municipio de Diagnóstico:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="municipioDiagnostico" name="municipioDiagnostico">
+                                                        <option  value="0">Seleccione un municipio </option>
+                                                        {% if provinciaDiagnostico != null  %}
+                                                            {% for municipio in municipios  %}
+                                                                {% if municipio.provincia.id == provinciaDiagnostico.id %}
+                                                                    <option {{ municipio.id == evolucion.centroDiagnostico.municipio.id ? "selected" }}
+                                                                            value="{{ municipio.id }}">{{ municipio.nombre }}
+                                                                    </option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="centroDiagnostico">Centro de Diagnóstico:</label>
+                                                <div class="form-group">
+                                                    <select  class="form-control input-sm " id="centroDiagnostico" name="centroDiagnostico">
+                                                        <option  value="0">Seleccione un centro </option>
+                                                        {% if  evolucion.centroDiagnostico != null  %}
+                                                            {% for centro in areasSalud  %}
+                                                                {% if evolucion.centroDiagnostico.municipio.id == centro.municipio.id %}
+                                                                    <option {{ centro.id ==  evolucion.centroDiagnostico.id ? "selected" }}
+                                                                            value="{{ centro.id }}">{{ centro.tipoAreaSalud.nombre~' - '~centro.nombre }}
+                                                                    </option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="provinciaAtencion">Provincia de Atención:</label>
+                                                <div class="form-group">
+                                                    {% set provinciaAtencion =  evolucion.areaSalud != null ? evolucion.areaSalud.municipio.provincia : null %}
+                                                    <select class="form-control input-sm" id="provinciaAtencion"  name="provinciaAtencion">
+                                                        <option value="0">Seleccione una provincia </option>
+                                                        {% for provincia in  provincias %}
+                                                            <option {{ (provinciaAtencion != null and provincia.id == provinciaAtencion.id) ? "selected" }}
+                                                                    value="{{ provincia.id }}">{{ provincia.nombre }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label  class="control-label" for="municipioAtencion">Municipio de Atención:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="municipioAtencion" name="municipioAtencion">
+                                                        <option  value="0">Seleccione un municipio </option>
+                                                        {% if provinciaAtencion != null  %}
+                                                            {% for municipio in municipios  %}
+                                                                {% if municipio.provincia.id == provinciaAtencion.id %}
+                                                                    <option {{ municipio.id == evolucion.areaSalud.municipio.id ? "selected" }}
+                                                                            value="{{ municipio.id }}">{{ municipio.nombre }}
+                                                                    </option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="centroAtencion">Centro de Atención:</label>
+                                                <div class="form-group">
+                                                    <select  class="form-control input-sm " id="centroAtencion" name="centroAtencion">
+                                                        <option  value="0">Seleccione un centro </option>
+                                                        {% if  evolucion.areaSalud != null  %}
+                                                            {% for centro in areasSalud  %}
+                                                                {% if evolucion.areaSalud.municipio.id == centro.municipio.id %}
+                                                                    <option {{ centro.id ==  evolucion.areaSalud.id ? "selected" }}
+                                                                            value="{{ centro.id }}">{{ centro.tipoAreaSalud.nombre~' - '~centro.nombre }}
+                                                                    </option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="seguimientoTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <h3 style="margin: 5px; padding-bottom: 7px;  color: #717070; text-align: center"><strong>Seguimiento Paciente</strong></h3>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="tipoEnfermo">Tipo de Enfermo:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="tipoEnfermo"  name="tipoEnfermo">
+                                                        <option value="{{ evolucion.getTipoEnfermo().id }}">{{ evolucion.getTipoEnfermo().tipo }}</option>
+                                                        {% for tipo in  tiposEnfermo %}
+                                                            <option class="{{ evolucion.getTipoEnfermo().id == tipo.id ? 'hidden' }}" value="{{ tipo.id }}">{{ tipo.tipo }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="localizacionAnatomica">Localización Anatómica:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="localizacionAnatomica"  name="localizacionAnatomica">
+                                                        <option value="{{ evolucion.localizacionAnatomica }}">{{ evolucion.localizacionAnatomica }}</option>
+                                                        <option value="Pulmonar">Pulmonar</option>
+                                                        <option value="Extrapulmonar">Extrapulmonar</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="rayosX">RayosX:</label>
+                                                    <div class="md-checkbox" style="left: 45%">
+                                                        <input type="checkbox" {{ evolucion.rayosX  == 1 ? 'checked' }} id="rayosX" name="rayosX" class="md-check">
+                                                        <label for="rayosX">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="anatomiaPatologica">Anatomía Patológica:</label>
+                                                    <div class="md-checkbox" style="left: 45%">
+                                                        <input type="checkbox" {{ evolucion.necro  == 1 ? 'checked' }} id="anatomiaPatologica" name="anatomiaPatologica" class="md-check">
+                                                        <label for="anatomiaPatologica">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="xpert">Resultado del Xpert:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="xpert" name="xpert">
+                                                        <option value="vacio">Seleccione un resultado</option>
+                                                        {% for xpert in  xperts %}
+                                                            <option {{ evolucion.getResultadoBCX().xpert.clasificacion == xpert.clasificacion ? 'selected' }}
+                                                                    value="{{ xpert.clasificacion }}">{{ xpert.descripcion ~' ('~xpert.clasificacion~')' }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="baciloscopia">Resultado de la Baciloscopía:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="baciloscopia" name="baciloscopia">
+                                                        <option value="vacio">Seleccione un resultado</option>
+                                                        {% for baciloscopia in  baciloscopias %}
+                                                            <option {{ evolucion.getResultadoBCX().baciloscopia.clasificacion == baciloscopia.clasificacion ? 'selected' }}
+                                                                    value="{{ baciloscopia.clasificacion }}">{{ baciloscopia.descripcion~' ('~baciloscopia.clasificacion~')' }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="baciloscopia2">Resultado Segunda Baciloscopía:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="baciloscopia2" name="baciloscopia2">
+                                                        <option value="vacio">Seleccione un resultado</option>
+                                                        {% for baciloscopia in  baciloscopias %}
+                                                            <option {{ evolucion.getResultadoBCX().baciloscopia2.clasificacion == baciloscopia.clasificacion ? 'selected' }}
+                                                                    value="{{ baciloscopia.clasificacion }}">{{ baciloscopia.descripcion~' ('~baciloscopia.clasificacion~')' }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="cultivo">Codificación del Cultivo:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="cultivo" name="cultivo">
+                                                        <option value="vacio">Seleccione una codificación</option>
+                                                        {% for cultivo in  cultivos %}
+                                                            <option {{ evolucion.getResultadoBCX().cultivo.clasificacion == cultivo.clasificacion ? 'selected' }}
+                                                                    value="{{ cultivo.clasificacion }}">{{ cultivo.descripcion~' ('~cultivo.clasificacion~')' }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="salidaCultivo">Resultado del Cultivo:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="salidaCultivo" name="salidaCultivo">
+                                                        <option value="vacio">Seleccione un resultado</option>
+                                                        {% for salidaCultivo in  salidasCultivo %}
+                                                            <option {{ evolucion.getResultadoBCX().salidaCultivo.salida == salidaCultivo.salida ? 'selected' }}
+                                                                    value="{{ salidaCultivo.salida }}">{{  salidaCultivo.salida  }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="biopsia">Biopsia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="biopsia" name="biopsia">
+                                                        {% for biopsia in  biopsias %}
+                                                            <option {{ evolucion.getResultadoBCX().biopsia.clasificacion == biopsia.clasificacion ? 'selected' }}
+                                                                    value="{{ biopsia.clasificacion }}">{{ biopsia.descripcion }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="orina">Parcial de Orina:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="orina" name="orina">
+                                                        {% for orina in  orinas %}
+                                                            <option {{ evolucion.getResultadoBCX().orina.clasificacion == orina.clasificacion ? 'selected' }}
+                                                                    value="{{ orina.clasificacion }}">{{  orina.descripcion  }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="diagnosticoVIH">Diagnóstico de  VIH:</label>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <select  class="form-control input-sm" id="diagnosticoVIH"  name="diagnosticoVIH">
+                                                            <option value="{{ evolucion.getResultadoVIH() }}">{{ evolucion.getResultadoVIH() }}</option>
+                                                            <option  value="positivo">positivo</option>
+                                                            <option  value="negativo">negativo</option>
+                                                            <option  value="desconocido">desconocido</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="fechaVIH">Fecha de resultado VIH:</label>
+                                                    {% if evolucion.getFechaVIH()|date("Y-m-d") == '1700-01-01' %}
+                                                        <div>
+                                                            <input disabled type="date" id="fechaVIH" name="fechaVIH">
+                                                        </div>
+                                                    {% else %}
+                                                        <div>
+                                                            <input value="{{ evolucion.getFechaVIH()|date('Y-m-d') }}" class="datepicker" placeholder="aaaa-mm-dd" id="fechaVIH" name="fechaVIH">
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="necro">Necro:</label>
+                                                    <div class="md-checkbox" style="left: 45%">
+                                                        <input type="checkbox" {{ evolucion.necro  == 1 ? 'checked' }} id="necro" name="necro" class="md-check">
+                                                        <label for="necro">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="tARV">TARV:</label>
+                                                    <div class="md-checkbox" style="left: 45%">
+                                                        <input type="checkbox" {{ evolucion.tarv  == 1 ? 'checked' }} id="tARV" name="tARV" class="md-check">
+                                                        <label for="tARV">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="tCP">TCP:</label>
+                                                    <div class="md-checkbox" style="left: 45%">
+                                                        <input type="checkbox" {{ evolucion.tcp  == 1 ? 'checked' }} id="tCP" name="tCP" class="md-check">
+                                                        <label for="tCP">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="definicionCaso">Definición del Caso:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="definicionCaso"  name="definicionCaso">
+                                                        <option value="{{ evolucion.definicionCaso }}">{{ evolucion.definicionCaso }}</option>
+                                                        {% if evolucion.definicionCaso == 'Bacteriológicamente confirmado' %}
+                                                            <option value="Clínicamente diagnosticado">Clínicamente diagnosticado</option>
+                                                        {% else %}
+                                                            <option value="Bacteriológicamente confirmado">Bacteriológicamente confirmado</option>
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="fechaInicioTratamiento">Inicio del  Tratamiento:</label>
+                                                    {% if evolucion.getFechaInicioTrat()|date("Y-m-d") == '1700-01-01' %}
+                                                        <div>
+                                                            <input disabled type="date">
+                                                        </div>
+                                                    {% else %}
+                                                        <div>
+                                                            <input disabled value="{{ evolucion.getFechaInicioTrat()|date('Y-m-d') }}" type="date" id="fechaInicioTratamiento" name="fechaInicioTratamiento">
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="cambiadoTratSegundaLinea">Cambiado a Segunda Linea:</label>
+                                                    <div class="md-checkbox" style="left: 45%">
+                                                        <input type="checkbox" {{ evolucion.cambiadoTratSegundaLinea  == 1 ? 'checked' }} id="cambiadoTratSegundaLinea" name="cambiadoTratSegundaLinea" class="md-check">
+                                                        <label for="cambiadoTratSegundaLinea">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="pruebaSensibilidad">Prueba de Sensibilidad:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="pruebaSensibilidad"  name="pruebaSensibilidad">
+                                                        <option value="{{ evolucion.getPruebaSensibilidad().nombre }}">{{ evolucion.getPruebaSensibilidad().nombre }}</option>
+                                                        {% for prueba in  pruebas %}
+                                                            {% if not (evolucion.getPruebaSensibilidad().id == prueba.id) %}
+                                                                <option value="{{ prueba.nombre }}">{{ prueba.nombre }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="resistencia">Resistencia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="resistencia"  name="resistencia">
+                                                        <option value="{{ evolucion.getResistencia().clasificacion }}">{{ evolucion.getResistencia().descripcion }}</option>
+                                                        {% for resistencia in  resistencias %}
+                                                            {% if not ( evolucion.getResistencia().clasificacion == resistencia.clasificacion ) %}
+                                                                <option value="{{ resistencia.clasificacion }}">{{ resistencia.descripcion }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="grupoVulnerable">Grupos Vulnerables:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="grupoVulnerable"  name="grupoVulnerable">
+                                                        <option value="{{ evolucion.getGrupoVulnerable().id }}">{{ evolucion.getGrupoVulnerable().grupo }}</option>
+                                                        {% for grupo in  gruposVulnerable %}
+                                                            <option class="{{ evolucion.getGrupoVulnerable().id == grupo.id ? 'hidden' }}" value="{{ grupo.id }}">{{ grupo.grupo }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" id="divRecluso" >
+                                                <label class="control-label " for="recluso">Tipo de Recluso:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="recluso"  name="recluso">
+                                                        <option value="0">Seleccione...</option>
+                                                        <option {{ evolucion.recluso == 'recluso' ? 'selected' }} value="recluso">recluso</option>
+                                                        <option {{ evolucion.recluso == 'exrecluso' ? 'selected' }} value="exrecluso">exrecluso</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="resultadoTratamiento">Resultado Final del Tratamiento:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="resultadoTratamiento"  name="resultadoTratamiento">
+                                                        <option value="{{ evolucion.getResultadosFinales[(evolucion.getResultadosFinales|length) - 1].getResultadoTratamiento().resultado }}">
+                                                            {{ evolucion.getResultadosFinales[(evolucion.getResultadosFinales|length) - 1].getResultadoTratamiento().resultado }}
+                                                        </option>
+                                                        {% for resultado in  resultadosTratamiento %}
+                                                            <option class="{{ resultado.id == evolucion.getResultadosFinales[(evolucion.getResultadosFinales|length) - 1].getResultadoTratamiento().id ? 'hidden' }}" value="{{ resultado.resultado }}">
+                                                                {{ resultado.resultado }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="fechaResultadoFinal">Fecha del Resultado Final del Tratamiento:</label>
+                                                    <div>
+                                                        {% set lastResult = evolucion.resultadosFinales|last %}
+                                                        <input max="{{ 'now'|date('Y-m-d') }}" value="{{ lastResult.fecha|date('Y-m-d') }}"  type="date" id="fechaResultadoFinal" name="fechaResultadoFinal">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="covit">Covit-19:</label>
+                                                    <div class="md-checkbox" style="left: 45%">
+                                                        <input type="checkbox" {{ evolucion.covit  == 1 ? 'checked' }} id="covit" name="covit" class="md-check">
+                                                        <label for="covit">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group" id="mostrarFechaCovit" style="display: {{ (evolucion.covit == '1') ? 'block' }}">
+                                                    <label class="control-label " for="fechaCovit">Fecha de Covit-19:</label>
+                                                    {% if evolucion.getFechaCovit() %}
+                                                        <div>
+                                                            <input type="date" id="fechaCovit" name="fechaCovit" value="{{ evolucion.getFechaCovit()|date('Y-m-d') }}">
+                                                        </div>
+                                                    {% else %}
+                                                        <div>
+                                                            <input type="date" id="fechaCovit" name="fechaCovit">
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="tratamientoTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <h4 style="margin-bottom: 10px">Esquemas de Medicamentos:</h4>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group" style="margin-left: 25%">
+                                                    <label class="control-label " for="medicamentos">Seleccione los  Medicamentos:</label>
+                                                    <select multiple="multiple" id="medicamentos" name="medicamentos[]" class="form-control" >
+                                                        {% for medicamento in medicamentos %}
+
+                                                            <option value={{ medicamento.id }}>{{ medicamento.nombre }}</option>
+
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="fechaInicioTrat">Inicio del  Tratamiento:</label>
+                                                    <div>
+                                                        <input max="{{ 'now'|date('Y-m-d') }}" type="date" id="fechaInicioTrat" name="fechaInicioTrat">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button type="button" class="btn" id="agregarBtnEsquemaMedicamento">Agregar
+                                                    Esquema
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <table id="esquemasMedicamento" class="table table-bordered"
+                                                   style="margin-top: 17px ; margin-left: 15px ; width: 97%">
+                                                <thead>
+                                                <tr style="color: #2bc7c7">
+                                                    <th>Fecha Inicio</th>
+                                                    <th>Medicamentos</th>
+                                                    <th>Acción</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tbody">
+                                                    {% set I = 0 %}
+                                                    {% if evolucion.esquemasMedicamentos != null %}
+                                                        {% for esquema in evolucion.esquemasMedicamentos %}
+                                                            <tr  data-id ="{{ I }}">
+                                                                <td>{{ esquema.fechaInicio|date('Y-m-d') }}</td>
+                                                                {% set texto = esquema.medicamentos[0].nombre %}
+                                                                {% for medicamento in esquema.medicamentos %}
+                                                                    {% if loop.first == false %}
+                                                                        {% set texto = texto~' - '~medicamento.nombre %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                <td>{{ texto }}</td>
+                                                                <td><span class="glyphicon glyphicon-minus-sign borrar" style="font-size: 25px"  data-toggle="tooltip" data-placement="right"  title="Eliminar"></span></td>
+                                                            </tr>
+                                                            {% set I = I + 1 %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                    <button id="btnSalir" type="button" class="btn btn-primario"> Salir</button>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            function verificarusuario() {
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+
+            verificarusuario();
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $("#pais").select2({
+                placeholder: "Seleccione un país..",
+                allowClear: false
+            });
+
+            $('#medicamentos').multiSelect();
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function () {
+                window.location.href = "{{ path(origen) }}";
+
+            });
+
+            $('#covit').on('click', function () {
+                if ($(this).prop('checked')){
+                    $("#mostrarFechaCovit").show();
+                }else {
+                    $("#mostrarFechaCovit").hide();
+                    $("#fechaCovit").val('');
+                }
+            });
+
+            //----------Relacionar selects --------------------------
+            {{ include('Generales/selectProvinciaMunicipio.html.twig') }}
+
+            $('#provinciaCarnet').on('change', function () { relacionarProvinciaMunicipio('Carnet'); });
+            $('#provinciaResidencia').on('change', function () { relacionarProvinciaMunicipio('Residencia'); });
+            $('#provinciaDiagnostico').on('change', function () { relacionarProvinciaMunicipio('Diagnostico'); });
+            $('#provinciaAtencion').on('change', function () { relacionarProvinciaMunicipio('Atencion'); });
+
+            $('#municipioResidencia').on('change', function () { relacionarMunicipioAreaSalud('Residencia'); });
+            $('#municipioDiagnostico').on('change', function () { relacionarMunicipioAreaSalud('Diagnostico'); });
+            $('#municipioAtencion').on('change', function () { relacionarMunicipioAreaSalud('Atencion'); });
+
+            if($("#pruebaSensibilidad").val() == 'Ninguna'){
+                $("#resistencia").val('Desconocida').prop('disabled', true);
+            }
+
+            $("#pruebaSensibilidad").on('change', function(){
+
+                $("#resistencia").prop('disabled', false);
+                if($(this).val() == 'Ninguna'){
+                    $("#resistencia").val('Desconocida').prop('disabled', true);
+                }
+            });
+
+            $("#diagnosticoVIH").on('change' ,function () {
+
+                if($(this).val() == '0' || $(this).val() == 'desconocido'){
+                    $("#fechaVIH").val('').prop('disabled' , true);
+                }
+                else { $("#fechaVIH").val('').prop('disabled' , false)}
+            });
+            $('#definicionCaso').on('change', function () {
+
+                $('#xpert').val('vacio').prop('disabled', false);
+                $('#baciloscopia').val('vacio').prop('disabled', false);
+                $('#baciloscopia2').val('vacio').prop('disabled', false);
+                $('#cultivo').val('vacio').prop('disabled', false);
+                $('#salidaCultivo').val('vacio').prop('disabled', false);
+                $('#rayosX').prop('checked' ,false).prop('disabled', false);
+                if($(this).val() == 'Clínicamente diagnosticado')
+                {
+                    $('#xpert').val('NRX').prop('disabled', true);
+                    $('#baciloscopia').val('SB').prop('disabled', true);
+                    $('#baciloscopia2').val('SB').prop('disabled', true);
+                    $('#cultivo').val('SC').prop('disabled', true);
+                    $('#salidaCultivo').val('No realizado').prop('disabled', true);
+                    $('#rayosX').prop('checked' ,true).prop('disabled', true);
+                }
+            });
+            $("#cultivo").on('change', function(){
+
+                if($(this).val() == 'SC' || $(this).val() == 'NR'){
+                    $("#salidaCultivo").val('No realizado').prop('disabled', true);
+                }
+                else{ $("#salidaCultivo").val('vacio').prop('disabled', false); }
+            });
+
+            $("#salidaCultivo").on('change', function(){
+
+                if($(this).val() == 'No realizado'){
+                    $("#cultivo").val('SC');
+                    $("#salidaCultivo").prop('disabled', true);
+                }
+            });
+
+            $("#grupoVulnerable").on('change', function(){
+                $("#recluso").val('0');
+                if($(this).val() == '2'){
+                    $("#divRecluso").prop('hidden' , false);
+                }else{
+                    $("#divRecluso").prop('hidden' , true).val('0');
+                }
+            });
+
+            //------esquemas de medicamentos-----------------
+            //funcion que agrega un esquema de medicamento y lo visualiza en la tabla
+            var pacienteEsquemas = [];
+            var I = 0;
+            //poniendo los esquemas del paciente en el arreglo
+            {% if evolucion.esquemasMedicamentos != null %}
+                {% for esquema in evolucion.esquemasMedicamentos %}
+                    var medicamentos = [];
+                    {% for medicamento in esquema.medicamentos %}
+                        medicamentos.push('{{ medicamento.id }}');
+                    {% endfor %}
+                    var fechaInicioTratamiento = '{{ esquema.fechaInicio|date('Y-m-d') }}';
+                    pacienteEsquemas.push({
+                        medicamentos: medicamentos,
+                        fechaInicioTratamiento: fechaInicioTratamiento ,
+                    });
+                    I++;
+                {% endfor %}
+            {% endif %}
+            //poniendo los esquemas del paciente en el arreglo
+
+            $('#agregarBtnEsquemaMedicamento').on('click', function(){
+
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+                if( $('#medicamentos').val() == null ){
+                    alertify.alert('<strong>Debe seleccionar medicamentos para agregar un esquema.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                }else if($("#fechaInicioTrat").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de inicio del tratamiento.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                }else if ($("#fechaInicioTrat").val() != '' && $("#fechaInicioTrat").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de inicio del tratamiento no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }else if ($("#fechaInicioTrat").val() != '' &&  $("#fechaInicioTrat").val() < $("#fechaDiagnostico").val()) {
+                    alertify.alert('<strong>Error: la fecha de inicio del tratamiento no puede ser menor que la fecha de diagnóstico.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }else if ($("#fechaInicioTrat").val() != '' && $("#fechaInicioTrat").val() < $("#fechaNotificacion").val()) {
+                    alertify.alert('<strong>Error: la fecha de inicio del tratamiento no puede ser menor que la fecha de notificación.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+
+                }else if(pacienteEsquemas.length != 0 && $("#fechaInicioTrat").val() < pacienteEsquemas[pacienteEsquemas.length - 1]['fechaInicioTratamiento']) {
+                    alertify.alert('<strong>La fecha del tratamiento actual no puede ser menor que la del tratamiento anterior.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                }else{
+                    var fechaInicioTratamiento =  $("#fechaInicioTrat").val();
+                    var text = '';
+                    var medicamentos = $('#medicamentos').val();
+
+                    $('#ms-medicamentos .ms-list .ms-elem-selectable').each(function () {
+                        if($(this).hasClass('ms-selected')){
+
+                            text += $(this).text()+' - ';
+                        }
+                    });
+
+                    $('.ms-list .ms-elem-selectable').each(function(){
+                        $(this).css('display', 'list-item').removeClass('ms-selected');
+                    });
+
+                    $('.ms-list .ms-elem-selection').each(function(){
+                        $(this).css('display', 'none').addClass('ms-hover').removeClass('ms-selected');
+                    });
+
+                    $("#fechaInicioTrat").val('');
+                    $('#medicamentos').val(null);
+
+                    text = text.substring(0,text.lastIndexOf('-')-1);
+                    $('#esquemasMedicamento tbody').append('<tr data-id="'+I+'"><td>'+ fechaInicioTratamiento +'</td><td>'+ text +'</td><td>' +
+                        '<span class="glyphicon glyphicon-minus-sign borrar" style="font-size: 25px"  data-toggle="tooltip" data-placement="bottom"  title="Eliminar"></span>' +
+                        '</td></tr>');
+
+                    pacienteEsquemas.push({
+                        medicamentos: medicamentos,
+                        fechaInicioTratamiento: fechaInicioTratamiento,
+                    });
+
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('#fechaInicioTratamiento').val(pacienteEsquemas[pacienteEsquemas.length - 1]['fechaInicioTratamiento']);
+                    I++;
+
+                }
+            });
+            //funcion que elimina un esquema de medicamento del arreglo y de  la tabla
+            $('#esquemasMedicamento tbody').on('click', '.borrar', function () {
+                var row = $(this).parents('tr');
+                id = row.data('id');
+                pacienteEsquemas.splice(id,1);
+                row.fadeOut();
+                if(pacienteEsquemas.length === 0)
+                {
+
+                    $('#fechaInicioTratamiento').val('');
+                }else{
+
+                    $('#fechaInicioTratamiento').val(pacienteEsquemas[pacienteEsquemas.length - 1]['fechaInicioTratamiento']);
+                }
+
+            });
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function () {
+
+                if ($("#carnetIdentidad").val().trim() == '') {
+                    alertify.alert('<strong>El campo carnet de identidad es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#nombre").val().trim() == '') {
+                    alertify.alert('<strong>El campo nombre es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#primerApellido").val().trim() == '') {
+                    alertify.alert('<strong>El campo primer apellido es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#segundoApellido").val().trim() == '') {
+                    alertify.alert('<strong>El campo segundo apellido es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#edad").val() == '') {
+                    alertify.alert('<strong>El campo edad es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#edad").val() < 1) {
+                    alertify.alert('<strong>Error: la edad del paciente no puede ser menor que 1.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#municipioCarnet").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el municipio de carnet del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#direccionCarnet").val().trim() == '') {
+                    alertify.alert('<strong>El campo dirección de carnet es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#municipioResidencia").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el municipio de residencia del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#direccionResidencia").val().trim() == '') {
+                    alertify.alert('<strong>El campo dirección de residencia es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#centroResidencia").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el centro asignado por la residencia del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#centroDiagnostico").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el centro de diagnóstico del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#centroAtencion").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el centro de atención del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaDiagnostico").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de diagnóstico del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaNotificacion").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de notificación del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaResultadoFinal").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha del resultado final.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                if ($('#covit').prop('checked')) {
+                    if ($("#fechaCovit").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de la Covit-19.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+
+                if ($("#fechaDiagnostico").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de diagnóstico no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaNotificacion").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de notificación no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaNotificacion").val() < $("#fechaDiagnostico").val()) {
+                    alertify.alert('<strong>Error: la fecha de notificación no puede ser menor que la fecha de diagnóstico.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                if ($("#fechaResultadoFinal").val() > hoy) {
+                    alertify.alert('<strong>>Error: la fecha del resultado final no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                if ($('#covit').prop('checked')) {
+                    if ($("#fechaCovit").val() > hoy) {
+                        alertify.alert('<strong>>Error: la fecha de la Covit-19 no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar');
+                        return false;
+                    }
+                }
+
+                if($("#fechaVIH").val() == '' && $("#diagnosticoVIH").val() != 'desconocido')
+                {
+                    alertify.alert('<strong>Si hay un diagnóstico de VIH entonces debe seleccionar la fecha de ese diagnóstico.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaVIH").val() != '' && $("#fechaVIH").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de resultado del VIH no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                // if(pacienteEsquemas.length == 0 && ($("#resultadoTratamiento").val() != 'Fallecido' && $("#resultadoTratamiento").val() != 'Pérdida en el seguimiento'
+                //     && $("#resultadoTratamiento").val() != 'Reparo de Diagnóstico'))
+                // {
+                //     alertify.alert('<strong>Si el paciente no inició el tratamiento entonces estamos en precencia de un fallecido, un reparo de diagnóstico  o una pérdida en el seguimiento.</strong>')
+                //         .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                //             '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                //         .set('label','Aceptar');
+                //     return false;
+                // }
+                if ($("#xpert").val() == 'vacio') {
+                    alertify.alert('<strong>Debe seleccionar el resultado del xpert.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#baciloscopia").val() == 'vacio') {
+                    alertify.alert('<strong>Debe seleccionar el resultado de la baciloscopía.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#baciloscopia2").val() == 'vacio') {
+                    alertify.alert('<strong>Debe seleccionar el resultado de la segunda baciloscopía.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#cultivo").val() == 'vacio') {
+                    alertify.alert('<strong>Debe seleccionar una codificación para el cultivo.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#salidaCultivo").val() == 'vacio') {
+                    alertify.alert('<strong>Debe seleccionar el resultado del cultivo.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#cultivo").val() == '0' && $("#salidaCultivo").val() == 'Complejo Mycobacterium tuberculosis') {
+                    alertify.alert('<strong>Si la codificación del cultivo es 0 no puede tener como resultado : Complejo Mycobacterium tuberculosis.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if($("#definicionCaso").val() == 'Bacteriológicamente confirmado'){
+
+                    if(($("#xpert").val() == 'N' || $("#xpert").val() == 'I' || $("#xpert").val() == 'NRX') && ($("#baciloscopia").val() == '0' || $("#baciloscopia").val() == 'SB') && ($("#cultivo").val() == '0' || $("#cultivo").val() == 'SC')){
+                        alertify.alert('<strong>Si el paciente fué bacteriológicamenre confirmado debe tener al menos un resultado de análisis positivo.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar');
+                        return false;
+                    }
+                }
+                if ($("#grupoVulnerable").val() == '2' && $("#recluso").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar si el paciente es un recluso o un exrecluso.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                var telefono  = $("#telefono").val();
+                if(telefono == ''){
+                    telefono = 'No tiene'
+                }
+
+                var rayosX = 0;
+                if ($('#rayosX').prop('checked')) {
+                    rayosX = 1;
+                }
+                var anatomiaPatologica = 0;
+                if ($('#anatomiaPatologica').prop('checked')) {
+                    anatomiaPatologica = 1;
+                }
+
+                var tARV = 0;
+                if ($('#tARV').prop('checked')) {
+                    tARV = 1;
+                }
+                var tCP = 0;
+                if ($('#tCP').prop('checked')) {
+                    tCP = 1;
+                }
+                var cambiadoTratSegundaLinea = 0;
+                if ($('#cambiadoTratSegundaLinea').prop('checked')) {
+                    cambiadoTratSegundaLinea = 1;
+                }
+
+                var necro = 0;
+                if ($('#necro').prop('checked')) {
+                    necro = 1;
+                }
+
+                var covit = 0;
+                if ($('#covit').prop('checked')) {
+                    covit = 1;
+                }else {
+                    $("#fechaCovit").val('');
+                }
+
+                let idDireccionCarnet = '{{ evolucion.direccionCarnet != null ? evolucion.direccionCarnet.id : null  }}';
+                let idDireccionResidencia = '{{ evolucion.direccionPaciente != null ? evolucion.direccionPaciente.id : null  }}';
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    idEvolucion:'{{ evolucion.id }}',
+                    idPaciente:'{{ evolucion.getPaciente().id }}',
+                    carnetIdentidad:  $("#carnetIdentidad").val(),
+                    nombre: $("#nombre").val(),
+                    primerApellido: $("#primerApellido").val(),
+                    segundoApellido: $("#segundoApellido").val(),
+                    edad: $("#edad").val(),
+                    sexo: $("#sexo").val(),
+                    fechaNotificacion: $("#fechaNotificacion").val(),
+                    fechaDiagnostico: $("#fechaDiagnostico").val(),
+                    fechaResultadoFinal: $("#fechaResultadoFinal").val(),
+                    telefono: telefono,
+                    pais: $("#pais").val(),
+                    resultadoTratamiento: $("#resultadoTratamiento").val(),
+                    localizacionAnatomica: $("#localizacionAnatomica").val(),
+                    tipoEnfermo: $("#tipoEnfermo").val(),
+                    fechaVIH: $("#fechaVIH").val(),
+                    diagnosticoVIH: $("#diagnosticoVIH").val(),
+                    tARV: tARV,
+                    tCP: tCP,
+                    pruebaSensibilidad: $("#pruebaSensibilidad").val(),
+                    resistencia: $("#resistencia").val(),
+                    grupoVulnerable: $("#grupoVulnerable").val(),
+                    esquemasMedicamentos: pacienteEsquemas,
+                    cambiadoTratSegundaLinea: cambiadoTratSegundaLinea,
+                    necro: necro,
+                    covit: covit,
+                    fechaCovit: $("#fechaCovit").val(),
+                    observaciones: $("#observaciones").val(),
+                    definicionCaso: $("#definicionCaso").val(),
+                    rayosX: rayosX,
+                    anatomiaPatologica: anatomiaPatologica,
+                    xpert: $("#xpert").val(),
+                    baciloscopia: $("#baciloscopia").val(),
+                    baciloscopia2: $("#baciloscopia2").val(),
+                    cultivo: $("#cultivo").val(),
+                    salidaCultivo: $("#salidaCultivo").val(),
+                    biopsia: $("#biopsia").val(),
+                    orina: $("#orina").val(),
+                    idDireccionCarnet: idDireccionCarnet,
+                    idDireccionResidencia: idDireccionResidencia,
+                    direccionCarnet: $("#direccionCarnet").val(),
+                    direccionResidencia: $("#direccionResidencia").val(),
+                    municipioCarnet: $("#municipioCarnet").val(),
+                    municipioResidencia: $("#municipioResidencia").val(),
+                    centroResidencia: $("#centroResidencia").val(),
+                    centroDiagnostico: $("#centroDiagnostico").val(),
+                    centroAtencion: $("#centroAtencion").val(),
+                    recluso: $("#recluso").val(),
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updatePaciente") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    $(".preload").addClass('hidden');
+                    if(data == 'ok'){
+
+                        alertify.alert('<strong>El paciente ha sido actualizado correctamente</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                .set('label','Aceptar')
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,10 @@
+<tbody id="tb_body_replace">
+{% for dato in datos %}
+    <tr>
+        <td colspan="6" style="font-weight: bold">{{ dato['provincia'] }}</td>
+        {% for paciente in dato['pacientes'] %}
+            <td  class="text-center"  >{{ paciente }}</td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+</tbody>

@@ -1,0 +1,31 @@
+<div class="modal fade" id="checkNotificaciones"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header mh" style="background-color: #717070; color: whitesmoke;">
+                <span class="glyphicon glyphicon-alert" style="font-size: 20px"></span>
+                <h4 class="modal-title" style="display: inline-block; margin-left: 5px">Notificaciones</h4>
+            </div>
+            <div class="container-fluid">
+                <div class="modal-body">
+                    <div>
+                        <ul>
+                            <li style="padding: 5px; " class="{{ cantFracasostratamiento == '0' ? 'hidden' }}">
+                                <strong>{{ 'Existen '~cantFracasostratamiento~' pacientes con fracaso al tratamiento' }}</strong>
+                            </li>
+                            <li style="padding: 5px; " class="{{ cantPerdidasSeguimiento == '0' ? 'hidden' }}">
+                                <strong>{{ 'Existen '~cantPerdidasSeguimiento~' pacientes en pérdida de seguimiento' }}</strong>
+                            </li>
+                            <li style="padding: 5px; border-bottom: 2px dotted #1D4B4B" class="{{ cantTratamientoCompleto == '0' ? 'hidden' }}">
+                                <strong>{{ 'Existen '~cantTratamientoCompleto~' pacientes con el tratamiento completo' }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-primario" id="msalir" value="CERRAR" data-dismiss="modal" style="cursor: default">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

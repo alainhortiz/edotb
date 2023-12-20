@@ -1,0 +1,904 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/styles.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3 form-cont">
+                <h4 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                    PACIENTE {{ nombreCompleto }} </h4>
+                <div class="row">
+                    <div class="col-md-8" style="margin-top: 20px">
+                        <label for="ci">CI:</label>
+                        <input type="text" class="form-control" placeholder="Teclee el carnet de identidad" id="ci">
+                    </div>
+                    <div class="col-md-4" style="margin-top: 40px">
+                        <button id="btnBuscar" type="button" class="btn btn-primario" disabled><i
+                                    class="glyphicon glyphicon-plus"></i></button>
+                        <button id="btnSalir" type="button" class="btn btn-primario"><i
+                                    class="glyphicon glyphicon-log-out"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="blockContactos" class="hidden" class="container-fluid" style="margin-top: 20px">
+        <div class="form-cont">
+            <div class="row" style="padding: 20px">
+                <h2 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85"
+                    id="nameContacto"></h2>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <div role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul style="margin-bottom: 10px" class="nav nav-tabs" role="tablist" id="myTab">
+                            <li role="presentation" class="active">
+                                <a href="#generalesTab" aria-controls="generalesTab" role="tab" data-toggle="tab">
+                                    <strong>Datos Generales</strong>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#factoresTab" aria-controls="factoresTab" role="tab" data-toggle="tab">
+                                    <strong>Factores de Riesgos</strong>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="generalesTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="fechaNotificacion">Fecha de
+                                                        Notificación:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaNotificacion"
+                                                               name="fechaNotificacion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label">Nombre:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee el nombre" type="text"
+                                                               class="form-control input-sm" id="nombre" name="nombre">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="primerApellido">Primer
+                                                        Apellido:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee el primer apellido" type="text"
+                                                               class="form-control input-sm" id="primerApellido"
+                                                               name="primerApellido">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="segundoApellido">Segundo
+                                                        Apellido:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee el segundo apellido" type="text"
+                                                               class="form-control input-sm" id="segundoApellido"
+                                                               name="segundoApellido">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="sexo">Sexo:</label>
+                                                    <div class="form-group">
+                                                        <select class="form-control input-sm" id="sexo" name="sexo">
+                                                            <option value="0">Seleccione el sexo</option>
+                                                            <option value="Masculino">Masculino</option>
+                                                            <option value="Femenino">Femenino</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="colorPiel">Color de Piel:</label>
+                                                    <div class="form-group">
+                                                        <select class="form-control input-sm" id="colorPiel"
+                                                                name="colorPiel">
+                                                            <option value="0">Seleccione el color de piel</option>
+                                                            <option value="Blanca">Blanca</option>
+                                                            <option value="Mestiza">Mestiza</option>
+                                                            <option value="Negra">Negra</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="telefono">Teléfono del
+                                                        Paciente:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee el teléfono del contacto" type="tel"
+                                                               class="form-control input-sm" id="telefono"
+                                                               name="telefono">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="nivelEducacional">Nivel
+                                                    Educacional:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm " id="nivelEducacional"
+                                                            name="nivelEducacional">
+                                                        <option value="0">Seleccione el nivel</option>
+                                                        {% for nivel in  niveles %}
+                                                            <option value="{{ nivel.id }}">{{ nivel.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="edad">Edad:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee la edad" type="number" id="edad"
+                                                               name="edad">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="provinciaResid">Provincia de
+                                                    Residencia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm " id="provinciaResid"
+                                                            name="provinciaResid">
+                                                        <option value="0">Seleccione una provincia</option>
+                                                        {% for provincia in  provincias %}
+                                                            <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label" for="municipioResid">Municipio de
+                                                    Residencia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="municipioResid"
+                                                            name="municipioResid">
+                                                        <option value="0">Seleccione un municipio</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="direccion">Dirección del
+                                                        Paciente:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee la dirección actual del paciente"
+                                                               type="text" class="form-control input-sm" id="direccion"
+                                                               name="direccion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 col-lg-offset-1"
+                                                 style="border-top: none;margin-left: 30%">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="multi-ocupaciones"><strong>Seleccione
+                                                            las ocupaciones:</strong></label>
+                                                    <select multiple="multiple" id="multi-ocupaciones"
+                                                            name="multi-ocupaciones"
+                                                            class="form-control">
+                                                        {% for ocupacion in ocupaciones %}
+                                                            <option value={{ ocupacion.id }}>{{ ocupacion.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="factoresTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="parentesco">PARENTESCO O RELACIÓN CON CASO DE TB:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm " id="parentesco"
+                                                            name="parentesco">
+                                                        <option value="0">Seleccione el parentesco</option>
+                                                        {% for parentesco in  parentescos %}
+                                                            <option value="{{ parentesco.id }}">{{ parentesco.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="bVacunado">Vacunado con
+                                                        BCG (revisar huella):</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="bVacunado"
+                                                               value="1">
+                                                        <label for="bVacunadoSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="bVacunado" value="0" checked>
+                                                        <label for="bVacunadoNo">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="bTratado">PREVIAMENTE TRATADO PARA TB? (HISTORIA DE TB):</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="bTratado"
+                                                               value="1">
+                                                        <label for="bTratadoSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="bTratado" value="0" checked>
+                                                        <label for="bTratadoNo">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarTratadoFechaNotificacion" class="form-group" style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="tratadoFechaNotificacion">Fecha de
+                                                        notificación:</label>
+                                                    <div>
+                                                        <input type="date" id="tratadoFechaNotificacion"
+                                                               name="tratadoFechaNotificacion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-7" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="dVIH">DIAGNÓSTICO DE VIH:</label>
+                                                    <div style="margin-left: 10px">
+                                                        <input type="radio" name="dVIH" value="Positivo">
+                                                        <label for="dVIHPositivo">Positivo</label>
+
+                                                        <input style="margin-left: 20px" type="radio" name="dVIH"
+                                                               value="Negativo">
+                                                        <label for="dVIHNegativo">Negativo</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="dVIH" value="Realizado sin resultado">
+                                                        <label for="dVIHRealizado">Realizado sin resultado</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="dVIH" value="No realizado" checked>
+                                                        <label for="dVIHNoRealizado">No realizado</label>
+                                                    </div>
+                                                </div>
+                                                <div id="mostrarVihFechaRealizacion" class="form-group" style="display: none">
+                                                    <label class="control-label" for="vihFechaRealizacion">Fecha de
+                                                        realización:</label>
+                                                    <div>
+                                                        <input type="date" id="vihFechaRealizacion"
+                                                               name="vihFechaRealizacion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-md-offset-1" style="background: #eeeeee;">
+                                                <div id="mostrarTarvae" class="form-group" style="display: none">
+                                                    <label class="control-label " for="tarvae">¿Con Tarvae (terapia antirretroviral):</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="tarvae" value="1">
+                                                        <label for="tarvaeSI">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="tarvae" value="0" checked>
+                                                        <label for="tarvaeNo">No</label>
+
+                                                    </div>
+                                                </div>
+                                                <div id="mostrarVihFechaInicio" class="form-group" style="display: none">
+                                                    <label class="control-label" for="vihFechaInicio">Fecha de
+                                                        inicio:</label>
+                                                    <div>
+                                                        <input type="date" id="vihFechaInicio"
+                                                               name="vihFechaInicio">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="tptAnterior">TPT ANTERIOR:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="tptAnterior"
+                                                               value="1">
+                                                        <label for="tptAnteriorSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="tptAnterior" value="0" checked>
+                                                        <label for="tptAnteriorNo">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="mostrarTPTAnterior" style="display: none">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="tptFechaInicio">Fecha
+                                                            inicial:</label>
+                                                        <div>
+                                                            <input type="date" id="tptFechaInicio"
+                                                                   name="tptFechaInicio">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="tptFechaFinal">Fecha
+                                                            final:</label>
+                                                        <div>
+                                                            <input type="date" id="tptFechaFinal"
+                                                                   name="tptFechaFinal">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="control-label " for="medicamento">Medicamento:</label>
+                                                    <div class="form-group">
+                                                        <select class="form-control input-sm " id="medicamento"
+                                                                name="medicamento">
+                                                            <option value="0">Seleccione el medicamento</option>
+                                                            {% for medicamento in  medicamentos %}
+                                                                <option value="{{ medicamento.id }}">{{ medicamento.nombre }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12" id="mostrarPorqueTPTAnterior" style="display: none">
+                                                <label class="control-label " for="porqueTPT">¿Por qué recibió TPT en el
+                                                    pasado?:</label>
+                                                <textarea
+                                                        style=" width: 100%; resize: none ; height: 100px ; margin-top: 2px"
+                                                        id="porqueTPT"></textarea>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-12" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="otroFactorRiesgo">¿Además de la
+                                                        condición de “CONTACTO DE CASO DE TB”, la persona tiene otros FR
+                                                        para TB? :</label>
+                                                    <div style="margin-left: 652px">
+                                                        <input type="radio"
+                                                               name="otroFactorRiesgo" value="1">
+                                                        <label for="tptAnteriorSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="otroFactorRiesgo"
+                                                               value="0" checked>
+                                                        <label for="tptAnteriorNo">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="mostrarFactoresRiesgo" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-1"
+                                                 style="border-top: none;margin-left: 30%;display: none">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="multi-factorRiesgo"><strong>Seleccione
+                                                            los factores de riesgo:</strong></label>
+                                                    <select multiple="multiple" id="multi-factorRiesgo"
+                                                            name="multi-factorRiesgo"
+                                                            class="form-control" style="height: 300px">
+                                                        {% for factor in factoresRiesgo %}
+                                                            <option value={{ factor.id }}>{{ factor.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label class="control-label " for="observaciones">Observaciones:</label>
+                                                <textarea
+                                                        style=" width: 100%; resize: none ; height: 100px ; margin-top: 2px"
+                                                        id="observaciones"></textarea>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    {% if (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                    {% endif %}
+                    <button id="btnCancelar" type="button" class="btn btn-primario"> Salir</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.mockjax.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.autocomplete.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            (function () {
+                {% if not (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_VISUALIZADOR")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            })();
+
+            $('#multi-ocupaciones, #multi-factorRiesgo').multiSelect();
+
+            //Formulario Buscar persona
+            $('#ci').on("keyup", function () {
+
+                if ($('#ci').val().trim().length === 11) {
+                    $('#btnBuscar').prop("disabled", false);
+                } else {
+                    $('#btnBuscar').prop("disabled", true);
+                }
+            });
+
+            $('#provinciaResid').on('change', function () {
+                var provincia = $(this).val();
+
+                //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+                var html = '<option value="0">Seleccione un municipio</option>';
+
+                {% for municipio in  municipios %}
+                var idProvincia = '{{ municipio.getProvincia().id }}';
+
+                if (idProvincia == provincia) {
+                    var idMunicipio = '{{ municipio.id }}';
+                    var name = '{{ municipio.nombre }}';
+                    html += '<option value="' + idMunicipio + '">' + name + '</option>';
+                }
+                {% endfor %}
+
+                $("#municipioResid").html(html);
+            });
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir, #btnCancelar').on('click', function () {
+                var enlace = "{{ path('localizarPacienteContactoCI', {ci:'id'}) }}";
+                var ruta = enlace.replace('id','{{ carnetIdentidad }}');
+                window.location.href = ruta;
+            });
+
+            $("input[name='bTratado']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarTratadoFechaNotificacion").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarTratadoFechaNotificacion").hide();
+                    $("#tratadoFechaNotificacion").val('');
+                }
+            });
+
+            $("input[name='dVIH']:radio").click(function () {
+
+                if ($(this).attr("value") !== "No realizado") {
+                    $("#mostrarVihFechaRealizacion").show();
+                    if ($(this).attr("value") === "Positivo") {
+                        $("#mostrarTarvae").show();
+                    } else {
+                        $("#mostrarVihFechaInicio").hide();
+                        $("#vihFechaInicio").val('');
+                        $("#mostrarTarvae").hide();
+                        $("input[name='tarvae']:radio").prop('checked', true);
+                    }
+                } else {
+                    $("#mostrarVihFechaInicio").hide();
+                    $("#mostrarTarvae").hide();
+                    $("#mostrarVihFechaRealizacion").hide();
+                    $("#vihFechaInicio").val('');
+                    $("#vihFechaRealizacion").val('');
+                    $("input[name='tarvae']:radio").prop('checked', true);
+                }
+            });
+
+            $("input[name='tarvae']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarVihFechaInicio").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarVihFechaInicio").hide();
+                    $("#vihFechaInicio").val('');
+                }
+            });
+
+            $("input[name='tptAnterior']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarTPTAnterior").show();
+                    $("#mostrarPorqueTPTAnterior").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarTPTAnterior").hide();
+                    $("#mostrarPorqueTPTAnterior").hide();
+                    $("#tptFechaInicio").val('');
+                    $("#tptFechaFinal").val('');
+                    $("#medicamento").val(0);
+                    $("#porqueTPT").val('');
+                }
+            });
+
+            $("input[name='otroFactorRiesgo']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFactoresRiesgo").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFactoresRiesgo").hide();
+                    $('#ms-multi-factorRiesgo .ms-list .ms-elem-selectable').each(function () {
+                        $(this).css('display', 'list-item').removeClass('ms-selected');
+                    });
+                    $('#ms-multi-factorRiesgo .ms-list .ms-elem-selection').each(function () {
+                        $(this).css('display', 'none').addClass('ms-hover').removeClass('ms-selected');
+                    });
+                    $("#multi-factorRiesgo").val('');
+                }
+            });
+
+            var carnet = '';
+
+            //Boton localizar
+            $('#btnBuscar').on("click", function () {
+
+                $(".preload").removeClass('hidden');
+
+                carnet = $("#ci").val();
+
+                var mat_datos = {
+                    carnetIdentidad: carnet
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("localizarContacto") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    $(".preload").addClass('hidden');
+
+                    if (data == 'si') {
+
+                        $('#blockContactos').addClass('hidden');
+                        alertify.alert('<strong>El contacto está activo en este paciente.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Alerta</h4>')
+                            .set('label', 'Aceptar')
+
+                    } else {
+                        $("#ci").val('');
+                        $('#nameContacto').text('NUEVO CONTACTO CI: ' + carnet);
+                        $('#blockContactos').removeClass('hidden');
+
+                    }
+                });
+            });
+
+            $('#btnGuardar').on('click', function () {
+
+                //Validaciones Datos Generales
+                if ($("#fechaNotificacion").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de notificación del contacto.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+
+                if ($("#fechaNotificacion").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de notificación no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#nombre").val().trim() == '') {
+                    alertify.alert('<strong>El campo nombre es obligatorio, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+                if ($("#primerApellido").val().trim() == '') {
+                    alertify.alert('<strong>El campo primer apellido es obligatorio, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+                if ($("#segundoApellido").val().trim() == '') {
+                    alertify.alert('<strong>El campo segundo apellido es obligatorio, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+                if ($("#sexo").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el sexo del contacto.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+                if ($("#colorPiel").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el color de la piel del contacto.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#nivelEducacional").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el nivel educacional del contacto.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#edad").val() == '') {
+                    alertify.alert('<strong>El campo edad es obligatorio, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+                if ($("#edad").val() < 1) {
+                    alertify.alert('<strong>Error: la edad del paciente no puede ser menor que 1.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#provinciaResid").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar la provincia de residencia del contacto.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+                if ($("#municipioResid").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el municipio de residencia del contacto.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($("#direccion").val().trim() == '') {
+                    alertify.alert('<strong>El campo dirección es obligatorio, no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if(!($('#ms-multi-ocupaciones li.ms-elem-selectable ').hasClass('ms-selected'))) {
+                    alertify.alert('<strong>Debe  seleccionar al menos una ocupación.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Advertencia</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                //Validaciones Factores de Riesgos
+                if ($("#parentesco").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar la relación o el parentesco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($('input:radio[name=bTratado]:checked').val() == '1') {
+                    if ($("#tratadoFechaNotificacion").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de notificación del contacto.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#tratadoFechaNotificacion").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de notificación no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=dVIH]:checked').val() != 'No realizado') {
+                    if ($("#vihFechaRealizacion").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de realización del diagnostico.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#vihFechaRealizacion").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de realización del diagnostico no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                    if ($('input:radio[name=dVIH]:checked').val() == 'Positivo') {
+                        if ($('input:radio[name=tarvae]:checked').val() == '1') {
+                            if ($("#vihFechaInicio").val() == '') {
+                                alertify.alert('<strong>Debe seleccionar la fecha de inicio de la terapia antirretroviral.</strong>')
+                                    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                    .set('label', 'Aceptar');
+                                return false;
+                            }
+
+                            if ($("#vihFechaInicio").val() > hoy) {
+                                alertify.alert('<strong>Error: la fecha de inicio de la terapia antirretroviral no puede ser mayor que la fecha actual.</strong>')
+                                    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                    .set('label', 'Aceptar');
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                if ($('input:radio[name=tptAnterior]:checked').val() == '1') {
+                    if ($("#tptFechaInicio").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de inicio del TPT anterior.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#tptFechaInicio").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de inicio del TPT anterior no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#medicamento").val() == '0') {
+                        alertify.alert('<strong>Debe seleccionar el medicamento.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#porqueTPT").val() == '') {
+                        alertify.alert('<strong>¿Por qué recibió TPT en el pasado? es obligatorio, no puede quedar en blanco.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=otroFactorRiesgo]:checked').val() == '1') {
+                    if(!($('#ms-multi-factorRiesgo li.ms-elem-selectable ').hasClass('ms-selected'))){
+                        alertify.alert('<strong>Debe  seleccionar al menos un factor de riesgo.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Advertencia</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    idPaciente: {{ idPaciente }},
+                    carnetIdentidad: carnet,
+                    nombre: $("#nombre").val(),
+                    primerApellido: $("#primerApellido").val(),
+                    segundoApellido: $("#segundoApellido").val(),
+                    edad: $("#edad").val(),
+                    sexo: $("#sexo").val(),
+                    colorPiel: $("#colorPiel").val(),
+                    fechaNotificacion: $("#fechaNotificacion").val(),
+                    telefono: $("#telefono").val(),
+                    nivelEducacional: $("#nivelEducacional").val(),
+                    direccion: $("#direccion").val(),
+                    municipioResid: $("#municipioResid").val(),
+                    ocupaciones: $("#multi-ocupaciones").val(),
+                    parentesco: $("#parentesco").val(),
+                    vacunado: $('input:radio[name=bVacunado]:checked').val(),
+                    tratadoTB: $('input:radio[name=bTratado]:checked').val(),
+                    tratadoFechaNotificacion: $("#tratadoFechaNotificacion").val(),
+                    diagnosticoVIH: $('input:radio[name=dVIH]:checked').val(),
+                    vihFechaRealizacion: $("#vihFechaRealizacion").val(),
+                    tarvae: $('input:radio[name=tarvae]:checked').val(),
+                    vihFechaInicio: $("#vihFechaInicio").val(),
+                    tptAnterior: $('input:radio[name=tptAnterior]:checked').val(),
+                    tptFechaInicio: $("#tptFechaInicio").val(),
+                    tptFechaFinal: $("#tptFechaFinal").val(),
+                    medicamento: $("#medicamento").val(),
+                    porqueTPT: $("#porqueTPT").val().trim(),
+                    otroFactorRiesgo: $('input:radio[name=otroFactorRiesgo]:checked').val(),
+                    factoresRiesgo: $("#multi-factorRiesgo").val(),
+                    observaciones: $("#observaciones").val().trim()
+
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertContacto") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    $(".preload").addClass('hidden');
+
+                    if (data == 'ok') {
+
+                        alertify.alert('<strong>El contacto ha sido insertado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                            .set('label', 'Aceptar')
+                            .set('onok', function () {
+                                var enlace = "{{ path('localizarPacienteContactoCI', {ci:'id'}) }}";
+                                var ruta = enlace.replace('id','{{ carnetIdentidad }}');
+                                window.location.href = ruta;
+                            });
+                    } else {
+                        alertify.alert('<strong>' + data + '</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar')
+                    }
+                });
+
+            });
+
+        });
+    </script>
+{% endblock %}

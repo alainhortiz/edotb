@@ -1,0 +1,271 @@
+<div class="hidden" id="blockSeguimientos" class="container-fluid" style="margin-top: 20px">
+    <div class="form-cont">
+        <div class="row" style="padding: 20px">
+            {% if contactos %}
+                <h2 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                    <span style="color: #434242">CONTACTO CI:</span>
+                    {{ contactos[0].carnetIdentidad }} - {{ contactos[0].nombreCompleto()|upper }}</h2>
+            {% endif %}
+            <div class="top-datatable" style="background: #434242; padding: 5px;margin-top: 10px">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="no-margin">
+                                <h2 class="no-padding" style="color: #70cbb1">Seguimientos</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row"
+                     style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242;">
+                    <div class="col-md-12">
+                        <table id="dataSeguimientos" class="display" cellspacing="0" width="100%">
+                            <thead>
+                            <tr>
+                                <th>CI Paciente</th>
+                                <th>Nombres y Apellidos</th>
+                                <th class="text-center">Fecha de Notificación</th>
+                                <th class="text-center">Infección Tuberculosa</th>
+                                <th class="text-center">Motivo de Cierre</th>
+                                <th class="text-center">Mes de Evaluación</th>
+                                {% if (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                                    <th class="text-center">Acciones</th>
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if contactos %}
+                                {% for seguimiento in contactos[0].seguimientos %}
+                                    <tr data-id="{{ seguimiento.id }}">
+                                        <td>{{ contactos[0].paciente.carnetIdentidad }}</td>
+                                        <td>{{ contactos[0].paciente.nombreCompleto() }}</td>
+                                        <td class="text-center">{{ seguimiento.fechaNotificacion|date('Y-m-d') }}</td>
+                                        <td class="text-center">
+                                            {% if seguimiento.contactoSeguimientoTPT %}
+                                                <div class="md-checkbox" style="margin-left: 50%">
+                                                    <input type="checkbox" disabled class="md-check" checked>
+                                                    <label>
+                                                        <span></span>
+                                                        <span class="check"></span>
+                                                        <span class="box"></span>
+                                                    </label>
+                                                </div>
+                                            {% else %}
+                                                <div class="md-checkbox" style="margin-left: 50%">
+                                                    <input type="checkbox" disabled class="md-check">
+                                                    <label>
+                                                        <span></span>
+                                                        <span class="check"></span>
+                                                        <span class="box"></span>
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        {% if seguimiento.isActive == 0 %}
+                                            <td>{{ seguimiento.motivoCierre.nombre }}</td>#}
+                                        {% else %}
+                                            <td class="text-center">-</td>
+                                        {% endif %}
+                                        <td class="text-center">
+                                            {# Mes 0 #}
+                                            <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:0, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                               class="btn btn-sm btn-primary seguimiento">
+                                                <span class="badge">0</span>
+                                            </a>
+                                            {# Mes 2 #}
+                                            {% if seguimiento.cantidadEvaluaciones() >= 1 %}
+                                                {% if seguimiento.evaluaciones[0].fechaResultado %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:2, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-primary seguimiento"><span
+                                                                class="badge">2</span>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:2, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-info seguimiento" disabled><span
+                                                                class="badge">2</span>
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:2, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                   class="btn btn-sm btn-info seguimiento" disabled><span
+                                                            class="badge">2</span>
+                                                </a>
+                                            {% endif %}
+                                            {# Mes 6 #}
+                                            {% if seguimiento.cantidadEvaluaciones() >= 2 %}
+                                                {% if seguimiento.evaluaciones[1].fechaResultado %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:6, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-primary seguimiento"><span
+                                                                class="badge">6</span>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:6, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-info seguimiento" disabled><span
+                                                                class="badge">6</span>
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:6, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                   class="btn btn-sm btn-info seguimiento" disabled><span
+                                                            class="badge">6</span>
+                                                </a>
+                                            {% endif %}
+                                            {# Mes 12 #}
+                                            {% if seguimiento.cantidadEvaluaciones() >= 3 %}
+                                                {% if seguimiento.evaluaciones[2].fechaResultado %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:12, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-primary seguimiento"><span
+                                                                class="badge">12</span>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:12, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-info seguimiento" disabled><span
+                                                                class="badge">12</span>
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:12, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                   class="btn btn-sm btn-info seguimiento" disabled><span
+                                                            class="badge">12</span>
+                                                </a>
+                                            {% endif %}
+                                            {# Mes 18 #}
+                                            {% if seguimiento.cantidadEvaluaciones() >= 4 %}
+                                                {% if seguimiento.evaluaciones[3].fechaResultado %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:18, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-primary seguimiento"><span
+                                                                class="badge">18</span>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:18, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-info seguimiento" disabled><span
+                                                                class="badge">18</span>
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:18, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                   class="btn btn-sm btn-info seguimiento" disabled><span
+                                                            class="badge">18</span>
+                                                </a>
+                                            {% endif %}
+                                            {# Mes 12 #}
+                                            {% if seguimiento.cantidadEvaluaciones() >= 5 %}
+                                                {% if seguimiento.evaluaciones[4].fechaResultado %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:24, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-primary seguimiento"><span
+                                                                class="badge">24</span>
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:24, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                       class="btn btn-sm btn-info seguimiento" disabled><span
+                                                                class="badge">24</span>
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                <a href="{{ path('addSeguimientoContacto' , {idSeguimiento: seguimiento.id , mes:24, ci: contactos[0].paciente.carnetIdentidad}) }}"
+                                                   class="btn btn-sm btn-info seguimiento" disabled><span
+                                                            class="badge">24</span>
+                                                </a>
+                                            {% endif %}
+                                            <a href="{{ path('addTPTContacto' , {idSeguimiento: seguimiento.id , ci:contactos[0].paciente.carnetIdentidad}) }}"
+                                               class="btn btn-sm btn-success tpt" {{ (seguimiento.tpt) ?: 'disabled' }}>
+                                                <span class="badge">TPT</span>
+                                            </a>
+                                        </td>
+                                        {% if (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                                            <td class="text-center">
+                                                <div class="btn-opt" id="actualizar"
+                                                     style="background: #3a81b8; text-align: center"
+                                                     data-toggle="tooltip"
+                                                     data-placement="bottom" title="Actualizar">
+                                                    <a href="#" style="text-decoration: none; color: #ffffff">
+                                                        <i class="glyphicon glyphicon-pencil"
+                                                           style="font-size: 20px"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="btn-opt cerrar" name="$id" id="$id"
+                                                     style="background: #e42d26; text-align: center"
+                                                     data-toggle="tooltip"
+                                                     data-placement="bottom" title="Cerrar">
+                                                    <i class="glyphicon glyphicon-folder-close"
+                                                       style="font-size: 16px"></i>
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ include('Contactos/Contactos/modalCerrarContacto.html.twig') }}
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        var idSeguimiento;
+
+        $('#dataSeguimientos tbody').on('click', '.cerrar', function () {
+
+            var row = $(this).parents('tr');
+
+            idSeguimiento =  row.data('id');
+
+            $('#modalCerrarContacto').modal('show');
+
+        });
+
+        $('.aceptarMotivo').on('click', function () {
+
+            alert('Ok');
+
+            if ($("#motivo").val() == '0') {
+                alertify.alert('<strong>Debe seleccionar el motivo de cierre.</strong>')
+                    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                    .set('label', 'Aceptar');
+                return false;
+            }
+
+            $('#modalCerrarContacto').modal('hide');
+
+            $(".preload").removeClass('hidden');
+
+            var mat_datos = {
+                idSeguimiento: idSeguimiento,
+                motivo: $("#motivo").val()
+            };
+
+            $("#motivo").val(0);
+
+            $.ajax({
+                type: "POST",
+                dataType: "html",
+                url: '{{ path("cerrarContacto") }}',
+                data: mat_datos
+            }).done(function (data) {
+                $(".preload").addClass('hidden');
+                if (data == 'ok') {
+
+                    alertify.alert('<strong>El seguimiento de este contacto ha sido cerrado correctamente</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                        .set('label', 'Aceptar')
+                } else {
+                    alertify.alert('<strong>' + data + '</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                        .set('label', 'Aceptar')
+                }
+            });
+
+        });
+    });
+</script>

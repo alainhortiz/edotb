@@ -1,0 +1,491 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 form-cont">
+                    <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Editar Usuario</h3>
+                    <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                        <fieldset style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="username">Usuario:</label>
+                                        <div>
+                                            <strong>{{ usuario.username }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="nombre">Nombre:</label>
+                                        <div>
+                                            <input value="{{ usuario.nombre }}" type="text" class="form-control input-sm" id="nombre" name="nombre">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="primerApellido">Primer Apellido:</label>
+                                        <div>
+                                            <input value="{{ usuario.primerApellido }}" type="text" class="form-control input-sm" id="primerApellido" name="primerApellido">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="segundoApellido">Segundo Apellido:</label>
+                                        <div>
+                                            <input value="{{ usuario.segundoApellido }}" type="text" class="form-control input-sm" id="segundoApellido" name="segundoApellido">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                {% if app.user.getNivelAcceso().nivel == 'unidad' %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().nombre : app.user.hospital.municipio.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Unidad:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().nombre : '' }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.hospital != null ? app.user.hospital.nombre : ''}}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elseif app.user.getNivelAcceso().nivel == 'municipal'%}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().nombre : app.user.hospital.municipio.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Unidad:</label>
+                                        <div class="form-group">
+                                            <select {{ usuario.getAreaSalud() == null ? 'disabled' }} class="form-control input-sm " id="areaSalud" name="areaSalud">
+                                                <option  value="0">Seleccione una unidad </option>
+                                                {% for unidad in areasSalud %}
+                                                    {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().id == unidad.id) %}
+                                                        <option selected value="{{ usuario.getAreaSalud().id }}">{{ usuario.getAreaSalud().nombre }} </option>
+                                                    {% else %}
+                                                        {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().id == unidad.municipio.id)
+                                                            or (usuario.getHospital() != null and usuario.hospital.getMunicipio().id == unidad.municipio.id)  %}
+                                                            <option value="{{ unidad.id }}">{{ unidad.nombre }}</option>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <select {{ usuario.hospital == null ? 'disabled' }} class="form-control input-sm " id="hospital" name="hospital">
+                                                <option  value="0">Seleccione un hospital </option>
+                                                {% for hospital in hospitales %}
+                                                    {% if (usuario.hospital != null and usuario.hospital.id == hospital.id) %}
+                                                        <option selected value="{{ usuario.hospital.id }}">{{ usuario.hospital.nombre }} </option>
+                                                    {% else %}
+                                                        {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().id == hospital.municipio.id)
+                                                            or (usuario.getHospital() != null and usuario.hospital.getMunicipio().id == hospital.municipio.id)  %}
+                                                            <option value="{{ hospital.id }}">{{ hospital.nombre }}</option>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% elseif  app.user.getNivelAcceso().nivel == 'provincial' %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label   class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="municipio" name="municipio">
+                                                {% for municipio in municipios %}
+                                                    {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().id == municipio.id)
+                                                        or (usuario.getHospital() != null and usuario.hospital.getMunicipio().id == municipio.id)  %}
+                                                        <option selected value="{{ municipio.id }}">{{ municipio.nombre }} </option>
+                                                    {% else %}
+                                                        {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().getProvincia().id == municipio.provincia.id)
+                                                            or (usuario.getHospital() != null and usuario.hospital.getMunicipio().getProvincia().id == municipio.provincia.id)  %}
+                                                            <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Unidad:</label>
+                                        <div class="form-group">
+                                            <select {{ usuario.getAreaSalud() == null ? 'disabled' }} class="form-control input-sm " id="areaSalud" name="areaSalud">
+                                                <option  value="0">Seleccione una unidad </option>
+                                                {% for unidad in areasSalud %}
+                                                    {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().id == unidad.id) %}
+                                                        <option selected value="{{ usuario.getAreaSalud().id }}">{{ usuario.getAreaSalud().nombre }} </option>
+                                                    {% else %}
+                                                        {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().id == unidad.municipio.id)
+                                                            or (usuario.getHospital() != null and usuario.hospital.getMunicipio().id == unidad.municipio.id)  %}
+                                                            <option value="{{ unidad.id }}">{{ unidad.nombre }}</option>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <select {{ usuario.hospital == null ? 'disabled' }} class="form-control input-sm " id="hospital" name="hospital">
+                                                <option  value="0">Seleccione un hospital </option>
+                                                {% for hospital in hospitales %}
+                                                    {% if (usuario.hospital != null and usuario.hospital.id == hospital.id) %}
+                                                        <option selected value="{{ usuario.hospital.id }}">{{ usuario.hospital.nombre }} </option>
+                                                    {% else %}
+                                                        {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().id == hospital.municipio.id)
+                                                            or (usuario.getHospital() != null and usuario.hospital.getMunicipio().id == hospital.municipio.id)  %}
+                                                            <option value="{{ hospital.id }}">{{ hospital.nombre }}</option>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label  class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="provincia" name="provincia">
+                                                {% for provincia in  provincias %}
+                                                    {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().getProvincia().id == provincia.id)
+                                                        or (usuario.getHospital() != null and usuario.hospital.getMunicipio().getProvincia().id == provincia.id)  %}
+                                                        <option selected value="{{provincia.id }}">{{ provincia.nombre }} </option>
+                                                    {% else %}
+                                                        <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label   class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="municipio" name="municipio">
+                                                {% for municipio in municipios %}
+                                                    {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().id == municipio.id)
+                                                        or (usuario.getHospital() != null and usuario.hospital.getMunicipio().id == municipio.id)  %}
+                                                        <option selected value="{{ municipio.id }}">{{ municipio.nombre }} </option>
+                                                    {% else %}
+                                                        {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().getProvincia().id == municipio.provincia.id)
+                                                            or (usuario.getHospital() != null and usuario.hospital.getMunicipio().getProvincia().id == municipio.provincia.id)  %}
+                                                            <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Unidad:</label>
+                                        <div class="form-group">
+                                            <select {{ usuario.getAreaSalud() == null ? 'disabled' }} class="form-control input-sm " id="areaSalud" name="areaSalud">
+                                                <option  value="0">Seleccione una unidad </option>
+                                                {% for unidad in areasSalud %}
+                                                    {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().id == unidad.id) %}
+                                                        <option selected value="{{ usuario.getAreaSalud().id }}">{{ usuario.getAreaSalud().nombre }} </option>
+                                                    {% else %}
+                                                        {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().id == unidad.municipio.id)
+                                                            or (usuario.getHospital() != null and usuario.hospital.getMunicipio().id == unidad.municipio.id)  %}
+                                                            <option value="{{ unidad.id }}">{{ unidad.nombre }}</option>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <select {{ usuario.hospital == null ? 'disabled' }} class="form-control input-sm " id="hospital" name="hospital">
+                                                <option  value="0">Seleccione un hospital </option>
+                                                {% for hospital in hospitales %}
+                                                    {% if (usuario.hospital != null and usuario.hospital.id == hospital.id) %}
+                                                        <option selected value="{{ usuario.hospital.id }}">{{ usuario.hospital.nombre }} </option>
+                                                    {% else %}
+                                                        {% if (usuario.getAreaSalud() != null and usuario.getAreaSalud().getMunicipio().id == hospital.municipio.id)
+                                                            or (usuario.getHospital() != null and usuario.hospital.getMunicipio().id == hospital.municipio.id)  %}
+                                                            <option value="{{ hospital.id }}">{{ hospital.nombre }}</option>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                {% if app.user.getNivelAcceso().nivel == 'unidad' %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="nivelAcceso">Nivel de Acceso:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getNivelAcceso().nivel }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="nivelAcceso">Nivel de Acceso:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="nivelAcceso" name="nivelAcceso">
+                                                <option value="{{ usuario.getNivelAcceso().id }}">{{ usuario.getNivelAcceso().nivel }}</option>
+                                                {% for nivelAcceso in  nivelesAcceso %}
+                                                    <option value="{{ nivelAcceso.id }}">{{ nivelAcceso.nivel }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-offset-3" style="border-top: none">
+                                    <div class="form-group">
+                                        <label class="control-label " for="multi-roles">Seleccione Roles:</label>
+                                        <select multiple="multiple" id="multi-roles" name="multi-roles[]" class="form-control">
+
+                                            {% for role in roles %}
+
+                                                {% if not (role in usuario.getUsuarioRoles() or role.nombre == 'ROLE_SUPERUSUARIO' )  %}
+
+                                                    <option  value={{ role.id }}>{{ role.nombre }}</option>
+
+                                                {% endif %}
+
+                                            {% endfor %}
+                                            {% for role in usuario.getUsuarioRoles() %}
+
+                                                {% if not (role.nombre == 'ROLE_SUPERUSUARIO')  %}
+
+                                                    <option class="misRoles" value={{ role.id }}>{{ role.nombre }}</option>
+
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <p class="text-center" style="margin-top: 20px">
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                        <button id="btnSalir" type="button" class="btn btn-primario"> Salir </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_ADMINISTRADOR") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+            $('#multi-roles').multiSelect();
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function ()
+            {
+                window.location.href = "{{ path('gestionarUsuarios') }}";
+
+            });
+            //----------Relacionar selects --------------------------
+            $('#areaSalud').on('change' , function () {
+                if($(this).val() != '0'){$("#hospital").prop('disabled' , true);}
+                else {$("#hospital").prop('disabled' , false);}
+            });
+            $('#hospital').on('change' , function () {
+                if($(this).val() != '0'){$("#areaSalud").prop('disabled' , true);}
+                else {$("#areaSalud").prop('disabled' , false);}
+            });
+
+            {% if  app.user.getNivelAcceso().nivel != 'unidad' %}
+                {{ include('Generales/relacionarSelectProvMun.html.twig') }}
+            {% endif %}
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function ()
+            {
+                if($("#nombre").val().trim() == ''){
+                    alertify.alert('<strong>El campo nombre es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if($("#primerApellido").val().trim() == ''){
+                    alertify.alert('<strong>El campo primer apellido es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if($("#segundoApellido").val().trim() == ''){
+                    alertify.alert('<strong>El campo segundo apellido es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if($("#municipio").val() == 0){
+                    alertify.alert('<strong>Debe seleccionar el municipio al que pertenece el usuario.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                var areaSalud = '{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().id : ''}}';
+                var hospital = '{{ app.user.hospital != null ? app.user.hospital.id : ''}}';
+                {% if not (app.user.getNivelAcceso().nivel == 'unidad') %}
+                    if($("#areaSalud").val() == '0' && $("#hospital").val() == '0'){
+                        alertify.alert('<strong>Debe seleccionar la unidad o el hospital en la que trabaja el usuario.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar');
+                        return false;
+                    }
+                    hospital = $("#hospital").val();
+                    areaSalud = $("#areaSalud").val();
+                {% endif %}
+
+                if(!($(' li.ms-elem-selectable ').hasClass('ms-selected')))
+                {
+                    alertify.alert('<strong>Debe  seleccionar al menos un rol para el usuario.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                var roles = [];
+
+                $(' li.ms-elem-selectable ').each(function(){
+
+                    if($(this).hasClass('ms-selected')){
+
+                        var valor = $(this).text();
+                        roles.push(valor);
+                    }
+                });
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    idUsuario: {{ usuario.id }},
+                    username: '{{ usuario.username }}',
+                    nombre: $("#nombre").val(),
+                    primerApellido: $("#primerApellido").val(),
+                    segundoApellido: $("#segundoApellido").val(),
+                    nivelAcceso: $("#nivelAcceso").val(),
+                    roles: roles,
+                    areaSalud: areaSalud,
+                    hospital: hospital
+                };
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updateUsuario") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $(".preload").addClass('hidden');
+                    if(data == 'ok'){
+
+                        alertify.alert('<strong>El usuario ha sido modificado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+            $('.ms-list .ms-elem-selectable.misRoles').each(function(){
+                $(this).css('display', 'none');
+                $(this).addClass('ms-hover');
+                $(this).addClass('ms-selected');
+
+            });
+
+            $('.ms-list .ms-elem-selection.misRoles').each(function(){
+                $(this).addClass('ms-selected');
+                $(this).css('display', '');
+            });
+        });
+    </script>
+{% endblock %}

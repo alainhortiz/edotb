@@ -1,0 +1,460 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="form-cont">
+            <div class="row">
+                <div class="col-md-11 col-lg-11" style="margin: auto; text-align: center">
+                    <h1 class="glyphicon glyphicon-user" style="color: #70cbb1; font-size: 54px; margin-bottom: 13px;"></h1>
+                </div>
+            </div>
+            <div class="row" style="margin: 10px">
+                <div class="col-lg-6 col-md-6">
+                    {% set paciente   = currentEsquema.pacienteEvolucion.paciente %}
+                    {% set evolucion  = currentEsquema.pacienteEvolucion %}
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-lg-6 col-md-6">
+                            <h5>Carnet de Identidad: <strong>{{ paciente.carnetIdentidad }}</strong></h5>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <h5>Nombre: <strong>{{ paciente.nombre }}</strong></h5>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-lg-6 col-md-6">
+                            <h5>Primer Apellido: <strong>{{ paciente.primerApellido }}</strong></h5>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <h5>Segundo Apellido: <strong>{{ paciente.segundoApellido }}</strong></h5>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-lg-6 col-md-6">
+                            <h5>Edad: <strong>{{ evolucion.edad }}</strong></h5>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <h5>Sexo: <strong>{{ paciente.sexo }}</strong></h5>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 15px">
+                        <div class="col-lg-6 col-md-6">
+                            <h5>Fecha de Notificacion: <strong>{{ evolucion.fechaNotificacion|date('Y-m-d') }}</strong></h5>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <h5 style="color: #26beb4">Fecha de Inicio del Tratamiento: <strong id="fechaInicioTratamiento">{{ currentEsquema.fechaInicio|date('Y-m-d') }}</strong></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <table  class="table table-bordered table-responsive" style="padding: 10px ; background-color: #919191 ; color: white">
+                        <thead>
+                            <tr>
+                                <th><strong>ESQUEMAS DE MEDICAMENTOS</strong></th>
+                                <th><strong>FECHA DE INICIO</strong></th>
+                                <th><strong>ASISTENCIAS</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for esquema in evolucion.esquemasMedicamentos  %}
+                                {% set texto = esquema.medicamentos[0].nombre %}
+                                {% for medicamento in esquema.medicamentos %}
+                                    {% if loop.first == false %}
+                                        {% set texto = texto~' - '~medicamento.nombre %}
+                                    {% endif %}
+                                {% endfor %}
+                                <tr>
+                                    <td>{{ texto }}</td>
+                                    <td>{{ esquema.fechaInicio|date('Y-m-d') }}</td>
+                                    <td id="cantidad{{ esquema.id }}">{{ (esquema.asistenciasTratamientos)|length }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row" style="margin: 20px">
+                <form>
+                    <fieldset  style="border: solid 2px #cccccc; padding: 10px">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6">
+                                <h3 style="margin: 5px; padding-bottom: 7px;  color: #717070; text-align: left"><strong>BUSCADOR</strong></h3>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <p style="float: right">
+                                    <span class="glyphicon glyphicon-warning-sign" style="font-size: 20px; color: red"></span>
+                                    <strong>Se tomará como referencia el mes , el año y el esquema más reciente para los campos en blanco.</strong>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    {% set mesActual = "now"|date("Y-m") %}
+                                    {% set mesMinimo = evolucion.esquemasMedicamentos[0].fechaInicio|date('Y-m') %}
+                                    {% set annoActual = "now"|date("Y") %}
+                                    {% set annoMinimo = evolucion.esquemasMedicamentos[0].fechaInicio|date('Y') %}
+                                    <label class="control-label " for="mes">Mes:</label>
+                                    <select class="form-control input-sm" id="mes"  name="mes">
+                                        <option value="0">Seleccione el mes</option>
+                                        <option value="01" >Enero</option>
+                                        <option value="02" >Febrero</option>
+                                        <option value="03" >Marzo</option>
+                                        <option value="04" >Abril</option>
+                                        <option value="05" >Mayo</option>
+                                        <option value="06" >Junio</option>
+                                        <option value="07" >Julio</option>
+                                        <option value="08" >Agosto</option>
+                                        <option value="09" >Septiembre</option>
+                                        <option value="10" >Octubre</option>
+                                        <option value="11" >Noviembre</option>
+                                        <option value="12" >Diciembre</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label " for="anno">Año:</label>
+                                    <select class="form-control input-sm" id="anno"  name="anno">
+                                        <option value="0">Seleccione el año</option>
+                                        {% for anno in  range(annoMinimo,annoActual) %}
+                                            <option value="{{ anno }}">{{ anno }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label " for="esquemaMedicamentos">Esquemas de Medicamentos:</label>
+                                    <select class="form-control input-sm" id="esquemaMedicamentos" name="esquemaMedicamentos">
+                                        <option value="vacio">Seleccione un esquema de medicamentos</option>
+                                        {% for esquema in evolucion.esquemasMedicamentos  %}
+                                            {% set texto = esquema.medicamentos[0].nombre %}
+                                            {% for medicamento in esquema.medicamentos %}
+                                                {% if loop.first == false %}
+                                                    {% set texto = texto~' - '~medicamento.nombre %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            <option value="{{ esquema.id }}">{{ texto }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <p style="margin-top: 20px">
+                                        <button id="btnBuscar" type="button" class="btn btn-primario">Buscar</button>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <div class="container-fluid" id="calendarioAsistenciasTratamiento" style="margin-top: 20px">
+                    <div class="row">
+                        <div class="top-datatable" style="background: #434242; padding: 5px">
+                            <div class="row" style=" margin-right: auto">
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        <div class="no-margin">
+                                            <h5 class="no-padding" style="color: #70cbb1">Asistencia al Tratamiento</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="no-margin">
+                                            <h5 class="no-padding" style="color: #70cbb1">Mes: {{ mes }}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="no-margin">
+                                            <h5 class="no-padding" style="color: #70cbb1">Año: {{ anno }}</h5>
+                                        </div>
+                                    </div>
+                                    {% set currentTexto = currentEsquema.medicamentos[0].nombre %}
+                                    {% for medicamento in currentEsquema.medicamentos %}
+                                        {% if loop.first == false %}
+                                            {% set currentTexto = currentTexto~' - '~medicamento.nombre %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <div class="col-md-8">
+                                        <div class="no-margin">
+                                            <h5  class="no-padding" style="color: #70cbb1">Esquema de Medicamentos: {{ currentTexto }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table  class="table table-bordered table-responsive">
+                            <tbody>
+                                {% set j = 1 %}
+                                {% set fechasInvalidas = 0 %}
+                                {% for k in range(1,3) %}
+                                    <tr>
+                                        {% for i in range(1,11) if j <= diasMes %}
+                                            <td>
+                                                {% set fecha = j|length == 1 ? anno~'-'~mes~'-0'~j : anno~'-'~mes~'-'~j %}
+                                                <label class="control-label " for="tARV">{{ j }}</label>
+                                                {% if fecha in fechas %}
+                                                    {#<input  type="checkbox" checked class="form-control input-sm" id="{{ fecha }}" name="{{ fecha }}">#}
+                                                    <div class="md-checkbox " style="left: 45%">
+                                                        <input type="checkbox" checked id="{{ fecha }}" class="md-check" name="{{ fecha }}">
+                                                        <label for="{{ fecha }}">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                {% else %}
+                                                    {#<input  type="checkbox" {{  fecha < currentEsquema.fechaInicio|date('Y-m-d') or fecha > fechaTope ? 'disabled'}}  class="form-control input-sm" id="{{ fecha }}" name="{{ fecha }}">#}
+                                                    <div class="md-checkbox" style="left: 45%">
+                                                        <input type="checkbox" {{  fecha < currentEsquema.fechaInicio|date('Y-m-d') or fecha > fechaTope ? 'disabled'}} id="{{ fecha }}" class="md-check" name="{{ fecha }}">
+                                                        <label for="{{ fecha }}">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                    {% if fecha < currentEsquema.fechaInicio|date('Y-m-d') or fecha > fechaTope %}
+                                                        {% set fechasInvalidas = fechasInvalidas + 1 %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            {% set j = j +1 %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-center" style="margin-top: 20px">
+                        <button id="btnMarcar" type="button" class="btn btn-primario {{ (diasMes - fechasInvalidas)  == fechas|length ? 'marcados' }}" style="background-color: #70cbb1 ; color: #434242">{{ (diasMes - fechasInvalidas) == fechas|length ? 'Desmarcar Todos' : 'Marcar Todos'}}</button>
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                        <button id="btnSalir" type="button" class="btn btn-primario"> Salir</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+            //--------- abandonar la pagina -----------------
+            $('#btnSalir').on('click', function (){
+
+                window.location.href = "{{ path('pacientesEnTratamiento') }}";
+            });
+
+            //------ Marcar y desmarcar todos los checkboxes-----
+            $('#btnMarcar').on('click', function (){
+
+                if(!$(this).hasClass('marcados'))
+                {
+                    $(':checkbox').each(function () {
+                        if(!this.disabled)
+                        {
+                            $(this).prop('checked' , true);
+                        }
+                    });
+                    $(this).addClass('marcados').text('Desmarcar Todos');
+                }else {
+                    $(':checkbox').each(function () {
+                        if(!this.disabled)
+                        {
+                            $(this).prop('checked' , false);
+                        }
+                    });
+                    $(this).removeClass('marcados').text('Marcar Todos');
+                }
+            });
+
+            //--------- enviar el formulario del Buscador -----------------
+            var fechaInicioT = '{{ currentEsquema.fechaInicio|date('Y-m-d') }}';
+            $('#btnBuscar').click(function ()
+            {
+                if ($("#mes").val()  == '0' && $("#anno").val() == '0' && $('#esquemaMedicamentos').val() == 'vacio'){
+                    alertify.alert('<strong>Debe seleccionar al menos un criterio de búsqueda.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                var mes  = $("#mes").val()  == '0' ? '{{ mes }}'  : $("#mes").val();
+                var anno = $('#anno').val() == '0' ? '{{ anno }}' : $("#anno").val();
+                var idEsquema = $("#esquemaMedicamentos").val()  == 'vacio' ? '{{ currentEsquema.id }}'  : $("#esquemaMedicamentos").val();
+                {% set evolucion  = currentEsquema.pacienteEvolucion %}
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+
+                    idEsquema: idEsquema,
+                    mes: mes,
+                    anno: anno,
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("buscarAsistenciasTratamiento") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $(".preload").addClass('hidden');
+
+                    $('#calendarioAsistenciasTratamiento').replaceWith(data);
+                    if($("#esquemaMedicamentos").val() != 'vacio')
+                    {
+                        {% for esquema in evolucion.esquemasMedicamentos  %}
+                            var idEsquemaIndex = '{{ esquema.id }}';
+                            if(idEsquema == idEsquemaIndex)
+                            {
+                                fechaInicioT = '{{ esquema.fechaInicio|date('Y-m-d') }}';
+                            }
+                        {% endfor %}
+
+                    }else{ fechaInicioT = '{{ currentEsquema.fechaInicio|date('Y-m-d') }}'; }
+
+                    $('#fechaInicioTratamiento').text(fechaInicioT);
+
+                }).fail(function (jqXHR, textStatus) {
+
+                    alertify.alert('<strong>Ha habido un problema en el servidor. Intentelo de nuevo.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                        .set('label','Aceptar')
+                });
+
+            });
+
+            //--------- guardar datos del calendario -----------------
+            $('#btnGuardar').click(function ()
+            {
+                var fechasMarcadas = [];
+                var fecha = '';
+
+                 $(':checkbox').map(function() {
+
+                     fecha = this.id;
+
+                    if(this.checked){
+                        fechasMarcadas.push(this.id);
+                    }
+                });
+                $(".preload").removeClass('hidden');
+
+
+                var mat_datos = {
+
+                    idEsquema: '{{ currentEsquema.id }}',
+                    fechasMarcadas: fechasMarcadas,
+                    fecha: fecha,
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("actualizarAsistenciasTratamiento") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $(".preload").addClass('hidden');
+                    if(!isNaN(data)){
+
+                        alertify.alert('<strong>Los cambios han sido guardados con éxito.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                            .set('onok', function(){
+
+                                $('#cantidad{{ currentEsquema.id }}').text(data);
+                            });
+                        //----------alerta para analisis de fin de etapa----
+                        if(data > 59){
+                            {% if bacFinEtapa == 0 or cultFinEtapa == 0 %}
+                                alertify.alert('<strong>Los cambios han sido guardados con éxito.<br>Estan pendientes los análisis correspondientes al fin de la primera fase de tratatamiento de este paciente.</strong>')
+                                    .setHeader('<span class="glyphicon glyphicon-alert" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">ALERTA</h4>')
+                                    .set('label','Aceptar');
+                                return false;
+                            {% endif %}
+                        }else if (data > 83){
+                            {% if bacFinEtapa == 1 or cultFinEtapa == 1 %}
+                                alertify.alert('<strong>Los cambios han sido guardados con éxito.<br>Estan pendientes los análisis correspondientes a la segunda fase de tratatamiento de este paciente.</strong>')
+                                    .setHeader('<span class="glyphicon glyphicon-alert" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">ALERTA</h4>')
+                                    .set('label','Aceptar');
+                            {% endif %}
+                        }else if(data > 107){
+                            {% if bacFinEtapa == 2 or cultFinEtapa == 2 %}
+                                alertify.alert('<strong>Los cambios han sido guardados con éxito.<br>Estan pendientes los análisis correspondientes al fin del tratatamiento de este paciente.</strong>')
+                                    .setHeader('<span class="glyphicon glyphicon-alert" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">ALERTA</h4>')
+                                    .set('label','Aceptar');
+                            {% endif %}
+                        }
+
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+
+                }).fail(function (jqXHR, textStatus) {
+
+                    alertify.alert('<strong>Ha habido un problema en el servidor. Intentelo de nuevo.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                        .set('label','Aceptar')
+                });
+
+            });
+
+        });
+
+        //----------alerta para analisis de fin de etapa----
+        {% if (currentEsquema.asistenciasTratamientos)|length > 59  %}
+            {% if bacFinEtapa == 0 or cultFinEtapa == 0 %}
+                alertify.alert('<strong>Estan pendientes los análisis correspondientes al fin de la primera fase de tratatamiento de este paciente.</strong>')
+                    .setHeader('<span class="glyphicon glyphicon-alert" style="font-size: 20px"></span>' +
+                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">ALERTA</h4>')
+                    .set('label','Aceptar');
+            {% endif %}
+        {% elseif (currentEsquema.asistenciasTratamientos)|length > 83 %}
+            {% if bacFinEtapa == 1 or cultFinEtapa == 1 %}
+                alertify.alert('<strong>Estan pendientes los análisis correspondientes a la segunda fase de tratatamiento de este paciente.</strong>')
+                    .setHeader('<span class="glyphicon glyphicon-alert" style="font-size: 20px"></span>' +
+                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">ALERTA</h4>')
+                    .set('label','Aceptar');
+            {% endif %}
+        {% elseif (currentEsquema.asistenciasTratamientos)|length > 107 %}
+            {% if bacFinEtapa == 2 or cultFinEtapa == 2 %}
+                alertify.alert('<strong>Estan pendientes los análisis correspondientes al fin del tratatamiento de este paciente.</strong>')
+                    .setHeader('<span class="glyphicon glyphicon-alert" style="font-size: 20px"></span>' +
+                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">ALERTA</h4>')
+                    .set('label','Aceptar');
+            {% endif %}
+        {% endif %}
+    </script>
+{% endblock %}

@@ -1,0 +1,527 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/styles.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container-fluid" style="margin-top: 20px">
+        <div class="form-cont">
+            <div class="row" style="padding: 20px">
+                <h2 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                    <span style="color: #434242">CONTACTO CI:</span>
+                    {{ seguimiento.contacto.carnetIdentidad ~ ' - ' ~ seguimiento.contacto.nombreCompleto() }}
+                    </h2>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <div role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul style="margin-bottom: 10px" class="nav nav-tabs" role="tablist" id="myTab">
+                            <li role="presentation" class="active">
+                                <a href="#generalesTab" aria-controls="generalesTab" role="tab" data-toggle="tab">
+                                    <strong>Datos Generales</strong>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#factoresTab" aria-controls="factoresTab" role="tab" data-toggle="tab">
+                                    <strong>Factores de Riesgos</strong>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="generalesTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="fechaNotificacion">Fecha de
+                                                        Notificación:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaNotificacion"
+                                                               name="fechaNotificacion" value="{{ (seguimiento.fechaNotificacion) ? seguimiento.fechaNotificacion |date('Y-m-d') }}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label">Nombre:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee el nombre" type="text"
+                                                               class="form-control input-sm" id="nombre" name="nombre" value="{{ seguimiento.contacto.nombre|upper }}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="primerApellido">Primer
+                                                        Apellido:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee el primer apellido" type="text"
+                                                               class="form-control input-sm" id="primerApellido"
+                                                               name="primerApellido" value="{{ seguimiento.contacto.primerApellido|upper }}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="segundoApellido">Segundo
+                                                        Apellido:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee el segundo apellido" type="text"
+                                                               class="form-control input-sm" id="segundoApellido"
+                                                               name="segundoApellido" value="{{ seguimiento.contacto.segundoApellido|upper }}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="sexo">Sexo:</label>
+                                                    <div class="form-group">
+                                                        <select class="form-control input-sm" id="sexo" name="sexo" disabled>
+                                                            <option value="{{ seguimiento.contacto.sexo }}">{{ seguimiento.contacto.sexo }}</option>
+                                                            <option value="Masculino">Masculino</option>
+                                                            <option value="Femenino">Femenino</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="colorPiel">Color de Piel:</label>
+                                                    <div class="form-group">
+                                                        <select class="form-control input-sm" id="colorPiel"
+                                                                name="colorPiel" disabled>
+                                                            <option value="{{ seguimiento.contacto.colorPiel }}">{{ seguimiento.contacto.colorPiel }}</option>
+                                                            <option value="Blanca">Blanca</option>
+                                                            <option value="Mestiza">Mestiza</option>
+                                                            <option value="Negra">Negra</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="telefono">Teléfono del
+                                                        Paciente:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee el teléfono del contacto" type="tel"
+                                                               class="form-control input-sm" id="telefono"
+                                                               name="telefono" value="{{ seguimiento.telefono }}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="nivelEducacional">Nivel
+                                                    Educacional:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm " id="nivelEducacional"
+                                                            name="nivelEducacional" disabled>
+                                                        <option value="{{ seguimiento.nivelEducacional.id }}">{{ seguimiento.nivelEducacional.nombre }}</option>
+                                                        {% for nivel in  niveles %}
+                                                            <option value="{{ nivel.id }}">{{ nivel.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="edad">Edad:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee la edad" type="number" id="edad"
+                                                               name="edad" value="{{ seguimiento.edad }}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label " for="provinciaResid">Provincia de
+                                                    Residencia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm " id="provinciaResid"
+                                                            name="provinciaResid" disabled>
+                                                        <option value="{{ seguimiento.municipio.provincia.id }}">{{ seguimiento.municipio.provincia.nombre }}</option>
+                                                        {% for provincia in  provincias %}
+                                                            <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="border-top: none">
+                                                <label class="control-label" for="municipioResid">Municipio de
+                                                    Residencia:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm" id="municipioResid"
+                                                            name="municipioResid" disabled>
+                                                        <option value="{{ seguimiento.municipio.id }}">{{ seguimiento.municipio.nombre }}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="direccion">Dirección del
+                                                        Paciente:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee la dirección actual del paciente"
+                                                               type="text" class="form-control input-sm" id="direccion"
+                                                               name="direccion" value="{{ seguimiento.direccion }}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 col-lg-offset-1"
+                                                 style="border-top: none;margin-left: 30%">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="multi-ocupaciones"><strong>Seleccione
+                                                            las ocupaciones:</strong></label>
+                                                    <select multiple="multiple" id="multi-ocupaciones"
+                                                            name="multi-ocupaciones"
+                                                            class="form-control" disabled>
+                                                        {% for ocupacion in ocupaciones %}
+                                                            {% if not (ocupacion in seguimiento.getContactoOcupacion()) %}
+                                                                <option value={{ ocupacion.id }}>{{ ocupacion.nombre }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        {% for ocupacion in seguimiento.getContactoOcupacion() %}
+                                                            <option class="misOcupaciones"
+                                                                    value={{ ocupacion.id }}>{{ ocupacion.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="factoresTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label class="control-label " for="parentesco">PARENTESCO O RELACIÓN CON CASO DE TB:</label>
+                                                <div class="form-group">
+                                                    <select class="form-control input-sm " id="parentesco"
+                                                            name="parentesco" disabled>
+                                                        {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                        <option value="{{ seguimiento.contactoSeguimientoFactorRiesgo.parantesco.id }}">{{ seguimiento.contactoSeguimientoFactorRiesgo.parantesco.nombre }}</option>
+                                                        {% for parentesco in  parentescos %}
+                                                            <option value="{{ parentesco.id }}">{{ parentesco.nombre }}</option>
+                                                        {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="bVacunado">Vacunado con
+                                                        BCG (revisar huella):</label>
+                                                    {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="bVacunado"
+                                                               value="1" {{ (seguimiento.contactoSeguimientoFactorRiesgo.vacunado == '1') ? 'checked' }} disabled>
+                                                        <label for="bVacunadoSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="bVacunado" value="0" {{ (seguimiento.contactoSeguimientoFactorRiesgo.vacunado == '0') ? 'checked' }} disabled>
+                                                        <label for="bVacunadoNo">No</label>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="bTratado">PREVIAMENTE TRATADO PARA TB? (HISTORIA DE TB):</label>
+                                                    {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="bTratado"
+                                                               value="1" {{ (seguimiento.contactoSeguimientoFactorRiesgo.tratadoTB == '1') ? 'checked' }} disabled>
+                                                        <label for="bTratadoSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="bTratado" value="0" {{ (seguimiento.contactoSeguimientoFactorRiesgo.tratadoTB == '0') ? 'checked' }} disabled>
+                                                        <label for="bTratadoNo">No</label>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                <div id="mostrarTratadoFechaNotificacion" class="form-group" style="margin-left: 50px;display: {{ (seguimiento.contactoSeguimientoFactorRiesgo.tratadoTB == '1') ? 'block' : 'none' }}">
+                                                    <label class="control-label" for="tratadoFechaNotificacion">Fecha de
+                                                        notificación:</label>
+
+                                                    <div>
+                                                        <input type="date" id="tratadoFechaNotificacion"
+                                                               name="tratadoFechaNotificacion" value="{{ (seguimiento.contactoSeguimientoFactorRiesgo.fechaTratadoTB) ? seguimiento.contactoSeguimientoFactorRiesgo.fechaTratadoTB |date('Y-m-d') }}" disabled>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-7" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="dVIH">DIAGNÓSTICO DE VIH:</label>
+                                                    {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                    <div style="margin-left: 10px">
+                                                        <input type="radio" name="dVIH" value="Positivo" {{ (seguimiento.contactoSeguimientoFactorRiesgo.diagnosticoVIH == 'Positivo') ? 'checked' }} disabled>
+                                                        <label for="dVIHPositivo">Positivo</label>
+
+                                                        <input style="margin-left: 20px" type="radio" name="dVIH" value="Negativo" {{ (seguimiento.contactoSeguimientoFactorRiesgo.diagnosticoVIH == 'Negativo') ? 'checked' }} disabled>
+                                                        <label for="dVIHNegativo">Negativo</label>
+
+                                                        <input style="margin-left: 20px" type="radio" name="dVIH" value="Realizado sin resultado" {{ (seguimiento.contactoSeguimientoFactorRiesgo.diagnosticoVIH == 'Realizado sin resultado') ? 'checked' }} disabled>
+                                                        <label for="dVIHRealizado">Realizado sin resultado</label>
+
+                                                        <input style="margin-left: 20px" type="radio" name="dVIH" value="No realizado" {{ (seguimiento.contactoSeguimientoFactorRiesgo.diagnosticoVIH == 'No realizado') ? 'checked' }} disabled>
+                                                        <label for="dVIHNoRealizado">No realizado</label>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                <div id="mostrarVihFechaRealizacion" class="form-group" style="display: {{ (seguimiento.contactoSeguimientoFactorRiesgo.diagnosticoVIH != 'No realizado') ? 'block' : 'none' }}">
+                                                    <label class="control-label" for="vihFechaRealizacion">Fecha de
+                                                        realización:</label>
+                                                    <div>
+                                                        <input type="date" id="vihFechaRealizacion"
+                                                               name="vihFechaRealizacion" value="{{ (seguimiento.contactoSeguimientoFactorRiesgo.fechaRealizacionVIH) ? seguimiento.contactoSeguimientoFactorRiesgo.fechaRealizacionVIH |date('Y-m-d') }}" disabled>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-4 col-md-offset-1" style="background: #eeeeee;">
+                                                {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                <div id="mostrarTarvae" class="form-group" style="display: {{ (seguimiento.contactoSeguimientoFactorRiesgo.diagnosticoVIH == 'Positivo') ? 'block' : 'none' }}">
+                                                    <label class="control-label " for="tarvae">¿Con Tarvae (terapia antirretroviral):</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="tarvae" value="1" {{ (seguimiento.contactoSeguimientoFactorRiesgo.tarvae == '1') ? 'checked' }} disabled>
+                                                        <label for="tarvaeSI">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="tarvae" value="0" {{ (seguimiento.contactoSeguimientoFactorRiesgo.tarvae == '0') ? 'checked' }} disabled>
+                                                        <label for="tarvaeNo">No</label>
+
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                <div id="mostrarVihFechaInicio" class="form-group" style="display: {{ (seguimiento.contactoSeguimientoFactorRiesgo.tarvae == '1') ? 'block' : 'none' }}">
+                                                    <label class="control-label" for="vihFechaInicio">Fecha de
+                                                        inicio:</label>
+                                                    <div>
+                                                        <input type="date" id="vihFechaInicio"
+                                                               name="vihFechaInicio" value="{{ (seguimiento.contactoSeguimientoFactorRiesgo.fechaInicioTarvae) ? seguimiento.contactoSeguimientoFactorRiesgo.fechaInicioTarvae |date('Y-m-d') }}" disabled>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="tptAnterior">TPT ANTERIOR:</label>
+                                                    {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="tptAnterior"
+                                                               value="1" {{ (seguimiento.contactoSeguimientoFactorRiesgo.tptTB == '1') ? 'checked' }} disabled>
+                                                        <label for="tptAnteriorSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="tptAnterior" value="0" {{ (seguimiento.contactoSeguimientoFactorRiesgo.tptTB == '0') ? 'checked' }} disabled>
+                                                        <label for="tptAnteriorNo">No</label>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                            <div id="mostrarTPTAnterior" style="display: {{ (seguimiento.contactoSeguimientoFactorRiesgo.tptTB == '1') ? 'block' : 'none' }}">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="tptFechaInicio">Fecha
+                                                            inicial:</label>
+                                                        <div>
+                                                            <input type="date" id="tptFechaInicio"
+                                                                   name="tptFechaInicio" value="{{ (seguimiento.contactoSeguimientoFactorRiesgo.fechaInicioTptTB) ? seguimiento.contactoSeguimientoFactorRiesgo.fechaInicioTptTB |date('Y-m-d') }}" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="tptFechaFinal">Fecha
+                                                            final:</label>
+                                                        <div>
+                                                            <input type="date" id="tptFechaFinal"
+                                                                   name="tptFechaFinal" value="{{ (seguimiento.contactoSeguimientoFactorRiesgo.fechaFinalTptTB) ? seguimiento.contactoSeguimientoFactorRiesgo.fechaFinalTptTB |date('Y-m-d') }}" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="control-label " for="medicamento">Medicamento:</label>
+                                                    <div class="form-group">
+                                                        <select class="form-control input-sm " id="medicamento"
+                                                                name="medicamento" disabled>
+                                                            {% if  seguimiento.contactoSeguimientoFactorRiesgo.medicamento %}
+                                                                <option value="{{ seguimiento.contactoSeguimientoFactorRiesgo.medicamento.id }}">{{ seguimiento.contactoSeguimientoFactorRiesgo.medicamento.nombre }}</option>
+                                                            {% else %}
+                                                                <option value="0">Seleccione el medicamento</option>
+                                                            {% endif %}
+                                                            {% for medicamento in  medicamentos %}
+                                                                <option value="{{ medicamento.id }}">{{ medicamento.nombre }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12" id="mostrarPorqueTPTAnterior" style="display: none">
+                                                <label class="control-label " for="porqueTPT">¿Por qué recibió TPT en el
+                                                    pasado?:</label>
+                                                <textarea style=" width: 100%; resize: none ; height: 100px ; margin-top: 2px" id="porqueTPT" disabled>
+                                                    {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                    {{ seguimiento.contactoSeguimientoFactorRiesgo.porqueTPT }}
+                                                    {% endif %}
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-12" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="otroFactorRiesgo">¿Además de la
+                                                        condición de “CONTACTO DE CASO DE TB”, la persona tiene otros FR
+                                                        para TB? :</label>
+                                                    {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                    <div style="margin-left: 652px">
+                                                        <input type="radio"
+                                                               name="otroFactorRiesgo" value="1" {{ (seguimiento.contactoSeguimientoFactorRiesgo.otroFR == '1') ? 'checked' }} disabled>
+                                                        <label for="tptAnteriorSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="otroFactorRiesgo"
+                                                               value="0" {{ (seguimiento.contactoSeguimientoFactorRiesgo.otroFR == '0') ? 'checked' }} disabled>
+                                                        <label for="tptAnteriorNo">No</label>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                            <div id="mostrarFactoresRiesgo" class="col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-1"
+                                                 style="border-top: none;margin-left: 30%;display: {{ (seguimiento.contactoSeguimientoFactorRiesgo.otroFR == '1') ? 'block' : 'none' }}">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="multi-factorRiesgo"><strong>Seleccione
+                                                            los factores de riesgo:</strong></label>
+                                                    <select multiple="multiple" id="multi-factorRiesgo"
+                                                            name="multi-factorRiesgo"
+                                                            class="form-control" style="height: 300px" disabled>
+                                                        {% for factor in factoresRiesgo %}
+                                                            {% if not (factor in seguimiento.contactoSeguimientoFactorRiesgo.getContactoFactorRiesgo()) %}
+                                                                <option value={{ factor.id }}>{{ factor.nombre }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        {% for factor in seguimiento.contactoSeguimientoFactorRiesgo.getContactoFactorRiesgo() %}
+                                                            <option class="misFactores"
+                                                                    value={{ factor.id }}>{{ factor.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label class="control-label " for="observaciones">Observaciones:</label>
+                                                <textarea style=" width: 100%; resize: none ; height: 100px ; margin-top: 2px" id="observaciones" disabled>
+                                                    {% if seguimiento.contactoSeguimientoFactorRiesgo %}
+                                                    {{ seguimiento.contactoSeguimientoFactorRiesgo.observaciones }}
+                                                    {% endif %}
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    <button id="btnCancelar" type="button" class="btn btn-primario"> Salir</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.mockjax.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.autocomplete.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            (function () {
+                {% if not (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_VISUALIZADOR")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            })();
+
+            $('#multi-ocupaciones, #multi-factorRiesgo').multiSelect();
+
+            $('.ms-list .ms-elem-selectable.misOcupaciones').each(function () {
+                $(this).css('display', 'none');
+                $(this).addClass('ms-hover');
+                $(this).addClass('ms-selected');
+
+            });
+
+            $('.ms-list .ms-elem-selection.misOcupaciones').each(function () {
+                $(this).addClass('ms-selected');
+                $(this).css('display', '');
+            });
+
+            $('.ms-list .ms-elem-selectable.misFactores').each(function () {
+                $(this).css('display', 'none');
+                $(this).addClass('ms-hover');
+                $(this).addClass('ms-selected');
+
+            });
+
+            $('.ms-list .ms-elem-selection.misFactores').each(function () {
+                $(this).addClass('ms-selected');
+                $(this).css('display', '');
+            });
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir, #btnCancelar').on('click', function () {
+                var ruta = "{{ path(origen) }}";
+                window.location.href = ruta;
+            });
+
+        });
+    </script>
+{% endblock %}

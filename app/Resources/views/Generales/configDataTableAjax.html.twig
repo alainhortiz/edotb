@@ -1,0 +1,57 @@
+{% macro configurar() %}
+
+    var table = $('#dataPaciente').DataTable({
+        dom: 'B<"float-left"i><"float-right"f>t<"float-left"l><"float-right"p><"clearfix">',
+        responsive: true,
+        processing: true,
+        serverSide: true,
+        ajax: rutaAjax,
+        columnDefs: columnDefs,
+        order: order,
+        "initComplete": function () {
+            this.api().columns().every( function () {
+                var that = this;
+
+                $( 'input', this.footer() ).on( 'keyup change', function () {
+                    if ( that.search() !== this.value ) {
+                        that
+                            .search( this.value )
+                            .draw();
+                    }
+                });
+            });
+            $(".preload").addClass('hidden');
+        },
+        searchDelay: 1000
+    });
+
+{% endmacro %}
+
+{% macro configurarPoblacion() %}
+
+    var table = $('#dataPoblacion').DataTable({
+    dom: 'B<"float-left"i><"float-right"f>t<"float-left"l><"float-right"p><"clearfix">',
+    responsive: true,
+    processing: true,
+    serverSide: true,
+    ajax: rutaAjax,
+    columnDefs: columnDefs,
+    order: order,
+    "initComplete": function () {
+    this.api().columns().every( function () {
+    var that = this;
+
+    $( 'input', this.footer() ).on( 'keyup change', function () {
+    if ( that.search() !== this.value ) {
+    that
+    .search( this.value )
+    .draw();
+    }
+    });
+    });
+    $(".preload").addClass('hidden');
+    },
+    searchDelay: 1000
+    });
+
+{% endmacro %}

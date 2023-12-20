@@ -1,0 +1,186 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    {% set anno_actual =  "now"|date("Y") %}
+
+    <div class="contaniner">
+        <div class="container">
+            <div class="row" style="margin:5px">
+
+                <div class="form-cont">
+
+                    <h2 id="titulo_fecha" class="text-center">REPORTE RECAÍDAS NOTIFICADAS</h2>
+                    <br>
+
+{#                    <div class="btn-toolbar">#}
+{#                        <div class="btn-group" style="margin-bottom: 5px;">#}
+{#                            <a id="imp_rpt_criterios_entrada" class="btn btn-default">#}
+{#                                <span class="glyphicon glyphicon-save"></span>#}
+{#                            </a>#}
+
+{#                        </div>#}
+{#                    </div>#}
+
+                    <div>
+                        <table id="id_tb_diario" class="table table-bordered table-responsive">
+                            <thead>
+                            <tr>
+                                <th colspan="18" style="text-align: center">
+                                    </br>
+                                    </br>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label  for="fechaInicio" class="col-lg-2 col-md-2 col-sm-2 control-label text-right">DESDE:</label>
+                                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                                <input type="date"
+                                                       name="fechaInicio" id="fechaInicio"  value="{{ fechaInicio|date("Y-m-d") }}">
+                                            </div>
+                                            <label for="fechaFinal" class="col-lg-1 col-md-1 col-sm-1 control-label text-right">HASTA:</label>
+                                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                                <input type="date"
+                                                       name="fechaFinal" id="fechaFinal" value="{{ fechaFinal|date("Y-m-d") }}">
+                                            </div>
+                                            <label for="provincia" class="col-lg-1 col-md-1 col-sm-1 control-label text-right">PROVINCIA:</label>
+                                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                                <select name="provincia" id="provincia" class="form-control">
+                                                    <option value="0">SELECCIONE ...</option>
+                                                    {% for provincia in provincias %}
+                                                        <option value="{{ provincia.id }}" > {{ provincia.nombre }} </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="bt_search" class="btn btn-primario" type="submit">Buscar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th colspan="3" rowspan="2" style="text-align: center; vertical-align: middle" id="nameEncabezado">PROVINCIA</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">TOTAL DE CASOS</th>
+                                <th colspan="2" style="text-align: center">SEXO</th>
+                                <th colspan="2" style="text-align: center">NOTIFICADOS EN UN AÑO</th>
+                                <th colspan="10" style="text-align: center">GRUPO DE EDADES</th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">M</th>
+                                <th style="text-align: center; vertical-align: middle">F</th>
+                                <th style="text-align: center; vertical-align: middle">PULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">EXTRAPULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">0 - 4</th>
+                                <th style="text-align: center; vertical-align: middle">5 - 9</th>
+                                <th style="text-align: center; vertical-align: middle">10 - 14</th>
+                                <th style="text-align: center; vertical-align: middle">15 - 19</th>
+                                <th style="text-align: center; vertical-align: middle">20 - 24</th>
+                                <th style="text-align: center; vertical-align: middle">25 - 34</th>
+                                <th style="text-align: center; vertical-align: middle">35 - 44</th>
+                                <th style="text-align: center; vertical-align: middle">45 - 54</th>
+                                <th style="text-align: center; vertical-align: middle">55 - 64</th>
+                                <th style="text-align: center; vertical-align: middle">56 +</th>
+                            </tr>
+                            <tr>
+                                <th colspan="18" style="text-align: center">NÚMERO DE CASOS</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tb_body_replace">
+                                {% for dato in datos %}
+                                    <tr>
+                                        <td colspan="3" style="font-weight: bold">{{ dato['provincia'] }}</td>
+                                        {% for paciente in dato['pacientes'] %}
+                                            <td {{ loop.last == true ? 'colspan="2"' }} class="text-center"  >{{ paciente }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <br/>
+                    <br/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+
+            var fechaInicio = '';
+            var fechaFinal = '';
+            var provincia = '';
+            $("#provincia").val(0);
+
+            var md = $('#processing-modal');
+
+            $("#bt_search").click(function () {
+
+                md.modal('show');
+
+                var mat_datos = {
+                    fechaInicio: $("#fechaInicio").val(),
+                    fechaFinal: $("#fechaFinal").val(),
+                    provincia:  $("#provincia").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("buscarReporteRecaidasCriteriosEntrada") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    $('#nameEncabezado').text('MUNICIPIOS');
+                    $("#fechaInicio").val('{{ fechaInicio|date("Y-m-d") }}');
+                    $("#fechaFinal").val('{{ fechaFinal|date("Y-m-d") }}');
+                    $("#tb_body_replace").replaceWith( data );
+                    md.modal('hide');
+                });
+            });
+
+            $('#imp_rpt_criterios_entrada').click(function () {
+
+
+                if(trim === ''){ trim = $('input:radio[name=trimestre]:checked').val(); }
+                if(enfermedad === ''){ enfermedad = $("#enfermedad").val(); }
+                if(anno === ''){ anno = $("#anno").val(); }
+
+                var ruta_actual = window.location.href;
+                var ruta_rpte = ruta_actual.replace('reporteCohorteCriteriosEntrada','excelCohorteCriteriosEntrada/'+ trim +'/'+ anno +'/'+ enfermedad);
+                window.open(ruta_rpte);
+            });
+
+
+            $('#imp_rpt_mod_46203').tooltip({
+                toggle: "tooltip",
+                placement: "top",
+                title: "Exportar Excel",
+                delay: { show: 100, hide: 100 }
+            });
+        });
+    </script>
+{% endblock %}

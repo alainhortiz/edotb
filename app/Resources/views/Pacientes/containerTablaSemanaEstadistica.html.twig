@@ -1,0 +1,139 @@
+<div class="container-fluid" id="containerSemanaEstadistica">
+    <div class="row" style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242">
+        <div class="col-md-12">
+            <table id="dataPaciente" class="display" cellspacing="0" width="100%" >
+                <thead>
+                <tr>
+                    {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+                        <th>Provincia</th>
+                    {% endif %}
+                    {% if app.user.getNivelAcceso().id > 2 %}
+                        <th>Municipio</th>
+                    {% endif %}
+                    <th>Nombre</th>
+                    <th>Primer Apellido</th>
+                    <th>Segundo Apellido</th>
+                    <th>Fecha Notificación</th>
+                    <th>Enfermedad</th>
+                    <th>Resultado Tratamiento</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                <tr>
+                    {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_provincia" type="text" class="form-control" name="buscador_provincia" placeholder="Buscar "  />
+                            </div>
+                        </th>
+                    {% endif %}
+                    {% if app.user.getNivelAcceso().id > 2 %}
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_municipio" type="text" class="form-control" name="buscador_municipio" placeholder="Buscar "  />
+                            </div>
+                        </th>
+                    {% endif %}
+                    <th>
+                        <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                            <input id="buscador_nombre" type="text" class="form-control " name="buscador_nombre" placeholder="Buscar "  />
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                            <input id="buscador_primerApellido" type="text" class="form-control " name="buscador_primerApellido" placeholder="Buscar "  />
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                            <input id="buscador_segundoApellido" type="text" class="form-control " name="buscador_segundoApellido" placeholder="Buscar "  />
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                            <input id="buscador_fechaNotificacion" type="text" class="form-control " name="buscador_fechaNotificacion" placeholder="Buscar "  />
+                        </div>
+                    </th>
+                    <th>
+                        <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                            <input id="buscador_enfermedad" type="text" class="form-control " name="buscador_enfermedad" placeholder="Buscar "  />
+                        </div>
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let rutaAjax = '{{ 'pacientesSemanaEstadisticaAjax/'~idSemana }}';
+
+    {% import 'Generales/columnDefNivelDataTable.html.twig' as definicion %}
+    {{ definicion.definir() }}
+    {% import 'Generales/configDataTableAjax.html.twig' as table %}
+    {{ table.configurar() }}
+
+    $('#dataPaciente tbody').on('click', '.delete', function () {
+
+        var row = $(this).parents('tr');
+
+        var mat_datos = { idEvolucion: this.id };
+
+        alertify.confirm('Basic: false').set('message', 'Seguro que desea eliminar el paciente seleccionado').set('onok', function(){
+
+            $(".preload").removeClass('hidden');
+
+            $.ajax({
+                type: "POST",
+                dataType: "html",
+                url: '{{ path("deletePaciente") }}',
+                data: mat_datos
+            }).done(function (data) {
+                $(".preload").addClass('hidden');
+                if(data == 'ok'){
+
+                    alertify.alert('<strong>El paciente  ha sido eliminado correctamente</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                        .set('label','Aceptar')
+                        .set('onok', function(){
+
+                            row.fadeOut();
+                        });
+                }else {
+                    alertify.alert('<strong>'+data+'</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                        .set('label','Aceptar')
+                }
+            });
+        });
+    });
+</script>

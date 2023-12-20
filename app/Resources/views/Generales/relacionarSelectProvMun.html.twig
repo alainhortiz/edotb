@@ -1,0 +1,69 @@
+$('#areaSalud').on('change' , function () {
+    if($(this).val() != '0'){$("#hospital").prop('disabled' , true);}
+    else {$("#hospital").prop('disabled' , false);}
+});
+
+$('#hospital').on('change' , function () {
+    if($(this).val() != '0'){$("#areaSalud").prop('disabled' , true);}
+    else {$("#areaSalud").prop('disabled' , false);}
+});
+
+$('#provincia').on('change', function () {
+
+    var provincia = $(this).val();
+
+    //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+    var html    = '<option value="0">Seleccione un municipio</option>';
+    var htmlAreaSalud = '<option value="0">Seleccione un centro de atención </option>';
+    var htmlHospital = '<option value="0">Seleccione un hospital</option>';
+
+    {% for municipio in  municipios %}
+        var idProvincia = '{{ municipio.getProvincia().id }}';
+
+        if (idProvincia == provincia) {
+        var idMunicipio = '{{ municipio.id }}';
+        var name = '{{ municipio.nombre }}';
+        html += '<option value="' + idMunicipio + '">' + name + '</option>';
+        }
+    {% endfor %}
+
+    $("#municipio").html(html);
+    $("#areaSalud").html(htmlAreaSalud);
+    $("#hospital").html(htmlHospital);
+    $("#areaSalud").prop('disabled' , false);
+    $("#hospital").prop('disabled' , false);
+});
+
+$('#municipio').on('change', function () {
+
+    var municipio = $(this).val();
+
+    //ESTE CICLO ES PARA BUSCAR LOS LABORATORIOS PERTENECIENTES A UN MUNICIPIO
+    var htmlAreaSalud = '<option value="0">Seleccione un centro de atención</option>';
+    var htmlHospital = '<option value="0">Seleccione un hospital</option>';
+
+    {% for unidad in areasSalud %}
+        var idMunicipio = '{{ unidad.getMunicipio().id }}';
+
+        if (idMunicipio == municipio) {
+        var idUnidad = '{{ unidad.id }}';
+        var nameUnidad = '{{ unidad.nombre }}';
+        htmlAreaSalud += '<option value="' + idUnidad +'">' + nameUnidad + '</option>';
+        }
+    {% endfor %}
+
+    {% for hospital in  hospitales %}
+        var idMunicipio = '{{ hospital.getMunicipio().id }}';
+
+        if (idMunicipio == municipio) {
+        var idHospital = '{{ hospital.id }}';
+        var nameHospital = '{{ hospital.nombre }}';
+        htmlHospital += '<option  value="' + idHospital + '">' + nameHospital + '</option>';
+        }
+    {% endfor %}
+
+    $("#areaSalud").html(htmlAreaSalud);
+    $("#hospital").html(htmlHospital);
+    $("#areaSalud").prop('disabled' , false);
+    $("#hospital").prop('disabled' , false);
+});

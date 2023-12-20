@@ -1,0 +1,37 @@
+<div class="modal fade" id="checkNotificaciones"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header mh" style="background-color: #717070; color: whitesmoke;">
+                <span class="glyphicon glyphicon-alert" style="font-size: 20px"></span>
+                <h4 class="modal-title" style="display: inline-block; margin-left: 5px">Notificaciones</h4>
+            </div>
+            <div class="container-fluid">
+                <div class="modal-body">
+                    <div>
+                        <ul>
+                            <li style="padding: 5px; " class="{{ cantFracasostratamiento == '0' ? 'hidden' }}">
+                                <strong><a href="{{ path('pacientesEnFracasoAlTratamiento') }}">{{  cantFracasostratamiento == 1  ? 'Existe 1 paciente con fracaso al tratamiento' : 'Existen '~cantFracasostratamiento~' pacientes con fracaso al tratamiento' }}</a></strong>
+                            </li>
+                            <li style="padding: 5px; " class="{{ cantPerdidasSeguimiento == '0' ? 'hidden' }}">
+                                <strong><a href="{{ path('pacientesEnPerdidaDeSeguimiento') }}">{{ cantPerdidasSeguimiento == 1  ? 'Existe 1 paciente en pérdida de seguimiento' : 'Existen '~cantPerdidasSeguimiento~' pacientes en pérdida de seguimiento' }}</a></strong>
+                            </li>
+                            <li style="padding: 5px" class="{{ cantTratamientoTerminado == '0' ? 'hidden' }}">
+                                <strong><a href="{{ path('pacientesConTratamientoTerminado') }}">{{ cantTratamientoTerminado == 1  ? 'Existe 1 paciente con el tratamiento terminado' : 'Existen '~cantTratamientoTerminado~' pacientes con el tratamiento terminado' }}</a></strong>
+                            </li>
+                            <li style="padding: 5px; border-bottom: 2px dotted #1D4B4B" class="{{ cantPendientesRegistro == '0' ? 'hidden' }}">
+                                <strong><a href="{{ path('pacientesPendientesRegistro') }}">{{ cantPendientesRegistro == 1  ? 'Existe 1 paciente pendiente de pasar al registro' : 'Existen '~cantPendientesRegistro~' pacientes pendientes de pasar al registro' }}</a></strong>
+                            </li>
+                            <li style="padding: 5px; " class="{{ cantPosiblesPerdidasSeguimiento == '0' ? 'hidden' }}">
+                                <strong><a href="{{ path('posiblesPacientesEnPerdidaDeSeguimiento') }}">{{ cantPosiblesPerdidasSeguimiento == 1  ? 'El sistema ha detectado 1 paciente que puede estar en pérdida de seguimiento' : 'El sistema ha detectado '~cantPosiblesPerdidasSeguimiento~' pacientes que pueden estar en pérdida de seguimiento' }}</a></strong>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-primario" id="msalir" value="CERRAR" data-dismiss="modal" style="cursor: default">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

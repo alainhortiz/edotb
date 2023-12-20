@@ -1,0 +1,363 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    {% set anno_actual =  "now"|date("Y") %}
+
+    <div style="padding-left: 0; padding-right: 0" class="container-fluid">
+        <div class="row" style="margin:5px">
+            <div class="form-cont">
+                <h2 id="titulo_fecha" class="text-center">MAPA CASOS NUEVOS</h2>
+                <br>
+                <div>
+                    <table id="id_tb_year" class="table table-bordered table-responsive">
+                        <thead>
+                        <tr>
+                            <th colspan="5" style="text-align: center">
+                                </br>
+                                </br>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="year" class="col-lg-4 col-md-4 col-sm-4 control-label text-right">AÑO:</label>
+                                        <div class="col-lg-2 col-md-2 col-sm-2">
+                                            <select name="year" id="year" class="form-control">
+                                                <option value="{{ anno_actual }}">{{ anno_actual }}</option>
+                                                {% for year in years %}
+                                                    <option value="{{ year.year }}"> {{ year.year }} </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button id="bt_search" class="btn btn-primario" type="submit">Buscar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <br/>
+                <div id="mapaDivision" class="chart" style="height: 500px;">
+                </div>
+                <br/>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- BEGIN MAPAS LEVEL PLUGINS -->
+    <script src="{{ asset('bundles/easyadmin/Highmaps/code/highmaps.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/Highmaps/code/highcharts-more.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/Highmaps/code/modules/exporting.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/Highmaps/mapdata/countries/cu/cu-all.js') }}"></script>
+    <!-- END  GRAFICOS MAPAS LEVEL PLUGINS -->
+    <script>
+        $(document).ready(function () {
+
+            var data = [];
+            var n;
+
+            var md = $('#processing-modal');
+
+            $("#bt_search").click(function () {
+
+                md.modal('show');
+
+                var mat_datos = {
+                    year: $("#year").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("buscarYearMapasCasos") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    // alert(data);
+                    md.modal('hide');
+                    var obj = JSON.parse(data);
+                    console.log(obj);
+                    data = [];
+                    for (n = 0; n < obj.length; n++) {
+                        switch (obj[n]['codigo']) {
+                            case '21':
+                                data.push({
+                                    'hc-key': 'cu-pr',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '22':
+                                data.push({
+                                    'hc-key': 'cu-ar',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '23':
+                                data.push({
+                                    'hc-key': 'cu-ch',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '24':
+                                data.push({
+                                    'hc-key': 'cu-mq',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '25':
+                                data.push({
+                                    'hc-key': 'cu-ma',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '26':
+                                data.push({
+                                    'hc-key': 'cu-vc',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '27':
+                                data.push({
+                                    'hc-key': 'cu-cf',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '28':
+                                data.push({
+                                    'hc-key': 'cu-ss',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '29':
+                                data.push({
+                                    'hc-key': 'cu-ca',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '30':
+                                data.push({
+                                    'hc-key': 'cu-cm',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '31':
+                                data.push({
+                                    'hc-key': 'cu-lt',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '32':
+                                data.push({
+                                    'hc-key': 'cu-ho',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '33':
+                                data.push({
+                                    'hc-key': 'cu-gr',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '34':
+                                data.push({
+                                    'hc-key': 'cu-sc',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '35':
+                                data.push({
+                                    'hc-key': 'cu-gu',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                            case '4001':
+                                data.push({
+                                    'hc-key': 'cu-ij',
+                                    value: parseInt(obj[n]['cant'])
+                                });
+                                break;
+                        }
+                    }
+                    console.log(data);
+                    graficoInicio(data, 1000);
+                });
+            });
+
+            {% for dato in datos %}
+                switch ({{ dato['codigo'] }}) {
+                case 21:
+                    data.push({
+                        'hc-key': 'cu-pr',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 22:
+                    data.push({
+                        'hc-key': 'cu-ar',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 23:
+                    data.push({
+                        'hc-key': 'cu-ch',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 24:
+                    data.push({
+                        'hc-key': 'cu-mq',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 25:
+                    data.push({
+                        'hc-key': 'cu-ma',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 26:
+                    data.push({
+                        'hc-key': 'cu-vc',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 27:
+                    data.push({
+                        'hc-key': 'cu-cf',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 28:
+                    data.push({
+                        'hc-key': 'cu-ss',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 29:
+                    data.push({
+                        'hc-key': 'cu-ca',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 30:
+                    data.push({
+                        'hc-key': 'cu-cm',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 31:
+                    data.push({
+                        'hc-key': 'cu-lt',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 32:
+                    data.push({
+                        'hc-key': 'cu-ho',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 33:
+                    data.push({
+                        'hc-key': 'cu-gr',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 34:
+                    data.push({
+                        'hc-key': 'cu-sc',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 35:
+                    data.push({
+                        'hc-key': 'cu-gu',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+                case 4001:
+                    data.push({
+                        'hc-key': 'cu-ij',
+                        value: parseInt('{{ dato['cant'] }}')
+                    });
+                    break;
+            }
+            {% endfor %}
+
+            graficoInicio(data, 1000);
+
+            // Create the map
+            function graficoInicio(data, anima) {
+                Highcharts.mapChart('mapaDivision', {
+                    chart: {
+                        map: 'countries/cu/cu-all'
+                    },
+                    title: {
+                        text: null
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    mapNavigation: {
+                        enabled: true,
+                        buttonOptions: {
+                            verticalAlign: 'bottom'
+                        }
+                    },
+                    colorAxis: {
+                        min: 0,
+                        minColor: '#2a8176',
+                        maxColor: '#1b534c',
+                    },
+                    series: [{
+                        animation: {
+                            duration: anima
+                        },
+                        data: data,
+                        name: 'Total de divisiones',
+                        states: {
+                            hover: {
+                                color: '#BADA55'
+                            }
+                        },
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}'
+                        },
+                        events: {
+                            click: function (oEvent) {
+                                // cargarDivisionMapa(oEvent.point.name);
+                            }
+                        }
+                    }]
+                });
+            }
+
+
+        });
+    </script>
+{% endblock %}

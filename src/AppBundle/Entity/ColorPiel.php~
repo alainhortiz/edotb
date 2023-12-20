@@ -1,0 +1,113 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ColorPiel
+ *
+ * @ORM\Table(name="color_piel")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ColorPielRepository")
+ */
+class ColorPiel
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=100)
+     */
+    private $nombre;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Contacto", mappedBy="colorPiel")
+     */
+    private $contactos;
+
+    /**
+     * constructor.
+     */
+    public function __construct()
+    {
+        $this->contactos = new ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set nombre
+     *
+     * @param string $nombre
+     *
+     * @return ColorPiel
+     */
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+
+        return $this;
+    }
+
+    /**
+     * Get nombre
+     *
+     * @return string
+     */
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    /**
+     * Add contacto
+     *
+     * @param \AppBundle\Entity\Contacto $contacto
+     *
+     * @return ColorPiel
+     */
+    public function addContacto(\AppBundle\Entity\Contacto $contacto)
+    {
+        $this->contactos[] = $contacto;
+
+        return $this;
+    }
+
+    /**
+     * Remove contacto
+     *
+     * @param \AppBundle\Entity\Contacto $contacto
+     */
+    public function removeContacto(\AppBundle\Entity\Contacto $contacto)
+    {
+        $this->contactos->removeElement($contacto);
+    }
+
+    /**
+     * Get contactos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContactos()
+    {
+        return $this->contactos;
+    }
+}

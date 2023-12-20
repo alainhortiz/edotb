@@ -1,0 +1,231 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    <div style="padding-left: 0; padding-right: 0" class="container-fluid">
+        <div class="row" style="margin:5px">
+
+            <div class="form-cont">
+
+                <h2 id="titulo_fecha" class="text-center">COHORTE POR CRITERIOS DE ENTRADA Y GRUPOS VULNERABLES</h2>
+                <br>
+
+                <div class="btn-toolbar">
+                    <div class="btn-group" style="margin-bottom: 5px;">
+                        <a id="imp_rpt_grupos_vulnerables" class="btn btn-default">
+                            <span class="glyphicon glyphicon-save"></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div>
+                    {% set anno_actual =  "now"|date("Y") %}
+                    {% set columnas = provincias|length %}
+                    <table style="margin-bottom: 0" class="table table-bordered table-responsive">
+                        <thead>
+                        <tr>
+                            <th colspan="{{ columnas }}" style="text-align: center">
+                                <form>
+                                    <div class="form-group" style="margin-top: 10px;margin-bottom: 10px;">
+                                        <div class="row" style="margin-right: 0">
+                                            <label for="grupoVulnerable" class="col-lg-2 col-md-2 col-sm-2  control-label">GRUPO VULNERABLE:</label>
+                                            <div class="col-lg-3">
+                                                <select class="form-control" id="grupoVulnerable">
+                                                    {% for grupo in  gruposVulnerables %}
+                                                        <option value="{{ grupo.id }}">{{ grupo.grupo }}</option>
+                                                    {% endfor %}
+                                                    <option value="0" >Todos </option>
+                                                </select>
+                                            </div>
+                                            <label for="provincia" class="col-lg-1 col-md-1 col-sm-1  control-label">PROVINCIA:</label>
+                                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                                <select class="form-control" id="provincia">
+                                                    <option value="0">Seleccione provincia</option>
+                                                    {% for provincia in  provincias %}
+                                                        <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <label for="municipio" class="col-lg-1 col-md-1 col-sm-1 control-label">MUNICIPIO:</label>
+                                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                                <select class="form-control" id="municipio">
+                                                    <option value="0">Seleccione un municipio</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="{{ columnas }}" style="text-align: center">
+                                TRIMESTRE
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="{{ columnas }}" style="text-align: center">
+                                <input type="radio" name="trimestre" id="trim_1" value="1" checked> I TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="trimestre" id="trim_2" value="2"> II TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="trimestre" id="trim_3" value="3"> III TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="trimestre" id="trim_4" value="4"> IV TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="form-group" style="margin-top: 20px">
+                                    <label for="anno" class="col-lg-1 col-md-1 col-sm-1 col-md-offset-4 control-label text-right">AÑO:</label>
+                                    <div class="col-lg-1 col-md-1 col-sm-1">
+                                        <select name="anno" id="anno" class="form-control col-md-2">
+                                            {% for i in range(1990, anno_actual) %}
+                                                <option value="{{ i }}" {% if i == anno_actual|trans %} selected {% endif %}> {{ i }} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-1 col-md-1 col-sm-1">
+                                        <button id="bt_search" class="btn btn-primario" type="submit">Buscar</button>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </table>
+                    <div style="overflow-x: auto">
+                        <table style="border-top: hidden" id="tb_table_replace" class="table table-bordered table-responsive">
+                            <tr>
+                                <th colspan="2"  rowspan="2" style="text-align: center; vertical-align: middle">CÓDIGO DE ENTRADA A LA COHORTE</th>
+                                <th colspan="{{ columnas }}" style="text-align: center; vertical-align: middle">PROVINCIAS</th>
+                                <th  rowspan="2" style="text-align: center; vertical-align: middle">TOTAL</th>
+                            </tr>
+                            <tr>
+                                {% for provincia in  provincias %}
+                                    <th  style="text-align: center; vertical-align: middle">{{ provincia.nombre }}</th>
+                                {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for dato in datos %}
+                                <tr>
+                                    {% if loop.last != true  %}
+                                        <td style="font-weight: bold">{{ dato['enfemedadCodigo'] }}</td>
+                                        <td style="font-weight: bold">{{ dato['enfemedadCriterioCompleto'] }}</td>
+                                    {% else %}
+                                        <td colspan="2"  style="font-weight: bold;text-align: center; vertical-align: middle">{{ dato['enfemedadCodigo'] }}</td>
+                                    {% endif %}
+                                    {% for paciente in dato['pacientes'] %}
+                                        <td  class="text-center"  >{{ paciente }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br/>
+                <br/>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+
+            //----------Relacionar selects --------------------------
+            $('#provincia').on('change', function () {
+
+                var provincia = $(this).val();
+
+                //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+                var html    = '<option value="0">Seleccione un municipio</option>';
+
+                {% for municipio in  municipios %}
+                    var idProvincia = '{{ municipio.getProvincia().id }}';
+
+                    if (idProvincia == provincia) {
+                        var idMunicipio = '{{ municipio.id }}';
+                        var name = '{{ municipio.nombre }}';
+                        html += '<option value="' + idMunicipio + '">' + name + '</option>';
+                    }
+                {% endfor %}
+
+                $("#municipio").html(html);
+            });
+
+            var anno       = '';
+            var trim = '';
+            var grupoVulnerable = '';
+            var idProvincia = '';
+            var idMunicipio = '';
+
+            var md = $('#processing-modal');
+
+            $("#bt_search").click(function () {
+
+                md.modal('show');
+
+                var mat_datos = {
+                    anno: $("#anno").val(),
+                    trimestre: $('input:radio[name=trimestre]:checked').val(),
+                    grupoVulnerable:  $("#grupoVulnerable").val(),
+                    idProvincia:  $("#provincia").val(),
+                    idMunicipio:  $("#municipio").val(),
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("reporteCohorteCritEntGruposVulnerables") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    trim = $('input:radio[name=trimestre]:checked').val();
+                    anno = $("#anno").val();
+                    grupoVulnerable = $("#grupoVulnerable").val();
+                    idProvincia = $("#provincia").val();
+                    idMunicipio = $("#municipio").val();
+                    $("#tb_table_replace").replaceWith( data );
+                    md.modal('hide');
+                });
+            });
+
+            $('#imp_rpt_grupos_vulnerables').click(function () {
+
+                if(trim === ''){ trim = $('input:radio[name=trimestre]:checked').val(); }
+                if(grupoVulnerable === ''){ grupoVulnerable = $("#grupoVulnerable").val(); }
+                if(anno === ''){ anno = $("#anno").val(); }
+                if(idProvincia === ''){ idProvincia = $("#provincia").val(); }
+                if(idMunicipio === ''){ idMunicipio = $("#municipio").val(); }
+
+                var ruta_actual = window.location.href;
+                var ruta_rpte = ruta_actual.replace('reporteCohorteCritEntGruposVulnerables','excelCohorteCritEntGruposVulnerables/'+ trim +'/'+ anno +'/'+ grupoVulnerable +'/'+ idProvincia +'/'+ idMunicipio);
+                window.open(ruta_rpte);
+            });
+
+
+            $('#imp_rpt_mod_46203').tooltip({
+                toggle: "tooltip",
+                placement: "top",
+                title: "Exportar Excel",
+                delay: { show: 100, hide: 100 }
+            });
+        });
+    </script>
+{% endblock %}

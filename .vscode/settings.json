@@ -1,0 +1,20 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "projectManager.vscode.ignoredFolders": [
+        "node_modules",
+        "out",
+        "typings",
+        "test",
+        "cache"
+    ],
+    "crane.ignoredPaths": [
+        "cache"
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/cache": true
+    }
+}

@@ -1,0 +1,597 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    {% set cocienteFormula =
+    controlCalidad.getBMasCMas()   +
+    controlCalidad.getBMasCNr()    +
+    controlCalidad.getBMenosCMas() +
+    controlCalidad.getBMasCMenos() +
+    controlCalidad.getBMasCCont()  %}
+
+    {% set cocienteDiagnosticoFormula =
+    controlCalidad.getBMasCMasDiag()   +
+    controlCalidad.getBMasCMenosDiag()    +
+    controlCalidad.getBMasCContDiag() +
+    controlCalidad.getXpertMasCMasDiag() %}
+
+    {% set acd    = '%.2f'|format((controlCalidad.getBMenosCMas()  / cocienteFormula) * 100 ) %}
+    {% set bkcu   = '%.2f'|format((controlCalidad.getBMasCMenos()  / cocienteFormula) * 100 ) %}
+    {% set tc     = '%.2f'|format((controlCalidad.getTotalLJCont() /  controlCalidad.getTotalLJInoc()) * 100 ) %}
+    {% set bkxcu  = '%.2f'|format(((controlCalidad.getBMasCMasDiag() + controlCalidad.getXpertMasCMasDiag()) /  cocienteDiagnosticoFormula) * 100 ) %}
+
+
+<div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-2 form-cont">
+
+                <div class="col-lg-12" style="padding-bottom: 20px;">
+                    <label for="id_select_lab">Laboratorio:</label>
+                    <input type="text" class="form-control input-number" id="id_select_lab" value="{{ controlCalidad.laboratorio.getNombre() }}" disabled>
+                </div>
+
+                <div class="col-lg-6">
+                    <label for="id_mes">Mes:</label>
+                    <input type="text" class="form-control input-number" id="id_mes" value="{{ controlCalidad.getFechaModificada()|localizeddate('none', 'none', 'es_ES', null, "MMMM")|capitalize }}" disabled>
+                </div>
+                <div class="col-lg-6">
+                    <label for="id_anno">Año:</label>
+                    <input type="text" class="form-control input-number" id="id_anno" value="{{ controlCalidad.getFechaModificada()|date('Y') }}" disabled>
+                    <br>
+                </div>
+                <div class="col-lg-6">
+                    <label for="id_provincia">Provincia:</label>
+                    <input type="text" class="form-control input-number" id="id_provicnia" value="{{ controlCalidad.laboratorio.getMunicipio().getProvincia().getNombre() }}" disabled>
+                    <br>
+                </div>
+                <div class="col-lg-6">
+                    <label for="id_municipio">Municipio:</label>
+                    <input type="text" class="form-control input-number" id="id_municipio" value="{{ controlCalidad.laboratorio.getMunicipio().getNombre() }}" disabled>
+                    <br>
+                </div>
+
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">CONTROL DE CALIDAD DEL CULTIVO
+                    <span style="float: right;">FECHA: {{ "now"|date("d-m-Y") }}</span>
+                </h3>
+
+                <div id="campos_llenables">
+
+                    <form class="form-horizontal" role="form" style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Baciloscopia y cultivo</label>
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="panel-box-less">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_mas" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_mas" value="{{ controlCalidad.getBMasCMas() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_mas" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_nr" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo no realizado:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_nr" value="{{ controlCalidad.getBMasCNr() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_nr" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_menos_cult_mas" class="col-lg-4 knob-label">Baciloscopia (-) y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_menos_cult_mas" value="{{ controlCalidad.getBMenosCMas() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_menos_cult_mas" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_menos" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo (-):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_menos" value="{{ controlCalidad.getBMasCMenos() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_menos" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_cont" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo contaminado:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_cont" value="{{ controlCalidad.getBMasCCont() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_cont" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_nr_cult_mas" class="col-lg-4 knob-label">Baciloscopia no realizada y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_nr_cult_mas" value="{{ controlCalidad.getBNrCMas() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_nr_cult_mas" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="tubos_jesen_inoc" class="col-lg-4 knob-label">Total de tubos de Lowenstein Jensen inoculados:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Cantidad de tubos inoculados" id="tubos_jesen_inoc" value="{{ controlCalidad.getTotalLJInoc() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_tubos_jesen_inoc" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="tubos_jesen_cont" class="col-lg-4 knob-label">Total de tubos de Lowenstein Jensen contaminados:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Cantidad de tubos contaminados" id="tubos_jesen_cont" value="{{ controlCalidad.getTotalLJCont() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_tubos_jesen_cont" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Baciloscopia, xpert y cultivo solo muestras de diagnóstico</label>
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="panel-box-less">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_mas_diag" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_mas_diag" value="{{ controlCalidad.getBMasCMasDiag() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_mas_diag" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_menos_diag" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo (-):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_menos_diag" value="{{ controlCalidad.getBMasCMenosDiag() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_menos_diag" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="bac_mas_cult_cont_diag" class="col-lg-4 knob-label">Baciloscopia (+) y cultivo contaminado:</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="bac_mas_cult_cont_diag" value="{{ controlCalidad.getBMasCContDiag() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_bac_mas_cult_cont_diag" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label for="xpert_mas_cult_mas_diag" class="col-lg-4 knob-label">Xpert (+) y cultivo (+):</label>
+                                            <div class="col-lg-8">
+                                                <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="xpert_mas_cult_mas_diag" value="{{ controlCalidad.getXpertMasCMasDiag() }}">
+                                            </div>
+                                            <div class="col-lg-6 col-lg-offset-4">
+                                                <span id="sp_xpert_mas_cult_mas_diag" class="hidden text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Indicadores a Medir</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label for="acd" class="col-lg-4 control-label">ACD:</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control input-number" id="acd" disabled value="{{ acd }}{{ ' %' }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bkcu" class="col-lg-4 control-label">%BK (+) CU (-):</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control input-number" id="bkcu" disabled value="{{ bkcu }}{{ ' %' }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tc" class="col-lg-4 control-label">TC:</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control input-number" id="tc" disabled value="{{ tc }}{{ ' %' }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bkxcu" class="col-lg-4 control-label">%BK(+) / Xpert(+) y CU (-):</label>
+                                    <div class="col-lg-8">
+                                        <input type="text" class="form-control input-number" id="bkxcu" disabled value="{{ bkxcu }}{{ ' %' }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="boton" class="col-lg-4 control-label"></label>
+                                    <div class="col-lg-8">
+                                        <button type="button" class="btn btn-primary btn-block" id="calculo_porciento">Calcular</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <p class="text-center" style="margin-top: 20px">
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                        <button id="btnSalir" type="button" class="btn btn-primario"> Salir </button>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_ADMINISTRADOR") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    {% if not app.user.getNivelAcceso().nivel == 'nacional' %}
+                        window.location.href = "{{ path('login') }}";
+                    {% endif %}
+                {% endif %}
+            }
+            verificarusuario();
+
+            var md = $('#processing-modal');
+
+            //FIN DE LA SECCION DE LAS VARIABLES DE ENTRADA
+
+            //--------- validar que solo entren numeros en los campos  -----------------
+            $('.input-number').on('input', function () {
+                this.value = this.value.replace(/[^0-9]/g,'');
+            });
+
+            //--------- funcion para realizar los claculos de las ecuaciones -----------
+            $('#calculo_porciento').click(function () {
+
+                var mensaje_div_cero = '';
+                var cant_errores = 0;
+
+                //VERIFICO 1RO SI AL MENOS SE ESCRIBIO ALGUN DIGITO EN LOS CAMPOS PRESENTES.
+                if(
+                        parseInt($('#bac_mas_cult_mas').val())         >= 0 &&
+                        parseInt($('#bac_mas_cult_nr').val())          >= 0 &&
+                        parseInt($('#bac_menos_cult_mas').val())       >= 0 &&
+                        parseInt($('#bac_mas_cult_menos').val())       >= 0 &&
+                        parseInt($('#bac_mas_cult_cont').val())        >= 0 &&
+                        parseInt($('#bac_nr_cult_mas').val())          >= 0 &&
+                        parseInt($('#tubos_jesen_inoc').val())         >= 0 &&
+                        parseInt($('#tubos_jesen_cont').val())         >= 0 &&
+                        parseInt($('#bac_mas_cult_mas_diag').val())    >= 0 &&
+                        parseInt($('#xpert_mas_cult_mas_diag').val())  >= 0 &&
+                        parseInt($('#bac_mas_cult_menos_diag').val())  >= 0 &&
+                        parseInt($('#bac_mas_cult_cont_diag').val())   >= 0
+                ){
+                    //OCULTO LOS MENSAJES DE ERROR QUE HAYAN QUEDADO
+                    OcultarErroresMsg();
+
+                    //VERIFICO QUE NINGUNO DE LOS COCIENTES SEA IGUAL A CERO PARA EVITAR DIVISION POR CERO
+                    if(  cociente() < 1 ){
+                        mensaje_div_cero = mensaje_div_cero + '  ' + 'Cociente Baciloscopia Positiva igual cero.  ';
+                        cant_errores = cant_errores + 1;
+                    }
+                    if(  parseInt($('#tubos_jesen_inoc').val()) < 1 ){
+                        mensaje_div_cero = mensaje_div_cero + '  ' + 'Tubos Jesen Inoc. igual cero.  ';
+                        cant_errores = cant_errores + 1;
+                    }
+                    if(  cocienteDiagnostico() < 1 ){
+                        mensaje_div_cero = mensaje_div_cero + '  ' + 'Cociente Muestra Diagnóstico igual cero.  ';
+                        cant_errores = cant_errores + 1;
+                    }
+
+                    //SI NO HAY ERROR DE DIVISION ENTONCES CALCULO TODOS LOS CAMPOS DE LOS INDICADORES
+                    if( cant_errores === 0 )
+                    {
+
+                        $('#acd').val( calculaFormulaACD($('#bac_menos_cult_mas').val(), cociente()) );
+
+                        $('#bkcu').val( calculaFormulaBKCU($('#bac_mas_cult_menos').val(), cociente()) );
+
+                        $('#tc').val( calculaFormulaTC($('#tubos_jesen_cont').val(), $('#tubos_jesen_inoc').val()) );
+
+                        $('#bkxcu').val(
+                                calculaFormulaBKXPERTCU(
+                                        ( parseInt($('#bac_mas_cult_mas_diag').val()) + parseInt($('#xpert_mas_cult_mas_diag').val()) ),
+                                        cocienteDiagnostico() )
+                        );
+                    }
+                    else
+                    {
+                        alertify.alert('<strong>La suma de los campos del denominador es igual a cero. División por cero no permitida en:'+ mensaje_div_cero+'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                                .set('label','Aceptar')
+                    }
+
+                }
+                else
+                {
+                    erroresFormulario();
+
+                    alertify.alert('<strong>Existen campos vacíos.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                            .set('label','Aceptar')
+
+                }
+            });
+
+            //--------- ecuaciones para los diferentes calculos        -----------------
+            function calculaFormulaACD(numerador, total){
+                return convierteNumero(numerador,total);
+            }
+            function calculaFormulaBKCU(numerador, total){
+                return convierteNumero(numerador,total);
+            }
+            function calculaFormulaTC(numerador, denominador){
+                return convierteNumero(numerador, denominador);
+            }
+            function calculaFormulaBKXPERTCU(numerador, denominador){
+                return convierteNumero(numerador, denominador);
+            }
+            function cociente(){
+
+                total = parseInt($('#bac_mas_cult_mas').val()) +
+                    parseInt($('#bac_mas_cult_nr').val())      +
+                    parseInt($('#bac_menos_cult_mas').val())   +
+                    parseInt($('#bac_mas_cult_menos').val())   +
+                    parseInt($('#bac_mas_cult_cont').val())  ;
+
+                return total;
+            }
+            function cocienteDiagnostico(){
+
+                totalDiag = parseInt($('#bac_mas_cult_mas_diag').val()) +
+                        parseInt($('#xpert_mas_cult_mas_diag').val())   +
+                        parseInt($('#bac_mas_cult_menos_diag').val())   +
+                        parseInt($('#bac_mas_cult_cont_diag').val())  ;
+
+                return totalDiag;
+            }
+
+            //--------- funcion para obtener un numero con 2 decimales o sin ellos -----
+            function convierteNumero(num_1,num_2) {
+
+                var div = ((parseInt(num_1) / parseInt(num_2))*100).toFixed(2);
+
+                var decimales = div.toString().substr(3,2);
+
+                if( decimales === '00' )
+                    return div.toString().substr(0,2)+' '+'%';
+                return div+' '+'%';
+            }
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function ()
+            {
+                window.location.href = "{{ path('listarCalidadCultivo') }}";
+            });
+
+            {#//--------- enviar el formulario -----------------#}
+            $('#btnGuardar').click(function () {
+
+                if(erroresFormulario()>0)
+                    return false;
+
+                var mat_datos = {
+                    b_mas_c_mas:           $("#bac_mas_cult_mas").val(),
+                    b_mas_c_nr:            $("#bac_mas_cult_nr").val(),
+                    b_menos_c_mas:         $("#bac_menos_cult_mas").val(),
+                    b_mas_c_menos:         $("#bac_mas_cult_menos").val(),
+                    b_mas_c_cont:          $("#bac_mas_cult_cont").val(),
+                    b_nr_c_mas:            $("#bac_nr_cult_mas").val(),
+                    total_lj_inoc:         $("#tubos_jesen_inoc").val(),
+                    total_lj_cont:         $("#tubos_jesen_cont").val(),
+                    b_mas_c_mas_diag:      $('#bac_mas_cult_mas_diag').val(),
+                    b_mas_c_menos_diag:    $('#bac_mas_cult_menos_diag').val(),
+                    b_mas_c_cont_diag:     $('#bac_mas_cult_cont_diag').val(),
+                    xpert_mas_c_mas_diag:  $('#xpert_mas_cult_mas_diag').val(),
+                    id_laboratorio: "{{ controlCalidad.getId() }}"
+                };
+
+                md.modal({
+                    backdrop: 'static',
+                    keyboard: false
+                },'show');
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updateControlCC") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    if(data==='ok'){
+
+                        $('input').each(function(){
+                            $(this).val('');
+                        });
+                        md.modal('hide');
+                        alertify.alert('<strong>El Control de Calidad del Cultivo ha sido actualizado con éxito.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                            .set('label','Aceptar').set('onok', function(closeEvent){
+                                window.location.href = "{{ path('listarCalidadCultivo') }}";
+                            });
+                    }
+                    else{
+                        md.modal('hide');
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar');
+                    }
+
+                }).fail(function (jqXHR, textStatus) {
+                    md.modal('hide');
+                    alertify.alert('<strong>Ha habido un problema en el servidor. Intente volver a conectarse.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                            .set('label','Aceptar')
+                });
+            });
+
+            {#//--------- errores del formulario (campos vacios)-----------------#}
+            function erroresFormulario() {
+
+                OcultarErroresMsg();
+                MostrarErroresMsg();
+
+                var campos_formulario = [
+                    $("#bac_mas_cult_mas"),
+                    $("#bac_mas_cult_nr"),
+                    $("#bac_menos_cult_mas"),
+                    $("#bac_mas_cult_menos"),
+                    $("#bac_mas_cult_cont"),
+                    $("#bac_nr_cult_mas"),
+                    $("#tubos_jesen_inoc"),
+                    $("#tubos_jesen_cont"),
+                    $('#bac_mas_cult_mas_diag'),
+                    $('#bac_mas_cult_menos_diag'),
+                    $('#bac_mas_cult_cont_diag'),
+                    $('#xpert_mas_cult_mas_diag')
+                ];
+
+                var tiene_error = 0;
+                for (var i = 0; i < campos_formulario.length; i++) {
+                    if(campos_formulario[i].val()=='' || campos_formulario[i].val() == null)
+                    {
+                        tiene_error++;
+                        campos_formulario[i].focus();
+                        break;
+                    }
+                }
+
+                return tiene_error;
+            }
+
+            function OcultarErroresMsg()
+            {
+                $("#sp_bac_mas_cult_mas").addClass('hidden');
+                $("#sp_bac_mas_cult_nr").addClass('hidden');
+                $("#sp_bac_menos_cult_mas").addClass('hidden');
+                $("#sp_bac_mas_cult_menos").addClass('hidden');
+                $("#sp_bac_mas_cult_cont").addClass('hidden');
+                $("#sp_bac_nr_cult_mas").addClass('hidden');
+                $("#sp_tubos_jesen_inoc").addClass('hidden');
+                $("#sp_tubos_jesen_cont").addClass('hidden');
+                $('#sp_bac_mas_cult_mas_diag').addClass('hidden');
+                $('#sp_bac_mas_cult_menos_diag').addClass('hidden');
+                $('#sp_bac_mas_cult_cont_diag').addClass('hidden');
+                $('#sp_xpert_mas_cult_mas_diag').addClass('hidden');
+            }
+
+            function MostrarErroresMsg()
+            {
+                if($("#bac_mas_cult_mas").val() == ''){
+                    $("#sp_bac_mas_cult_mas").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#bac_mas_cult_nr").val() == ''){
+                    $("#sp_bac_mas_cult_nr").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#bac_menos_cult_mas").val() == ''){
+                    $("#sp_bac_menos_cult_mas").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#bac_mas_cult_menos").val() == ''){
+                    $("#sp_bac_mas_cult_menos").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#bac_mas_cult_cont").val() == ''){
+                    $("#sp_bac_mas_cult_cont").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#bac_nr_cult_mas").val() == ''){
+                    $("#sp_bac_nr_cult_mas").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#tubos_jesen_inoc").val() == ''){
+                    $("#sp_tubos_jesen_inoc").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#tubos_jesen_cont").val() == ''){
+                    $("#sp_tubos_jesen_cont").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#bac_mas_cult_mas_diag").val() == ''){
+                    $("#sp_bac_mas_cult_mas_diag").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#bac_mas_cult_menos_diag").val() == ''){
+                    $("#sp_bac_mas_cult_menos_diag").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#bac_mas_cult_cont_diag").val() == ''){
+                    $("#sp_bac_mas_cult_cont_diag").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+                if($("#xpert_mas_cult_mas_diag").val() == ''){
+                    $("#sp_xpert_mas_cult_mas_diag").text('El campo es obligatorio , no puede quedar en blanco.').removeClass('hidden');
+                }
+
+            }
+
+        });
+    </script>
+{% endblock %}

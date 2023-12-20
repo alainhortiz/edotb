@@ -1,0 +1,523 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12  form-cont"><h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Nuevo Paciente Sintomático</h3>
+                    <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="carnetIdentidad">Carnet de Identidad:</label>
+                                        <div>
+                                            <strong>{{ ci }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="nombre">Nombre:</label>
+                                        <div>
+                                            <input placeholder="Teclee el nombre" type="text" class="form-control input-sm" id="nombre" name="nombre">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="primerApellido">Primer Apellido:</label>
+                                        <div>
+                                            <input placeholder="Teclee el primer apellido" type="text" class="form-control input-sm" id="primerApellido" name="primerApellido">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="segundoApellido">Segundo Apellido:</label>
+                                        <div>
+                                            <input placeholder="Teclee el segundo apellido" type="text" class="form-control input-sm" id="segundoApellido" name="segundoApellido">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="edad">Edad:</label>
+                                        <div>
+                                            <input placeholder="Teclee la edad" type="number" id="edad" name="edad">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="sexo">Sexo:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="sexo" name="sexo">
+                                                <option value="0">Seleccione el sexo</option>
+                                                <option value="Masculino">Masculino</option>
+                                                <option value="Femenino">Femenino</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="grupoVulnerable">Grupos Vulnerables:</label>
+                                    <div class="form-group">
+                                        <select class="form-control input-sm" id="grupoVulnerable"  name="grupoVulnerable">
+                                            <option value="0">Seleccione un grupo vulnerable</option>
+                                            {% for grupo in  gruposVulnerable %}
+                                                <option value="{{ grupo.id }}">{{ grupo.grupo }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3" style="border-top: none">
+                                    <label class="control-label " for="pais">País de Residencia:</label>
+                                    <div class="form-group">
+                                        <select class="form-control input-sm " id="pais"  name="pais">
+                                            <option value="0">Seleccione un país</option>
+                                            {% for pais in  paises %}
+                                                <option value="{{ pais.id }}">{{ pais.codigo }}-{{ pais.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label " for="direccion">Dirección del Paciente:</label>
+                                        <div>
+                                            <input placeholder="Teclee la dirección actual del paciente" type="text" class="form-control input-sm" id="direccion" name="direccion">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provinciaResid">Provincia de Residencia:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="provinciaResid"  name="provinciaResid">
+                                                <option value="0">Seleccione una provincia</option>
+                                                {% for provincia in  provincias %}
+                                                    <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label  class="control-label" for="municipioResid">Municipio de Residencia:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="municipioResid" name="municipioResid">
+                                                <option  value="0">Seleccione un municipio </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                {% if app.user.getNivelAcceso().nivel == 'unidad' %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().nombre : app.user.hospital.municipio.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Centro de Atención::</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().nombre : '' }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.hospital != null ? app.user.hospital.nombre : ''}}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% elseif app.user.getNivelAcceso().nivel == 'municipal'%}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre}}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().nombre : app.user.hospital.municipio.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Centro de Atención::</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="areaSalud" name="areaSalud">
+                                                <option value="0">Seleccione un centro de atención</option>
+                                                {% for area in  areasSalud %}
+                                                    <option value="{{ area.id }}">{{ area.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="hospital" name="hospital">
+                                                <option value="0">Seleccione un hospital</option>
+                                                {% for hospital in  hospitales %}
+                                                    <option value="{{ hospital.id }}">{{ hospital.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% elseif  app.user.getNivelAcceso().nivel == 'provincial' %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="municipio" name="municipio">
+                                                <option value="0">Seleccione un municipio </option>
+                                                {% for municipio in  municipios %}
+                                                    <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Centro de Atención::</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="areaSalud" name="areaSalud">
+                                                <option value="0">Seleccione un centro de atención </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <select  class="form-control input-sm " id="hospital" name="hospital">
+                                                <option  value="0">Seleccione un hospital</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label  class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="provincia" name="provincia">
+                                                <option value="0">Seleccione una provincia </option>
+                                                {% for provincia in  provincias %}
+                                                    <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label   class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <select  class="form-control input-sm" id="municipio" name="municipio">
+                                                <option  value="0">Seleccione un municipio </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Centro de Atención:</label>
+                                        <div class="form-group">
+                                            <select  class="form-control input-sm " id="areaSalud" name="areaSalud">
+                                                <option  value="0">Seleccione un centro de atención </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="hospital" name="hospital">
+                                                <option  value="0">Seleccione un hospital</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="fechaEntrada">Fecha de Entrada:</label>
+                                        <div>
+                                            <input type="date" id="fechaEntrada" name="fechaEntrada">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <p class="text-center" style="margin-top: 20px">
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                        <button id="btnSalir" type="button" class="btn btn-primario"> Salir</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            function verificarusuario() {
+                {% if not (is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+
+            verificarusuario();
+
+            $("#pais").select2({
+                placeholder: "Seleccione un país..",
+                allowClear: true
+            });
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function () {
+                window.location.href = "{{ path('inicio') }}";
+
+            });
+            //----------Relacionar selects --------------------------
+            {% if  app.user.getNivelAcceso().nivel != 'unidad' %}
+                {{ include('Generales/relacionarSelectProvMun.html.twig') }}
+            {% endif %}
+
+            $('#provinciaResid').on('change', function () {
+                var provincia = $(this).val();
+
+                //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+                var html    = '<option value="0">Seleccione un municipio</option>';
+
+                {% for municipio in  municipiosResid %}
+                var idProvincia = '{{ municipio.getProvincia().id }}';
+
+                if (idProvincia == provincia) {
+                    var idMunicipio = '{{ municipio.id }}';
+                    var name = '{{ municipio.nombre }}';
+                    html += '<option value="' + idMunicipio + '">' + name + '</option>';
+                }
+                {% endfor %}
+
+                $("#municipioResid").html(html);
+            });
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function () {
+
+                if ($("#nombre").val().trim() == '') {
+                    alertify.alert('<strong>El campo nombre es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#primerApellido").val().trim() == '') {
+                    alertify.alert('<strong>El campo primer apellido es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#segundoApellido").val().trim() == '') {
+                    alertify.alert('<strong>El campo segundo apellido es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#edad").val() == '') {
+                    alertify.alert('<strong>El campo edad es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#edad").val() < 1) {
+                    alertify.alert('<strong>Error: la edad del paciente no puede ser menor que 1.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#sexo").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el sexo del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#pais").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el país del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#direccion").val().trim() == '') {
+                    alertify.alert('<strong>El campo dirección es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#provinciaResid").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar la provincia de residencia del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#municipioResid").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el municipio de residencia del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#grupoVulnerable").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar un grupo vulnerable.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#fechaEntrada").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de entrada del paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+
+                if ($("#fechaEntrada").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de entrada no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#provincia").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar la provincia en que se atendió el paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#municipio").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el municipio en que se atendió el paciente.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                var areaSalud = '{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().id : ''}}';
+                var hospital = '{{ app.user.hospital != null ? app.user.hospital.id : ''}}';
+                {% if not (app.user.getNivelAcceso().nivel == 'unidad') %}
+                    if($("#areaSalud").val() == '0' && $("#hospital").val() == '0'){
+                        alertify.alert('<strong>Debe seleccionar el centro de atención o el hospital en que se atiende el paciente.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar');
+                        return false;
+                    }
+                    hospital = $("#hospital").val();
+                    areaSalud = $("#areaSalud").val();
+                {% endif %}
+
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    carnetIdentidad: '{{ ci }}',
+                    nombre: $("#nombre").val(),
+                    primerApellido: $("#primerApellido").val(),
+                    segundoApellido: $("#segundoApellido").val(),
+                    edad: $("#edad").val(),
+                    sexo: $("#sexo").val(),
+                    pais: $("#pais").val(),
+                    direccion: $("#direccion").val(),
+                    municipioResid: $("#municipioResid").val(),
+                    grupoVulnerable: $("#grupoVulnerable").val(),
+                    fechaEntrada: $("#fechaEntrada").val(),
+                    hospital: hospital,
+                    areaSalud: areaSalud
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertPacienteSintomatico") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $(".preload").addClass('hidden');
+                    if(data == 'ok'){
+
+                        alertify.alert('<strong>El paciente ha sido insertado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                            .set('onok', function(){
+
+                                $(".preload").removeClass('hidden');
+                                window.location.href = "{{ path('inicio') }}";
+                            });
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                            .set('onok', function(){
+
+                                $(".preload").removeClass('hidden');
+                                window.location.href = "{{ path('inicio') }}";
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

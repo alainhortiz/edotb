@@ -1,0 +1,12 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: 127.0.0.1
+    database_port:
+    database_name: edotb_2019
+    database_user: root
+    database_password:
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: 41e454bbaeb50b5b9e7735f69d9f457b431ae567

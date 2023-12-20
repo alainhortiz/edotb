@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Gestion EDO-TB{% endblock %}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/bootstrap.min.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/Alertify/css/alertify.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/Alertify/css/themes/default.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/jquery_ui/jquery-ui.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/style.css') }}"/>
+    {% endblock %}
+    <link rel="icon" href="{{ asset('img/logo.png') }}"/>
+</head>
+<body class="bback">
+{% block nav %}{% endblock %}
+{% block body %}{% endblock %}
+{% block push %}
+    <div id="push"></div>
+{% endblock %}
+{% block footer %}{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/jquery_ui/jquery-ui.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/Alertify/alertify.js') }}"></script>
+    <script>
+        alertify.confirm()
+        .setting({
+            'defaultFocus':'cancel',
+            'labels':{ok:'Aceptar', cancel:'Cancelar'},
+            'modal':true
+        }).setHeader('<span class="glyphicon glyphicon-alert" style="font-size: 20px"></span>' +
+                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>');
+    </script>
+{% endblock %}
+</body>
+</html>

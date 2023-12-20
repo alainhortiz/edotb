@@ -1,0 +1,663 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-2 form-cont">
+                <div class="row">
+                    <div class="col-lg-12" style="padding-bottom: 5px;">
+                        <div class="col-lg-12">
+                            <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                                REPORTE CONTROL DE CALIDAD DE LA BACILOSCOPIA
+                            </h3>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <label for="id_trimestre">Trimestre:</label>
+                            <select class="form-control" id="id_trimestre">
+                                <option value=0>Seleccione el trimestre</option>
+                                <option value=1>Primero</option>
+                                <option value=2>Segundo</option>
+                                <option value=3>Tercero</option>
+                                <option value=4>Cuarto</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="id_mes">Seleccionar el mes:</label>
+                            <select class="form-control" id="id_mes">
+                                <option value="0">Seleccionar el mes</option>
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="id_anno">Seleccione el año:</label>
+                            <select class="form-control" id="id_anno">
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                            </select>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="id_provincia">Provincia:</label>
+                            <select class="form-control" id="id_provincia">
+                                <option value="0">Seleccione una provincia</option>
+                                {% for provincia in  provincias %}
+                                    <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="id_municipio">Municipio:</label>
+                            <select class="form-control" id="id_municipio">
+                                <option value="0">Seleccione un municipio</option>
+                            </select>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label for="id_select_lab">Seleccionar el laboratorio:</label>
+                            <select class="form-control" id="id_select_lab">
+                                {#{% for lab in laboratorios %}#}
+                                    {#<option value="{{ lab.id }}">{{ lab.nombre }}</option>#}
+                                {#{% endfor %}#}
+                            </select>
+                            <br>
+                            <br>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <button type="button" class="btn btn-primary btn-block" id="buscar_lab">Buscar</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clear-fix">
+        <br>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-2 form-cont">
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                    CONTROL DE CALIDAD DE LA BACILOSCOPIA
+                    <span id="spanFechas" style="float: right;margin-top: 10px;">
+                    </span>
+                </h3>
+                <div class="hidden" id="campos_llenables">
+
+                    <form class="form-row" role="form" style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Muestras Evaluadas</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="panel-box-less">
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-12">
+                                            <label for="muestras_evaluadas">Total de muestras evaluadas:</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras evaluadas" id="muestras_evaluadas" disabled>
+                                            <div>
+                                                <span id="sp_muestras_evaluadas" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <label for="num_positivas">Número de positivas:</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras positivas" id="num_positivas" disabled>
+                                            <div>
+                                                <span id="sp_num_positivas" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="num_negativas">Número de negativas:</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras negativas" id="num_negativas" disabled>
+                                            <div>
+                                                <span id="sp_num_negativas" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-6">
+                                            <label for="falsos_positivos">Falsos positivos (FP):</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras FP" id="falsos_positivos" disabled>
+                                            <div>
+                                                <span id="sp_falsos_positivos" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-lg-6">
+                                            <label for="falsos_negativos">Falsos negativos (FN):</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de muestras FN" id="falsos_negativos" disabled>
+                                            <div>
+                                                <span id="sp_falsos_negativos" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-lg-12">
+                                            <label for="errores">Errores de codificación:</label>
+                                            <input type="text" class="form-control input-number" placeholder="Número de errores" id="errores" disabled>
+                                            <div>
+                                                <span id="sp_errores" class="hidden text-danger">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Láminas</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group col-lg-12">
+                                    <label for="laminas_concordantes">Láminas concordantes:</label>
+                                    <input type="text" class="form-control input-number" placeholder="Número de láminas concordantes" id="laminas_concordantes" disabled>
+                                    <div>
+                                        <span id="sp_laminas_concordantes" class="hidden text-danger">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="lta">LTA: No. Láminas con tinción de Zielh Neelsen (ZN) adecuada:</label>
+                                    <input type="text" class="form-control input-number" placeholder="Número de láminas LTA" id="lta" disabled>
+                                    <div>
+                                        <span id="sp_lta" class="hidden text-danger">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="lea">LEA: No. Láminas con extensión adecuada:</label>
+                                    <input type="text" class="form-control input-number" placeholder="Número de láminas LEA" id="lea" disabled>
+                                    <div>
+                                        <span id="sp_lea" class="hidden text-danger">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                    <label for="lca">LCA: No. Láminas con calidad adecuada (muestras mucosas y mucupurulentas):</label>
+                                    <input type="text" class="form-control input-number" placeholder="Número de láminas LCA" id="lca" disabled>
+                                    <div>
+                                        <span id="sp_lca" class="hidden text-danger">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-success">
+                            <div class="panel-heading ">
+                                <label for="">Indicadores a Medir</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group col-lg-6">
+                                    <label for="tasa_fp">Tasa FP:</label>
+                                    <input type="text" class="form-control" id="tasa_fp" disabled>
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="tasa_fn">Tasa FN:</label>
+                                    <input type="text" class="form-control" id="tasa_fn" disabled>
+                                </div>
+
+                                <div class="form-group col-lg-12">
+                                    <label for="tasa_ec">Tasa EC:</label>
+                                    <input type="text" class="form-control" id="tasa_ec" disabled>
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="pc_concordancia">% concordancia:</label>
+                                    <input type="text" class="form-control" id="pc_concordancia" disabled>
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="pc_lta">% láminas con extensión adecuada: </label>
+                                    <input type="text" class="form-control" id="pc_lta" disabled>
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="pc_lea">% de láminas con ZN adecuada:</label>
+                                    <input type="text" class="form-control" id="pc_lea" disabled>
+                                </div>
+
+                                <div class="form-group col-lg-6">
+                                    <label for="pc_lca">% láminas con calidad adecuada:</label>
+                                    <input type="text" class="form-control" id="pc_lca" disabled>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+                    <div class="col-lg-12" style="padding-top: 10px;">
+                        <button type="button" class="btn btn-primary btn-block" id="imprime_lab">Exportar a Excel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_ADMINISTRADOR") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    {% if not app.user.getNivelAcceso().nivel == 'nacional' %}
+                        window.location.href = "{{ path('login') }}";
+                    {% endif %}
+                {% endif %}
+            }
+
+            verificarusuario();
+
+            var fechaHoy = new Date();
+            var getMes = fechaHoy.getMonth();
+            var getAnno = fechaHoy.getFullYear();
+
+            setSelectedIndex($("#id_mes"),getMes+1);
+            setSelectedIndex($("#id_anno"),getAnno);
+
+            $("#id_select_lab").select2({
+                placeholder: {
+                    id: '0', // the value of the option
+                    text: "Seleccione un laboratorio..."},
+                allowClear: true
+            });
+
+            $("#id_select_lab").select2("val");
+
+            var md = $('#processing-modal');
+
+            //SECCION DE LAS VARIABLES DE ENTRADA
+            $('#muestras_evaluadas').val('');
+            $('#num_positivas').val('');
+            $('#num_negativas').val('');
+            $('#falsos_positivos').val('');
+            $('#falsos_negativos').val('');
+            $('#errores').val('');
+
+            $('#laminas_concordantes').val('');
+            $('#lta').val('');
+            $('#lea').val('');
+            $('#lca').val('');
+
+            $('#tasa_fp').val('');('');
+            $('#tasa_fn').val('');
+            $('#tasa_ec').val('');
+            $('#pc_concordancia').val('');
+            $('#pc_lta').val('');
+            $('#pc_lea').val('');
+            $('#pc_lca').val('');
+
+            //FIN DE LA SECCION DE LAS VARIABLES DE ENTRADA
+
+            //--------- captar el valor del select de los laboratorios -----------------
+            //$("#id_select_lab").val($("#id_select_lab option:first").val());
+
+            $('#id_select_lab').change(function() {
+
+                var laboratorio = $("#id_select_lab").val();
+
+                if( laboratorio < 1 ){
+                    $("#spanFechas").html("");
+                    $('#campos_llenables').removeClass('show');
+                    $('#campos_llenables').addClass('hidden');
+                }
+
+            });
+
+            //--------- captar el valor del select del trimestre -----------------
+            //Si selecciona un trimestre se pone el valor cero en los meses
+
+            $('#id_trimestre').change(function() {
+
+                var idTrim = $("#id_trimestre").val();
+
+                if( idTrim >  0){
+                    $("#id_mes").val(0);
+                }
+
+            });
+
+            //--------- captar el valor del select del mes -----------------
+            //Si selecciona un mes se pone el valor cero en el trimestre
+
+            $('#id_mes').change(function() {
+
+                var idMes = $("#id_mes").val();
+
+                if( idMes >  0){
+                    $("#id_trimestre").val(0);
+                }
+
+            });
+
+            //--------- ecuaciones para los diferentes calculos        -----------------
+            function calculaFormulaTasaFP(totalPositivas, cantFP){
+                return convierteNumero(cantFP,totalPositivas);
+            }
+            function calculaFormulaTasaFN(totalNegativas, cantFN){
+                return convierteNumero(cantFN,totalNegativas);
+            }
+            function calculaFormulaTasaEC(totalPositivas, cantEC){
+                return convierteNumero(cantEC,totalPositivas);
+            }
+            function calculaFormulaConcordancia(totalEvaluadas,cantConcordante){
+                return convierteNumero(cantConcordante,totalEvaluadas);
+            }
+            function calculaFormulaLTA(totalEvaluadas,cantLTA){
+                return convierteNumero(cantLTA,totalEvaluadas);
+            }
+            function calculaFormulaLEA(totalEvaluadas,cantLEA){
+                return convierteNumero(cantLEA,totalEvaluadas);
+            }
+            function calculaFormulaLCA(totalEvaluadas,cantLCA){
+                return convierteNumero(cantLCA,totalEvaluadas);
+            }
+
+            //--------- funcion para obtener un numero con 2 decimales o sin ellos -----
+
+            function convierteNumero(num_1,num_2) {
+
+                var div = ((parseInt(num_1) / parseInt(num_2))*100).toFixed(2);
+
+                var decimales = div.toString().substr(3,2);
+
+                if( decimales === '00' )
+                    return div.toString().substr(0,2)+' '+'%';
+                return div+' '+'%';
+            }
+
+            $('#buscar_lab').click(function () {
+
+                $('#campos_llenables').removeClass('show');
+                $('#campos_llenables').addClass('hidden');
+
+                if( $("#id_mes").val() > 0 && ( $("#id_select_lab").val() === null || $("#id_select_lab").val() === "null" ) )
+                {
+                    alertify.alert('<strong>Debe escoger un laboratorio para el mes escogido.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    return false;
+                }
+
+                var lab_id = $("#id_select_lab").val() === null ? 0 : parseInt( $("#id_select_lab").val() );
+                buscarLAB(
+                        lab_id,
+                        parseInt( $("#id_mes").val() ),
+                        parseInt( $("#id_anno").val() ),
+                        parseInt( $("#id_trimestre").val() ),
+                        parseInt( $("#id_provincia").val() ),
+                        parseInt( $("#id_municipio").val() )
+                );
+
+            });
+
+            function buscarLAB(id,mes,anno,trimestre,provincia,municipio){
+
+                md.modal({
+                    backdrop: 'static',
+                    keyboard: false
+                },'show');
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("reporteCalidadBaciloscopiaJson") }}',
+                    data: {id_lab:id, id_mes:mes, id_anno:anno, id_trimestre:trimestre, id_provincia:provincia, id_municipio: municipio}
+                }).done(function (data) {
+
+                    md.modal('hide');
+                    if($.isEmptyObject(data))
+                    {
+                        alertify.alert('<strong>No existen datos del laboratorio para este mes.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                            .set('label','Aceptar')
+
+                        $("#spanFechas").html("");
+
+                        $('#campos_llenables').removeClass('show');
+                        $('#campos_llenables').addClass('hidden');
+                    }
+                    else
+                    {
+                        asignarValores(data);
+                        $('#campos_llenables').removeClass('hidden');
+                        $('#campos_llenables').addClass('show');
+                    }
+                });
+            }
+
+            function asignarValores(datos){
+
+                $('#muestras_evaluadas').val(datos.total_muestra_eval);
+                $('#num_positivas').val(datos.num_positivas);
+                $('#num_negativas').val(datos.num_negativas);
+                $('#falsos_positivos').val(datos.falsos_positivos);
+                $('#falsos_negativos').val(datos.falsos_negativos);
+                $('#errores').val(datos.errores_cod);
+
+                $('#laminas_concordantes').val(datos.laminas_concord);
+                $('#lta').val(datos.lta);
+                $('#lea').val(datos.lea);
+                $('#lca').val(datos.lca);
+
+                if( datos.fechaInicialTrim === undefined ){
+                    var fechaEntrada = datos.fechaEntrada;
+                    var fechaModificada = datos.fechaModificada;
+
+                    $("#spanFechas").html("<h5>ENTRADA:<span style='color: #0c0c0c; padding-right: 10px'>"+fechaEntrada+"</span>" +
+                            "MODIFICADA:<span style='color: #0c0c0c'> "+fechaModificada+"</span></h5>");
+                }
+                else{
+                    var fechaEntrada  = datos.fechaInicialTrim;
+                    var fechaFinal    = datos.fechaFinalTrim;
+
+                    $("#spanFechas").html("<h5>INICIO:<span style='color: #0c0c0c; padding-right: 10px'>"+fechaEntrada+"</span>" +
+                            "FINAL:<span style='color: #0c0c0c'> "+fechaFinal+"</span></h5>");
+                }
+
+
+                $('#tasa_fp').val( calculaFormulaTasaFP($('#num_positivas').val(), $('#falsos_positivos').val()) );
+
+                $('#tasa_fn').val( calculaFormulaTasaFN($('#num_negativas').val(), $('#falsos_negativos').val()) );
+
+                $('#tasa_ec').val( calculaFormulaTasaEC($('#num_positivas').val(), $('#errores').val()) );
+
+                $('#pc_concordancia').val( calculaFormulaConcordancia($('#muestras_evaluadas').val(), $('#laminas_concordantes').val()) );
+
+                $('#pc_lta').val( calculaFormulaLTA($('#muestras_evaluadas').val(), $('#lta').val()) );
+
+                $('#pc_lea').val( calculaFormulaLEA($('#muestras_evaluadas').val(), $('#lea').val()) );
+
+                $('#pc_lca').val( calculaFormulaLCA($('#muestras_evaluadas').val(), $('#lca').val()) );
+
+
+            }
+
+            function setSelectedIndex(s, valsearch){
+
+                //Recorrer todos los elementos del select
+                for (var i = 0; i< s[0].options.length; i++)
+                {
+                    if (s[0].options[i].value == valsearch)
+                    {
+                        // Item is found. Set its property and exit
+                        s[0].options[i].selected = true;
+                        break;
+                    }
+                }
+                return;
+            }
+
+            //----------Relacionar selects --------------------------
+            $('#id_provincia').on('change', function () {
+
+                var provincia = $(this).val();
+
+                $("#id_select_lab").select2("val");
+
+                //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+                var html = '<option class="select_municipio" value="0">Seleccione un municipio</option>';
+                var htmlLab = '<option value="null"></option>';
+
+                {#if($(this).val() == 0)#}
+                {#{#}
+                    {#{% for lab in laboratorios %}#}
+                    {#var idLab = "{{ lab.id }}";#}
+                    {#var nameLab = "{{ lab.nombre }}";#}
+                    {#htmlLab += '<option value="' + idLab +'">' + nameLab + '</option>';#}
+                    {#{% endfor %}#}
+                {#}#}
+
+                {% for municipio in  municipios %}
+                var idProvincia = "{{ municipio.getProvincia().id }}";
+
+                if (idProvincia == provincia) {
+                    var idMunicipio = "{{ municipio.id }}";
+                    var name = "{{ municipio.nombre }}";
+                    html += '<option value="' + idMunicipio + '">' + name + '</option>';
+
+                    {#{% for lab in laboratorios %}#}
+                        {#var idLabMunicipio = "{{ lab.getMunicipio().id }}";#}
+                        {#var idLab = "{{ lab.id }}";#}
+                        {#var nameLab = "{{ lab.nombre }}";#}
+                        {#if( idMunicipio == idLabMunicipio )#}
+                            {#htmlLab += '<option value="' + idLab +'">'+nameLab+'</option>';#}
+                    {#{% endfor %}#}
+                }
+                {% endfor %}
+
+                $("#id_municipio").html(html);
+                $("#id_select_lab").html(htmlLab);
+            });
+
+            $('#id_municipio').on('change', function () {
+
+                var municipio = $(this).val();
+//                var id_provincia_seleccionada = $('#id_provincia').val();
+
+                $("#id_select_lab").select2("val");
+
+
+                //ESTE CICLO ES PARA BUSCAR LOS LABORATORIOS PERTENECIENTES A UN MUNICIPIO
+                var htmlLab = '<option value="null"></option>';
+
+                {#if($(this).val() == 0)#}
+                {#{#}
+                    {#{% for municipio in  municipios %}#}
+
+                    {#var idProvincia = "{{ municipio.getProvincia().id }}";#}
+
+                    {#if (idProvincia == id_provincia_seleccionada) {#}
+                        {#var idMunicipio = "{{ municipio.id }}";#}
+
+                        {#{% for lab in laboratorios %}#}
+                            {#var idLabMunicipio = "{{ lab.getMunicipio().id }}";#}
+                            {#var idLab = "{{ lab.id }}";#}
+                            {#var nameLab = "{{ lab.nombre }}";#}
+                            {#if( idMunicipio == idLabMunicipio )#}
+                                {#htmlLab += '<option value="' + idLab +'">'+nameLab+'</option>';#}
+                        {#{% endfor %}#}
+                    {#}#}
+                    {#{% endfor %}#}
+
+                    {#$("#id_select_lab").html(htmlLab);#}
+                {#}#}
+
+
+                {% for lab in laboratorios %}
+                    var idMunicipio = "{{ lab.getMunicipio().id }}";
+
+                    if (idMunicipio == municipio) {
+                        var idLab = "{{ lab.id }}";
+                        var nameLab = "{{ lab.nombre }}";
+                        htmlLab += '<option value="' + idLab +'">' + nameLab + '</option>';
+                    }
+                {% endfor %}
+
+                $("#id_select_lab").html(htmlLab);
+            });
+
+            $('#imprime_lab').click(function () {
+
+                var anno        = $("#id_anno").val();
+                var mes         = $("#id_mes").val();
+                var trimestre   = $("#id_trimestre").val();
+                var idLab       = $("#id_select_lab").val();
+                var provincia   = $("#id_provincia").val();
+                var municipio   = $("#id_municipio").val();
+                var ruta_actual = window.location.href;
+                var ruta_rpte   = ruta_actual.replace('reporteCalidadBaciloscopia','impExcelCalidadBaciloscopia/'+ idLab +'/'+ anno +'/'+mes +'/'+ trimestre +'/'+ provincia +'/'+ municipio );
+                window.open(ruta_rpte);
+            });
+
+        });
+    </script>
+{% endblock %}

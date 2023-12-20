@@ -1,0 +1,132 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="top-datatable" style="background: #434242; padding: 5px">
+        <div class="row" style=" margin-right: auto">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 class="no-padding" style="color: #70cbb1">{{ titulo }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row"
+             style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242">
+            <div class="col-md-12">
+                <table id="dataContacto" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>CI</th>
+                        <th>Nombre</th>
+                        <th>Primer Apellido</th>
+                        <th>Segundo Apellido</th>
+                        <th>Fecha Notificación</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_ci" type="text" class="form-control"
+                                       name="buscador_ci" placeholder="Buscar "/>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_nombre" type="text" class="form-control " name="buscador_nombre"
+                                       placeholder="Buscar "/>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_primerApellido" type="text" class="form-control "
+                                       name="buscador_primerApellido" placeholder="Buscar "/>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_segundoApellido" type="text" class="form-control "
+                                       name="buscador_segundoApellido" placeholder="Buscar "/>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_fechaNotificacion" type="text" class="form-control "
+                                       name="buscador_fechaNotificacion" placeholder="Buscar "/>
+                            </div>
+                        </th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <style>
+        #dataContacto tfoot input {
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            function verificarusuario() {
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_VISUALIZADOR")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+
+            verificarusuario();
+
+            $(".preload").removeClass('hidden');
+
+            var rutaAjax = '{{ origen~'Ajax' }}';
+            var columnDefs = [];
+
+            {% import 'Contactos/Listados/columnDefNivelDataTable.html.twig' as definicion %}
+            {{ definicion.definir() }}
+            {% import 'Contactos/Listados/configDataTableAjax.html.twig' as table %}
+            {{ table.configurar() }}
+
+        });
+    </script>
+{% endblock %}

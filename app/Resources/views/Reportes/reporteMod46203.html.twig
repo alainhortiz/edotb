@@ -1,0 +1,832 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    {% set anno_actual =  "now"|date("Y") %}
+
+    <div class="contaniner">
+        <div class="container-fluid">
+            <div class="row" style="margin:5px">
+
+                <div class="form-cont">
+
+                    <h2 id="titulo_fecha" class="text-center">SEGUIMIENTO DE COHORTES DE TUBERCULOSIS</h2>
+                    <h2 id="titulo_fecha" class="text-center">Modelo 241-462-04</h2>
+                    <br>
+
+                    <div class="btn-toolbar">
+                        <div class="btn-group" style="margin-bottom: 5px;">
+                            <a id="imp_rpt_mod_46203" class="btn btn-default">
+                                <span class="glyphicon glyphicon-save"></span>
+                            </a>
+
+                        </div>
+                    </div>
+
+                    <div>
+                        <table id="id_tb_diario" class="table table-bordered table-responsive">
+                            <thead>
+                            <tr>
+                                <th colspan="12" style="text-align: center">
+                                    <form class="form-horizontal" role="form">
+                                        <div class="form-group" style="margin-top: 10px;margin-bottom: 10px;">
+                                            <div class="row" style="margin-right: 0">
+                                                <label for="id_provincia" class="col-lg-1  control-label">PROVINCIA:</label>
+                                                <div class="col-lg-2">
+                                                    <select class="form-control" id="id_provincia">
+                                                        <option value="0">Seleccione provincia</option>
+                                                        {% for provincia in  provincias %}
+                                                            <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+
+                                                <label for="id_municipio" class="col-lg-1 control-label">MUNICIPIO:</label>
+                                                <div class="col-lg-2">
+                                                    <select class="form-control" id="id_municipio">
+                                                        <option value="0">Seleccione un municipio</option>
+                                                    </select>
+                                                </div>
+
+                                                <label for="id_select_lab" class="col-lg-1 control-label" >ÁREA DE SALUD:</label>
+                                                <div class="col-lg-2">
+                                                    <select class="form-control" id="id_select_lab">
+                                                        <option value="0">Seleccione un área de salud</option>
+                                                    </select>
+                                                </div>
+
+                                                <label for="id_hospital" class="col-lg-1 control-label" >HOSPITAL:</label>
+                                                <div class="col-lg-2">
+                                                    <select class="form-control" id="id_hospital">
+                                                        <option value="0">Seleccione un hospital</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="12" style="text-align: center">
+                                    TRIMESTRE
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="12" style="text-align: center">
+                                    <input type="radio" name="trimestre" id="trim_1" value="1" checked> I TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="trimestre" id="trim_2" value="2"> II TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="trimestre" id="trim_3" value="3"> III TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="trimestre" id="trim_4" value="4"> IV TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                    </br>
+                                    </br>
+                                    <div class="form-group">
+                                        <div class="col-md-1 col-md-offset-4">
+                                            <select name="anno" id="anno" class="form-control col-md-2">
+                                                {% for i in range(1990, anno_actual) %}
+                                                    <option value="{{ i }}" {% if i == anno_actual|trans %} selected {% endif %}> {{ i }} </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="md-checkbox">
+                                                <input type="checkbox" id="vih" name="vih" class="md-check">
+                                                <label for="vih" style="padding-left: 0">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                                VIH </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button id="bt_search" class="btn btn-primario" type="submit">Buscar</button>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th colspan="3" rowspan="3" style="text-align: center; vertical-align: middle">CATEGORÍA DE ENTRADA A LA COHORTE</th>
+                                <th  rowspan="3" style="text-align: center; vertical-align: middle">FILA</th>
+                                <th  rowspan="3" style="text-align: center; vertical-align: middle">TOTAL DE CASOS DEL GRUPO</th>
+                                <th colspan="6" style="text-align: center; vertical-align: middle">RESULTADOS DEL TRATAMIENTO</th>
+                                <th  rowspan="3" style="text-align: center; vertical-align: middle">Pruebas de sensibilidad</th>
+                            </tr>
+                            <tr>
+                                <th colspan="2" style="text-align: center">Alta</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">Fallecido</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">Fracaso al tratamiento</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">Pérdida en el seguimiento</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">No evaluado</th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Curados</th>
+                                <th style="text-align: center; vertical-align: middle">Tto Completo</th>
+                            </tr>
+                            <tr>
+                                <th colspan="3" style="text-align: center">A</th>
+                                <th style="text-align: center">B</th>
+                                <th style="text-align: center">1</th>
+                                <th style="text-align: center">2</th>
+                                <th style="text-align: center">3</th>
+                                <th style="text-align: center">4</th>
+                                <th style="text-align: center">5</th>
+                                <th style="text-align: center">6</th>
+                                <th style="text-align: center">7</th>
+                                <th style="text-align: center">8</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tb_body_replace">
+
+                            <tr>
+                                <th rowspan="4" style="text-align: center; vertical-align: middle">CASOS NUEVOS DE TUBERCULOSIS:</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">PULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                <th style="text-align: center; vertical-align: middle">1</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[0][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[0][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[0][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[0][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[0][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[0][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[0][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[0][6] }}</td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                <th style="text-align: center; vertical-align: middle">2</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[1][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[1][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[1][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[1][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[1][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[1][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[1][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">EXTRA-PULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                <th style="text-align: center; vertical-align: middle">3</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[2][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[2][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[2][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[2][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[2][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[2][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[2][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                <th style="text-align: center; vertical-align: middle">4</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[3][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[3][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[3][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[3][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[3][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[3][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[3][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th rowspan="4" style="text-align: center; vertical-align: middle">RECAÍDA DE TUBERCULOSIS</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">PULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                <th style="text-align: center; vertical-align: middle">5</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[4][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[4][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[4][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[4][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[4][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[4][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[4][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[4][6] }}</td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                <th style="text-align: center; vertical-align: middle">6</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[5][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[5][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[5][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[5][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[5][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[5][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[5][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">EXTRA-PULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                <th style="text-align: center; vertical-align: middle">7</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[6][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[6][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[6][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[6][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[6][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[6][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[6][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                <th style="text-align: center; vertical-align: middle">8</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[7][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[7][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[7][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[7][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[7][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[7][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[7][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">CASO PREVIAMENTE TRATADO</th>
+                                <th colspan="2" style="text-align: center; vertical-align: middle">Fracaso terapeútico</th>
+                                <th style="text-align: center; vertical-align: middle">9</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[8][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[8][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[8][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[8][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[8][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[8][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[8][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[8][6] }}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2" style="text-align: center; vertical-align: middle">Pérdida al seguimiento</th>
+                                <th style="text-align: center; vertical-align: middle">10</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[9][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[9][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[9][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[9][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[9][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[9][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[9][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[9][6] }}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="3" style="text-align: left; vertical-align: middle">TOTAL</th>
+                                <th style="text-align: center; vertical-align: middle">11</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[10][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[10][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[10][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[10][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[10][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[10][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[10][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[10][6] }}</td>
+                            </tr>
+
+                            <tr>
+                                <th colspan="12" style="text-align: center">ACUMULADO</th>
+                            </tr>
+
+                            <tr>
+                                <th rowspan="4" style="text-align: center; vertical-align: middle">CASOS NUEVOS DE TUBERCULOSIS:</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">PULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                <th style="text-align: center; vertical-align: middle">12</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[11][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[11][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[11][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[11][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[11][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[11][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[11][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[11][6] }}</td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                <th style="text-align: center; vertical-align: middle">13</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[12][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[12][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[12][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[12][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[12][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[12][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[12][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">EXTRA-PULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                <th style="text-align: center; vertical-align: middle">14</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[13][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[13][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[13][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[13][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[13][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[13][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[13][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                <th style="text-align: center; vertical-align: middle">15</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[14][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[14][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[14][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[14][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[14][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[14][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[14][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th rowspan="4" style="text-align: center; vertical-align: middle">RECAÍDA DE TUBERCULOSIS</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">PULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                <th style="text-align: center; vertical-align: middle">16</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[15][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[15][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[15][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[15][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[15][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[15][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[15][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[15][6] }}</td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                <th style="text-align: center; vertical-align: middle">17</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[16][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[16][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[16][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[16][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[16][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[16][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[16][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">EXTRA-PULMONAR</th>
+                                <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                <th style="text-align: center; vertical-align: middle">18</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[17][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[17][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[17][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[17][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[17][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[17][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[17][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                <th style="text-align: center; vertical-align: middle">19</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[18][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[18][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[18][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[18][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[18][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[18][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[18][6] }}</td>
+                                <td align="center" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></td>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">CASO PREVIAMENTE TRATADO</th>
+                                <th colspan="2" style="text-align: center; vertical-align: middle">Fracaso terapeútico</th>
+                                <th style="text-align: center; vertical-align: middle">20</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[19][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[19][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[19][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[19][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[19][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[19][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[19][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[19][6] }}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2" style="text-align: center; vertical-align: middle">Pérdida al seguimiento</th>
+                                <th style="text-align: center; vertical-align: middle">21</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[20][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[20][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[20][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[20][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[20][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[20][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[20][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[20][6] }}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="3" style="text-align: left; vertical-align: middle">TOTAL</th>
+                                <th style="text-align: center; vertical-align: middle">22</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[21][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[21][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[21][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[21][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[21][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[21][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[21][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[21][6] }}</td>
+                            </tr>
+
+                            <tr>
+                                <th rowspan="2" colspan="3" style="text-align: center; vertical-align: middle">TB PULMONAR BACTERIOLOGICAMENTE CONFIRMADA</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">FILA</th>
+                                <th colspan="2" style="text-align: center; vertical-align: middle">NEGATIVO</th>
+                                <th rowspan="6" align="center"></th>
+                                <th colspan="2" style="text-align: center; vertical-align: middle">POSITIVO</th>
+                                <td rowspan="6" align="center"></td>
+                                <th colspan="2" style="text-align: center; vertical-align: middle">DESCONOCIDO</th>
+
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">TRIMESTRE</th>
+                                <th style="text-align: center; vertical-align: middle">ACUMULADO</th>
+
+                                <th style="text-align: center; vertical-align: middle">TRIMESTRE</th>
+                                <th style="text-align: center; vertical-align: middle">ACUMULADO</th>
+
+                                <th style="text-align: center; vertical-align: middle">TRIMESTRE</th>
+                                <th style="text-align: center; vertical-align: middle">ACUMULADO</th>
+                            </tr>
+
+                            <tr>
+                                <th colspan="3" style="text-align: center; vertical-align: middle">C</th>
+                                <th align="center" style="text-align: center; vertical-align: middle">D</th>
+                                <th align="center" style="text-align: center; vertical-align: middle">9</th>
+                                <th align="center" style="text-align: center; vertical-align: middle">10</th>
+
+                                <th align="center" style="text-align: center; vertical-align: middle">11</th>
+                                <th align="center" style="text-align: center; vertical-align: middle">12</th>
+
+                                <th align="center" style="text-align: center; vertical-align: middle">13</th>
+                                <th align="center" style="text-align: center; vertical-align: middle">14</th>
+
+                            </tr>
+                            <tr>
+                                <th colspan="3">CASOS NUEVOS</th>
+                                <th align="center" style="text-align: center; vertical-align: middle">23</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[22][0] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[23][0] }}</td>
+
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[22][1] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[23][1] }}</td>
+
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[22][2] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[23][2] }}</td>
+
+                            </tr>
+                            <tr>
+                                <th colspan="3">RECAÍDA</th>
+                                <th align="center" style="text-align: center; vertical-align: middle">24</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[22][3] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[23][3] }}</td>
+
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[22][4] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[23][4] }}</td>
+
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[22][5] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[23][5] }}</td>
+
+                            </tr>
+                            <tr>
+                                <th colspan="3">TOTAL</th>
+                                <th align="center" style="text-align: center; vertical-align: middle">25</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[22][6] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[23][6] }}</td>
+
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[22][7] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[23][7] }}</td>
+
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[22][8] }}</td>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[23][8] }}</td>
+
+                            </tr>
+
+                            <tr style="border-right: hidden;">
+                                <th colspan="12" style="text-align: center; border-left: hidden; border-right: hidden"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="12" style="text-align: center">CATEGORÍA DE EGRESOS PARA LA COHORTE DE TRATAMIENTO DE TB-DR</th>
+                            </tr>
+                            <tr>
+                                <th colspan="12" style="text-align: center">TRIMESTRE</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" rowspan="3" style="text-align: center; vertical-align: middle">CATEGORÍA DE ENTRADA A LA COHORTE</th>
+                                <th  rowspan="3" style="text-align: center; vertical-align: middle">FILA</th>
+                                <th  rowspan="3" style="text-align: center; vertical-align: middle">TOTAL DE CASOS DEL GRUPO</th>
+                                <th colspan="6" style="text-align: center; vertical-align: middle">RESULTADOS DEL TRATAMIENTO</th>
+                            </tr>
+                            <tr>
+                                <th colspan="2" style="text-align: center">Alta</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">Fallecido</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">Fracaso al tratamiento</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">Pérdida en el seguimiento</th>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">No evaluado</th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; vertical-align: middle">Curados</th>
+                                <th style="text-align: center; vertical-align: middle">Tto Completo</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: center">D</th>
+                                <th style="text-align: center">E</th>
+                                <th style="text-align: center">15</th>
+                                <th style="text-align: center">16</th>
+                                <th style="text-align: center">17</th>
+                                <th style="text-align: center">18</th>
+                                <th style="text-align: center">19</th>
+                                <th style="text-align: center">20</th>
+                                <th style="text-align: center">21</th>
+                            </tr>
+
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-MDR</th>
+                                <th style="text-align: center">26</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[24][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[24][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[24][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[24][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[24][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[24][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[24][6] }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-XDR</th>
+                                <th style="text-align: center">27</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[25][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[25][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[25][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[25][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[25][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[25][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[25][6] }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-RR</th>
+                                <th style="text-align: center">28</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[26][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[26][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[26][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[26][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[26][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[26][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[26][6] }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-MR</th>
+                                <th style="text-align: center">29</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[27][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[27][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[27][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[27][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[27][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[27][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[27][6] }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-DR</th>
+                                <th style="text-align: center">30</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[28][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[28][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[28][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[28][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[28][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[28][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[28][6] }}</th>
+                            </tr>
+
+                            <tr>
+                                <th colspan="12" style="text-align: center">ACUMULADO</th>
+                            </tr>
+
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-MDR</th>
+                                <th style="text-align: center">31</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[29][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[29][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[29][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[29][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[29][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[29][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[29][6] }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-XDR</th>
+                                <th style="text-align: center">32</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[30][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[30][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[30][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[30][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[30][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[30][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[30][6] }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-RR</th>
+                                <th style="text-align: center">33</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[31][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[31][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[31][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[31][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[31][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[31][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[31][6] }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-MR</th>
+                                <th style="text-align: center">34</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[32][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[32][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[32][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[32][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[32][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[32][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[32][6] }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: left">TB-DR</th>
+                                <th style="text-align: center">35</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[33][0] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[33][1] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[33][2] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[33][3] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[33][4] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[33][5] }}</th>
+                                <td align="center" style="text-align: center; vertical-align: middle">{{ pacientes[33][6] }}</th>
+                            </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <br/>
+                    <br/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+
+            var md = $('#processing-modal');
+
+            var anno = '';
+            var trim = '';
+            var provincia = '';
+            var municipio = '';
+            var areaSalud = '';
+            var hospital = '';
+            var vih = 0;
+
+            $("#bt_search").click(function () {
+
+                md.modal('show');
+                let sida = 0;
+
+                if ($('#vih').prop('checked')) {
+                    sida = 1;
+                }
+                var mat_datos = {
+                    anno: $("#anno").val(),
+                    trimestre: $('input:radio[name=trimestre]:checked').val(),
+                    idProvincia:  $('#id_provincia').val(),
+                    idMunicipio:  $("#id_municipio").val(),
+                    idAreaSalud:  $('#id_select_lab').val(),
+                    idHospital:  $('#id_hospital').val(),
+                    vih:  sida,
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("reporteMod46203") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    anno = $("#anno").val();
+                    trim = $('input:radio[name=trimestre]:checked').val();
+                    provincia = $('#id_provincia').val();
+                    municipio = $("#id_municipio").val();
+                    areaSalud = $('#id_select_lab').val();
+                    hospital = $('#id_hospital').val();
+                    if ($('#vih').prop('checked')) {
+                        vih = 1;
+                    }
+                    $("#tb_body_replace").replaceWith( data );
+                    md.modal('hide');
+                });
+            });
+
+            $('#imp_rpt_mod_46203').click(function () {
+
+                if(trim === ''){ trim = $('input:radio[name=trimestre]:checked').val(); }
+                if(anno === ''){ anno = $("#anno").val(); }
+                if(provincia === ''){  provincia = $('#id_provincia').val(); }
+                if(municipio === ''){ municipio = $("#id_municipio").val(); }
+                if(areaSalud === ''){ areaSalud = $('#id_select_lab').val(); }
+                if(hospital === ''){  hospital = $('#id_hospital').val(); }
+
+                var ruta_actual = window.location.href;
+                var ruta_rpte = ruta_actual.replace('reporteMod46203','impExcelModelo46203/'+ trim +'/'+ anno +'/'+ areaSalud +'/'+ provincia +'/'+ municipio +'/'+ hospital +'/'+ vih);
+                window.open(ruta_rpte);
+            });
+
+            //----------Relacionar selects --------------------------
+            $('#id_select_lab').on('change' , function () {
+                if($(this).val() != '0'){$("#id_hospital").prop('disabled' , true);}
+                else {$("#id_hospital").prop('disabled' , false);}
+            });
+            $('#id_hospital').on('change' , function () {
+                if($(this).val() != '0'){$("#id_select_lab").prop('disabled' , true);}
+                else {$("#id_select_lab").prop('disabled' , false);}
+            });
+
+            $('#id_provincia').on('change', function () {
+
+                var prov = $(this).val();
+                //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+                var html    = '<option value="0">Seleccione un municipio</option>';
+                var htmlLab = '<option value="0">Seleccione un área de salud</option>';
+                var htmlHospital = '<option value="0">Seleccione un hospital</option>';
+
+                {% for municipio in  municipios %}
+                    var idProvincia = '{{ municipio.getProvincia().id }}';
+
+                    if (idProvincia == prov) {
+                        var idMunicipio = '{{ municipio.id }}';
+                        var name = '{{ municipio.nombre }}';
+                        html += '<option value="' + idMunicipio + '">' + name + '</option>';
+                    }
+                {% endfor %}
+
+                $("#id_municipio").html(html);
+                $("#id_select_lab").html(htmlLab);
+                $("#id_hospital").html(htmlHospital);
+                $("#id_select_lab").prop('disabled' , false);
+                $("#id_hospital").prop('disabled' , false);
+            });
+
+            $('#id_municipio').on('change', function () {
+
+                var mun = $(this).val();
+                //ESTE CICLO ES PARA BUSCAR LOS LABORATORIOS PERTENECIENTES A UN MUNICIPIO
+                var htmlLab = '<option value="0">Seleccione un área de salud</option>';
+                var htmlHospital = '<option value="0">Seleccione un hospital</option>';
+
+                {% for lab in areasSalud if lab.isArea == 1 %}
+                    var idMunicipio = '{{ lab.getMunicipio().id }}';
+
+                    if (idMunicipio == mun) {
+                        var idLab = '{{ lab.id }}';
+                        var nameLab = '{{ lab.nombre }}';
+                        htmlLab += '<option value="' + idLab +'">' + nameLab + '</option>';
+                    }
+                {% endfor %}
+
+                {% for hospital in  hospitales %}
+                    var idMunicipioH = '{{ hospital.getMunicipio().id }}';
+
+                    if (idMunicipioH == mun) {
+                        var idHospital = '{{ hospital.id }}';
+                        var nameHospital = '{{ hospital.nombre }}';
+                        htmlHospital += '<option value="' + idHospital + '">' + nameHospital + '</option>';
+                    }
+                {% endfor %}
+
+                $("#id_select_lab").html(htmlLab);
+                $("#id_hospital").html(htmlHospital);
+                $("#id_select_lab").prop('disabled' , false);
+                $("#id_hospital").prop('disabled' , false);
+            });
+
+            $('#imp_rpt_mod_46203').tooltip({
+                toggle: "tooltip",
+                placement: "top",
+                title: "Exportar Excel",
+                delay: { show: 100, hide: 100 }
+            });
+
+
+        });
+    </script>
+{% endblock %}

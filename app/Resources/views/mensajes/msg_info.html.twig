@@ -1,0 +1,50 @@
+{#El mensaje de error ocurre cuando no se escribe una descripcion si se ha escogido el checkbox Aislado.#}
+{% macro aislado()%}
+    alertify.alert('<strong>Si el caso es Aislado debe escribir las observaciones correspondientes.</strong>')
+    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+    .set('label','Aceptar')
+{% endmacro %}
+
+{#El mensaje de error ocurre cuando no se escoge ningun radio button de ninguno de los metodos.#}
+{% macro ninguna_opcion_escogida()%}
+    alertify.alert('<strong>Debe escojer al menos una opción de algún método.</strong>')
+    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+    .set('label','Aceptar')
+{% endmacro %}
+
+{#El mensaje de error ocurre cuando no se escoge un patron de resistencia final. Es obligatorio siempre.#}
+{% macro resistencia_final_no_escogida()%}
+    alertify.alert('<strong>Debe escojer un tipo de resistencia como resultado del análisis.</strong>')
+    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+    .set('label','Aceptar')
+{% endmacro %}
+
+{#El mensaje de error ocurre cuando en el servidor ocurre algun problema a la hora de insertar el analisis.#}
+{% macro error_analisis_insertar(data)%}
+    alertify.alert('<strong>'+data+'</strong>')
+    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+    .set('label','Aceptar')
+{% endmacro %}
+
+{#El mensaje de error ocurre cuando sucede algo en el servidor: desconectado, caido, sin red...#}
+{% macro error_servidor_500()%}
+    alertify.alert('<strong>Ha habido un problema en el servidor. Intente volver a conectarse.</strong>')
+    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+    .set('label','Aceptar')
+{% endmacro %}
+
+{#El mensaje de error ocurre cuando el paciente no presenta ningun analisis de susceptibilidad#}
+{% macro analisis_susceptibilidad_vacio()%}
+    alertify.alert('<strong>El paciente no presenta análisis de susceptibilidad.</strong>')
+    .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+    .set('label','Aceptar');
+{% endmacro %}
+
+
+

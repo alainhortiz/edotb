@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6f1a527e-c8cf-49b6-a28d-4b3f4a36943d" name="Default" comment="Gestionar nomenclador de resultados de tratamiento preventivo.  Actualización del modelo de datos.">
+      <change afterPath="$PROJECT_DIR$/app/Resources/views/Reportes/reporteContactosResistentes.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Resources/views/Reportes/reporteContactosSinPruebas.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Resources/views/Reportes/reporteContactosTBFactoresCriteriosEntrada.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Resources/views/Reportes/reporteContactosTPTGrupoEdades.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Resources/views/Inicio/principal.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/app/Resources/views/Inicio/principal.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Resources/views/comun.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/app/Resources/views/comun.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AppBundle/Controller/ReporteSalidaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/ReporteSalidaController.php" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="DONT_SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Twig" />
+      </list>
+    </option>
+  </component>
+  <component name="PhpServers">
+    <servers />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-icu" />
+      <path value="$PROJECT_DIR$/vendor/whiteoctober/breadcrumbs-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-apcu" />
+      <path value="$PROJECT_DIR$/vendor/kriswallsmith/assetic" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php56" />
+      <path value="$PROJECT_DIR$/vendor/symfony/swiftmailer-bundle" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/inflector" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php55" />
+      <path value="$PROJECT_DIR$/vendor/incenteev/composer-parameter-handler" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php54" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/cache" />
+      <path value="$PROJECT_DIR$/vendor/pagerfanta/pagerfanta" />
+      <path value="$PROJECT_DIR$/vendor/cocur/slugify" />
+      <path value="$PROJECT_DIR$/vendor/liuggio/ExcelBundle" />
+      <path value="$PROJECT_DIR$/vendor/phpoffice/phpexcel" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-menu" />
+      <path value="$PROJECT_DIR$/vendor/sonata-project/block-bundle" />
+      <path value="$PROJECT_DIR$/vendor/sensio/generator-bundle" />
+      <path value="$PROJECT_DIR$/vendor/sonata-project/admin-bundle" />
+      <path value="$PROJECT_DIR$/vendor/sensio/distribution-bundle" />
+      <path value="$PROJECT_DIR$/vendor/sonata-project/doctrine-orm-admin-bundle" />
+      <path value="$PROJECT_DIR$/vendor/sensio/framework-extra-bundle" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-snappy" />
+      <path value="$PROJECT_DIR$/vendor/sonata-project/core-bundle" />
+      <path value="$PROJECT_DIR$/vendor/sonata-project/cache" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/data-fixtures" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
+      <path value="$PROJECT_DIR$/vendor/ircmaxell/password-compat" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-components" />
+      <path value="$PROJECT_DIR$/vendor/sensiolabs/security-checker" />
+      <path value="$PROJECT_DIR$/vendor/jdorn/sql-formatter" />
+      <path value="$PROJECT_DIR$/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-fixtures-bundle" />
+      <path value="$PROJECT_DIR$/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/vendor/twig/twig" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-bundle" />
+      <path value="$PROJECT_DIR$/vendor/twig/extensions" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-cache-bundle" />
+      <path value="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-paginator-bundle" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-snappy-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/symfony" />
+      <path value="$PROJECT_DIR$/vendor/sonata-project/exporter" />
+      <path value="$PROJECT_DIR$/vendor/javiereguiluz/easyadmin-bundle" />
+      <path value="$PROJECT_DIR$/vendor/knplabs/knp-menu-bundle" />
+      <path value="$PROJECT_DIR$/vendor/ddeboer/data-import-bundle" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/ddeboer/data-import" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/collections" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/dbal" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/annotations" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php70" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/common" />
+      <path value="$PROJECT_DIR$/vendor/symfony/phpunit-bridge" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-util" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-acl" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/orm" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/monolog-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/vendor/symfony/assetic-bundle" />
+    </include_path>
+  </component>
+  <component name="ProjectId" id="1UILplQNoTJKUZcH0X7y2utPJSj" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+    <ConfirmationsSetting value="2" id="Remove" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="NEW_TOOLWINDOW_STRIPE_DEFAULTS" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="js-jscs-nodeInterpreter" value="C:\Program Files\nodejs\node.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/Resources/views/Reportes" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.CommitDialog" />
+    <property name="settings.editor.splitter.proportion" value="0.33706722" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\wamp64\www\edotb\app\Resources\views\Nomencladores" />
+      <recent name="C:\wamp64\www\edotb\app\Resources\views\Contactos\Contactos" />
+      <recent name="C:\wamp64\www\edotb\app\Resources\views\Contactos\Seguimientos" />
+      <recent name="C:\wamp64\www\edotb\app\Resources\views\Contactos\TPT" />
+      <recent name="C:\wamp64\www\edotb\app\Resources\views\Contactos\Evaluaciones" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\wamp64\www\edotb\app\Resources\views\Reportes" />
+      <recent name="C:\wamp64\www\edotb\app\Resources\views\Pacientes" />
+      <recent name="C:\wamp64\www\edotb\src\AppBundle\ImprimirExcel" />
+      <recent name="C:\wamp64\www\edotb\app\Resources\views\Graficos" />
+      <recent name="C:\wamp64\www\edotb\web\bundles\easyadmin" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="s doctrine:generate:entities AppBundle:MuestraNoUtil" />
+      <command value="s doctrine:generate:entities AppBundle:EsquemaMedicamentos" />
+      <command value="s doctrine:generate:entities AppBundle:ResultadoBCX" />
+      <command value="s generate:controller --no-interaction --controller= AppBundle:Seguimiento" />
+      <command value="s generate:controller --no-interaction --controller = AppBundle:Seguimiento" />
+      <command value="s generate:controller --no-interaction" />
+      <command value="s generate:controller" />
+      <command value="s doctrine:generate:entity" />
+      <command value="s generate:controller --no-interaction --controller = AppBundle:Listados" />
+      <command value="s generate:controller --no-interaction --controller" />
+      <command value="s doctrine:generate:entities:AppBundle" />
+      <command value="s doctrine:generate:entities AppBundle:Municipio" />
+      <command value="s doctrine:generate:entities AppBundle:Provincia" />
+      <command value="s doctrine:generate:entities AppBundle:PacienteEvolucion" />
+      <command value="s doctrine:generate:entities AppBundle:TipoAreaSalud" />
+      <command value="s doctrine:generate:entity AppBundle:TipoAreaSalud" />
+      <command value="s doctrine:generate:entities" />
+      <command value="s generate:controller --no-interaction --controller = AppBundle:Preguntas" />
+      <command value="s generate:controller --no-interaction --controller=AppBundle:Preguntas" />
+      <command value="s doctrine:schema:update --force  --help" />
+      <command value="s doctrine:schema:update --force  --dump-sql" />
+      <command value="s generate:controller --no-interaction --controller=AppBundle:Contactos" />
+      <command value="s doctrine:generate:entity " />
+      <command value="s doctrine:schema:update --force  --complete" />
+      <command value="s doctrine:generate:entities AppBundle" />
+      <command value="s doctrine:schema:update --force" />
+      <command value="s generate:controller --no-interaction --controller=AppBundle:Graficos" />
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="js.build_tools.gulp">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\Alain\AppData\Roaming\Subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6f1a527e-c8cf-49b6-a28d-4b3f4a36943d" name="Default" comment="" />
+      <created>1570117969349</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1570117969349</updated>
+      <workItem from="1574689391643" duration="563000" />
+      <workItem from="1575039350620" duration="242000" />
+      <workItem from="1575039649037" duration="83000" />
+      <workItem from="1575176562964" duration="225000" />
+      <workItem from="1575306547172" duration="1070000" />
+      <workItem from="1575925348175" duration="6154000" />
+      <workItem from="1576302776234" duration="105000" />
+      <workItem from="1576462705823" duration="802000" />
+      <workItem from="1579752860014" duration="713000" />
+      <workItem from="1580015857069" duration="13294000" />
+      <workItem from="1580220441832" duration="7187000" />
+      <workItem from="1580588705430" duration="654000" />
+      <workItem from="1580589452238" duration="18718000" />
+      <workItem from="1580744675774" duration="1286000" />
+      <workItem from="1581361806511" duration="7985000" />
+      <workItem from="1581382542247" duration="4816000" />
+      <workItem from="1581607536464" duration="36570000" />
+      <workItem from="1581871608060" duration="496000" />
+      <workItem from="1581961983602" duration="1286000" />
+      <workItem from="1583077132791" duration="2083000" />
+      <workItem from="1583091188678" duration="288000" />
+      <workItem from="1583182576016" duration="41000" />
+      <workItem from="1583263240344" duration="330000" />
+      <workItem from="1583685196770" duration="56000" />
+      <workItem from="1583855533659" duration="626000" />
+      <workItem from="1587844605669" duration="1160000" />
+      <workItem from="1588870600603" duration="11231000" />
+      <workItem from="1588882515467" duration="3000" />
+      <workItem from="1589036456178" duration="22971000" />
+      <workItem from="1589225549938" duration="12818000" />
+      <workItem from="1589239349277" duration="4000" />
+      <workItem from="1589305575148" duration="750000" />
+      <workItem from="1589310822365" duration="261000" />
+      <workItem from="1589646206538" duration="3533000" />
+      <workItem from="1589697780833" duration="233000" />
+      <workItem from="1589738647421" duration="3668000" />
+      <workItem from="1589821832909" duration="18524000" />
+      <workItem from="1589949921026" duration="17861000" />
+      <workItem from="1590031932504" duration="613000" />
+      <workItem from="1590086864105" duration="1703000" />
+      <workItem from="1590695175632" duration="63000" />
+      <workItem from="1590940723480" duration="16512000" />
+      <workItem from="1591237465257" duration="350000" />
+      <workItem from="1591249253308" duration="18838000" />
+      <workItem from="1591374074710" duration="14397000" />
+      <workItem from="1591509865610" duration="3301000" />
+      <workItem from="1591566201089" duration="3289000" />
+      <workItem from="1591721279433" duration="9474000" />
+      <workItem from="1591735465111" duration="7351000" />
+      <workItem from="1591752181588" duration="938000" />
+      <workItem from="1591764681667" duration="4811000" />
+      <workItem from="1591894880620" duration="961000" />
+      <workItem from="1591897243293" duration="20221000" />
+      <workItem from="1591935205687" duration="3000" />
+      <workItem from="1591996099976" duration="11849000" />
+      <workItem from="1592160621845" duration="1620000" />
+      <workItem from="1592176291042" duration="606000" />
+      <workItem from="1592370307346" duration="21000" />
+      <workItem from="1592413173555" duration="3648000" />
+      <workItem from="1592605593013" duration="852000" />
+      <workItem from="1592624631608" duration="4535000" />
+      <workItem from="1593207799929" duration="6000" />
+      <workItem from="1594673310507" duration="7629000" />
+      <workItem from="1594833560331" duration="3838000" />
+      <workItem from="1594846744200" duration="11279000" />
+      <workItem from="1595091477961" duration="33914000" />
+      <workItem from="1595131720991" duration="4000" />
+      <workItem from="1595177734812" duration="10277000" />
+      <workItem from="1595189230704" duration="236000" />
+      <workItem from="1595259331565" duration="6151000" />
+      <workItem from="1595431418837" duration="9796000" />
+      <workItem from="1595621417302" duration="52000" />
+      <workItem from="1595622828070" duration="2920000" />
+      <workItem from="1595702410921" duration="635000" />
+      <workItem from="1595715207696" duration="20850000" />
+      <workItem from="1596298369263" duration="640000" />
+      <workItem from="1596388832709" duration="17912000" />
+      <workItem from="1596476476367" duration="16236000" />
+      <workItem from="1597081660865" duration="127000" />
+      <workItem from="1597160294342" duration="21773000" />
+      <workItem from="1597257860115" duration="21664000" />
+      <workItem from="1597340320244" duration="4322000" />
+      <workItem from="1597348178035" duration="55000" />
+      <workItem from="1597348372058" duration="18054000" />
+      <workItem from="1597422550663" duration="25512000" />
+      <workItem from="1597455043717" duration="5000" />
+      <workItem from="1597504382830" duration="33012000" />
+      <workItem from="1597595986877" duration="19793000" />
+      <workItem from="1597623315981" duration="3170000" />
+      <workItem from="1597699163736" duration="7796000" />
+      <workItem from="1597707106149" duration="43000" />
+      <workItem from="1597759300058" duration="3946000" />
+      <workItem from="1597764251751" duration="14167000" />
+      <workItem from="1597779372297" duration="178000" />
+      <workItem from="1597786821769" duration="501000" />
+      <workItem from="1597898225297" duration="651000" />
+      <workItem from="1597948359319" duration="2075000" />
+      <workItem from="1597958167692" duration="9000" />
+      <workItem from="1597966730709" duration="18000" />
+      <workItem from="1598027951343" duration="16729000" />
+      <workItem from="1598135446351" duration="315000" />
+      <workItem from="1598159216374" duration="163000" />
+      <workItem from="1598203117519" duration="3000" />
+      <workItem from="1598290407388" duration="9379000" />
+      <workItem from="1598638474762" duration="18328000" />
+      <workItem from="1598724776022" duration="4536000" />
+      <workItem from="1598731127220" duration="246000" />
+      <workItem from="1598813065331" duration="16210000" />
+      <workItem from="1598898937658" duration="15154000" />
+      <workItem from="1599067888971" duration="9770000" />
+      <workItem from="1599077695215" duration="30000" />
+      <workItem from="1599082802674" duration="645000" />
+      <workItem from="1599144411057" duration="626000" />
+      <workItem from="1599245704970" duration="266000" />
+      <workItem from="1599331691083" duration="634000" />
+      <workItem from="1599418333009" duration="2933000" />
+      <workItem from="1599497269156" duration="20089000" />
+      <workItem from="1599753405327" duration="24397000" />
+      <workItem from="1599848396867" duration="753000" />
+      <workItem from="1599929785638" duration="12444000" />
+      <workItem from="1600015536686" duration="7499000" />
+      <workItem from="1600109234836" duration="3401000" />
+      <workItem from="1600112996558" duration="3335000" />
+      <workItem from="1600117411976" duration="10144000" />
+      <workItem from="1600128080168" duration="26000" />
+      <workItem from="1600186562787" duration="27775000" />
+      <workItem from="1600458383986" duration="3120000" />
+      <workItem from="1600469910232" duration="1212000" />
+      <workItem from="1600471482265" duration="624000" />
+      <workItem from="1600473354449" duration="774000" />
+      <workItem from="1600534853459" duration="120000" />
+      <workItem from="1600964509753" duration="11793000" />
+      <workItem from="1606216504889" duration="853000" />
+      <workItem from="1607081540444" duration="2130000" />
+      <workItem from="1607090103814" duration="16000" />
+      <workItem from="1607166309704" duration="255000" />
+      <workItem from="1607168472821" duration="1124000" />
+      <workItem from="1607509186879" duration="7313000" />
+      <workItem from="1607596661016" duration="1326000" />
+      <workItem from="1607769819818" duration="1967000" />
+      <workItem from="1607955029518" duration="1418000" />
+      <workItem from="1608042013985" duration="105000" />
+      <workItem from="1608194417414" duration="1786000" />
+      <workItem from="1608196229471" duration="43000" />
+      <workItem from="1608196823116" duration="337000" />
+      <workItem from="1610456205488" duration="3297000" />
+      <workItem from="1610667731874" duration="147000" />
+      <workItem from="1610966076107" duration="491000" />
+      <workItem from="1610966608141" duration="76000" />
+      <workItem from="1611140085833" duration="44000" />
+      <workItem from="1611672212176" duration="1618000" />
+      <workItem from="1613392346388" duration="8000" />
+      <workItem from="1614596523727" duration="2440000" />
+      <workItem from="1615124948423" duration="2264000" />
+      <workItem from="1615156581157" duration="1316000" />
+      <workItem from="1615287418536" duration="11290000" />
+      <workItem from="1617944808736" duration="8748000" />
+      <workItem from="1617982851166" duration="1989000" />
+      <workItem from="1618399711600" duration="1900000" />
+      <workItem from="1618584377234" duration="8876000" />
+      <workItem from="1618613714980" duration="3479000" />
+      <workItem from="1620135359109" duration="592000" />
+      <workItem from="1621349291765" duration="23643000" />
+      <workItem from="1622115547338" duration="3605000" />
+      <workItem from="1622761714522" duration="767000" />
+      <workItem from="1622812628334" duration="1733000" />
+      <workItem from="1622815210496" duration="1395000" />
+      <workItem from="1622817099288" duration="592000" />
+      <workItem from="1622824307616" duration="593000" />
+      <workItem from="1622842769319" duration="824000" />
+      <workItem from="1622843639486" duration="8000" />
+      <workItem from="1622981796780" duration="1347000" />
+      <workItem from="1624195818227" duration="21067000" />
+      <workItem from="1624719493900" duration="79000" />
+      <workItem from="1624720292866" duration="10419000" />
+      <workItem from="1626263681783" duration="39000" />
+      <workItem from="1626619507464" duration="11363000" />
+      <workItem from="1626636690199" duration="41820000" />
+      <workItem from="1626897989604" duration="3145000" />
+      <workItem from="1627001434798" duration="840000" />
+      <workItem from="1627007097532" duration="8955000" />
+      <workItem from="1627071488555" duration="15929000" />
+      <workItem from="1627356386128" duration="6683000" />
+      <workItem from="1627403914674" duration="15356000" />
+      <workItem from="1627604835214" duration="4457000" />
+      <workItem from="1627989880250" duration="4140000" />
+      <workItem from="1628010635144" duration="606000" />
+      <workItem from="1628012981515" duration="1031000" />
+      <workItem from="1628014082024" duration="294000" />
+      <workItem from="1628014478873" duration="3933000" />
+      <workItem from="1628057296937" duration="4136000" />
+      <workItem from="1628449274216" duration="63859000" />
+      <workItem from="1628995759878" duration="6538000" />
+      <workItem from="1629006032040" duration="4000" />
+      <workItem from="1629031860024" duration="21042000" />
+      <workItem from="1629076001467" duration="1874000" />
+      <workItem from="1629081842342" duration="33474000" />
+      <workItem from="1629244102516" duration="463000" />
+      <workItem from="1629245162004" duration="13447000" />
+      <workItem from="1629296417656" duration="4369000" />
+      <workItem from="1629337676805" duration="1425000" />
+      <workItem from="1629353105888" duration="39439000" />
+      <workItem from="1629546990208" duration="4616000" />
+      <workItem from="1629682788762" duration="4018000" />
+      <workItem from="1629690159504" duration="3363000" />
+      <workItem from="1629723494453" duration="1123000" />
+      <workItem from="1629901004163" duration="123000" />
+      <workItem from="1631668910597" duration="1597000" />
+      <workItem from="1632233965858" duration="2755000" />
+      <workItem from="1632670721435" duration="2556000" />
+      <workItem from="1633284193706" duration="40772000" />
+      <workItem from="1634259098330" duration="3677000" />
+      <workItem from="1634500055647" duration="4491000" />
+      <workItem from="1634585207951" duration="9082000" />
+      <workItem from="1634648234936" duration="10681000" />
+      <workItem from="1635180081207" duration="1456000" />
+      <workItem from="1635425699085" duration="12565000" />
+      <workItem from="1635475943138" duration="954000" />
+      <workItem from="1636993316539" duration="7122000" />
+      <workItem from="1637183079215" duration="1952000" />
+      <workItem from="1637244193102" duration="1509000" />
+      <workItem from="1637333328313" duration="5623000" />
+      <workItem from="1637687387221" duration="17748000" />
+      <workItem from="1637725810745" duration="1166000" />
+      <workItem from="1637761772098" duration="192000" />
+      <workItem from="1637947261617" duration="332000" />
+      <workItem from="1637954024573" duration="2040000" />
+      <workItem from="1637956795969" duration="398000" />
+      <workItem from="1637957220272" duration="25474000" />
+      <workItem from="1638060992475" duration="4024000" />
+      <workItem from="1638109544768" duration="7276000" />
+      <workItem from="1638291355108" duration="21064000" />
+      <workItem from="1638431706007" duration="1055000" />
+      <workItem from="1638456197214" duration="2987000" />
+      <workItem from="1638500809339" duration="2943000" />
+      <workItem from="1638504274386" duration="1297000" />
+      <workItem from="1638537008031" duration="3668000" />
+      <workItem from="1638670722619" duration="1346000" />
+      <workItem from="1638673913350" duration="3899000" />
+      <workItem from="1638797893053" duration="5723000" />
+      <workItem from="1638825157828" duration="1997000" />
+      <workItem from="1638833832356" duration="4189000" />
+      <workItem from="1638841126351" duration="310000" />
+      <workItem from="1639002754148" duration="4867000" />
+      <workItem from="1639400752158" duration="28552000" />
+      <workItem from="1639443012238" duration="1326000" />
+      <workItem from="1639782305315" duration="719000" />
+      <workItem from="1639833258579" duration="10027000" />
+      <workItem from="1640254110723" duration="7430000" />
+      <workItem from="1640277856058" duration="2439000" />
+      <workItem from="1640280421219" duration="31000" />
+      <workItem from="1640282246574" duration="970000" />
+      <workItem from="1640783526710" duration="5490000" />
+      <workItem from="1641933516979" duration="6272000" />
+    </task>
+    <task id="LOCAL-00138" summary="Módulo de Contacto. Listado de contactos en pérdida de seguimiento.">
+      <created>1629266630644</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1629266630644</updated>
+    </task>
+    <task id="LOCAL-00139" summary="Actualización de la versión.">
+      <created>1629266694109</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1629266694109</updated>
+    </task>
+    <task id="LOCAL-00140" summary="Módulo de Contactos. Ver detalles de los contactos en los listados.">
+      <created>1629301672852</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1629301672853</updated>
+    </task>
+    <task id="LOCAL-00141" summary="Módulo de Contactos. Actualización del modelo de datos.">
+      <created>1629410337488</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1629410337489</updated>
+    </task>
+    <task id="LOCAL-00142" summary="Módulo de Contactos. Maquetación den el frontend del resultado de las evaluaciones.">
+      <created>1629410410803</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1629410410803</updated>
+    </task>
+    <task id="LOCAL-00143" summary="Actualización de la versión.">
+      <created>1629410505593</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1629410505593</updated>
+    </task>
+    <task id="LOCAL-00144" summary="No permitir nuevo seguimiento de un paciente sin que el actual este cerrado.">
+      <created>1629432084543</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1629432084543</updated>
+    </task>
+    <task id="LOCAL-00145" summary="Módulo de Contactos. Adicionar evaluación y resultado de un contacto. Lógica del frontend.">
+      <created>1629439668558</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1629439668559</updated>
+    </task>
+    <task id="LOCAL-00146" summary="Módulo de Contactos. Adicionar evaluación y resultado de un contacto. Lógica del backend.">
+      <created>1629485787748</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1629485787749</updated>
+    </task>
+    <task id="LOCAL-00147" summary="Actualización de la versión.">
+      <created>1629485891916</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1629485891916</updated>
+    </task>
+    <task id="LOCAL-00148" summary="Módulo de Contactos. Modificar evaluación y resultado de un contacto. Lógica del frontend.">
+      <created>1629494972705</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1629494972705</updated>
+    </task>
+    <task id="LOCAL-00149" summary="Módulo de Contactos. Modificar evaluación y resultado de un contacto. Lógica del backend.">
+      <created>1629503844679</created>
+      <option name="number" value="00149" />
+      <option name="presentableId" value="LOCAL-00149" />
+      <option name="project" value="LOCAL" />
+      <updated>1629503844679</updated>
+    </task>
+    <task id="LOCAL-00150" summary="Módulo de Contactos. Validar en el resultado de la búsqueda la evaluación que toca.">
+      <created>1629513448839</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1629513448839</updated>
+    </task>
+    <task id="LOCAL-00151" summary="Módulo de Contactos. Validar en el resultado de la búsqueda el llenado de la forma 8 del contacto.">
+      <created>1629550523976</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1629550523977</updated>
+    </task>
+    <task id="LOCAL-00152" summary="Actualización de la versión.">
+      <created>1629550562839</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1629550562839</updated>
+    </task>
+    <task id="LOCAL-00153" summary="Módulo de Contacto. Validar fecha de resultado de una evaluación.">
+      <created>1629684185556</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1629684185558</updated>
+    </task>
+    <task id="LOCAL-00154" summary="Actualización de la versión.">
+      <created>1629684240119</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1629684240119</updated>
+    </task>
+    <task id="LOCAL-00155" summary="Módulo de Contacto. Ajustes en el resultado de la búsqueda de pacientes y contactos.">
+      <created>1629695665340</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1629695665341</updated>
+    </task>
+    <task id="LOCAL-00156" summary="Actualización de la versión.">
+      <created>1629695709451</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1629695709451</updated>
+    </task>
+    <task id="LOCAL-00157" summary="Gestion de paciente. Actualización en el orden de los atributos en al edición del paciente.">
+      <created>1634530393911</created>
+      <option name="number" value="00157" />
+      <option name="presentableId" value="LOCAL-00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1634530393913</updated>
+    </task>
+    <task id="LOCAL-00158" summary="Reporte registro de casos. Módificación en el rango de edades.">
+      <created>1634530451681</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1634530451681</updated>
+    </task>
+    <task id="LOCAL-00159" summary="Gestión de pacientes. Incorporar al modelo de datos nuevos atributos por covit.">
+      <created>1634607360042</created>
+      <option name="number" value="00159" />
+      <option name="presentableId" value="LOCAL-00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1634607360043</updated>
+    </task>
+    <task id="LOCAL-00160" summary="Gestión de pacientes. Incorporar al frontend de adiconar paciente los nuevos atributos por covit.">
+      <created>1634614400405</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1634614400405</updated>
+    </task>
+    <task id="LOCAL-00161" summary="Gestión de pacientes. Incorporar al frontend de actualizar paciente los nuevos atributos por covit.">
+      <created>1634614431741</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1634614431742</updated>
+    </task>
+    <task id="LOCAL-00162" summary="Gestión de pacientes. Incorporar al frontend de ver paciente los nuevos atributos por covit.">
+      <created>1634614447498</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1634614447498</updated>
+    </task>
+    <task id="LOCAL-00163" summary="Gestión de pacientes. Crud en el backend de los nuevos atributos por covit.">
+      <created>1634614486096</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1634614486096</updated>
+    </task>
+    <task id="LOCAL-00164" summary="Reportes de registros. Ajustes en el backend">
+      <created>1634614515006</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1634614515006</updated>
+    </task>
+    <task id="LOCAL-00165" summary="Actualizar la versión.">
+      <created>1634615088618</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1634615088619</updated>
+    </task>
+    <task id="LOCAL-00166" summary="Actualización biblioteca js de gráficos.">
+      <created>1637956505819</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1637956505821</updated>
+    </task>
+    <task id="LOCAL-00167" summary="Actualización biblioteca js de mapas">
+      <created>1637958138157</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1637958138158</updated>
+    </task>
+    <task id="LOCAL-00168" summary="Actualización biblioteca js de gráficos avanzados">
+      <created>1637959177766</created>
+      <option name="number" value="00168" />
+      <option name="presentableId" value="LOCAL-00168" />
+      <option name="project" value="LOCAL" />
+      <updated>1637959177766</updated>
+    </task>
+    <task id="LOCAL-00169" summary="Mapa por provincia del estado de la TB en el país. Lógica del frontend.">
+      <created>1637982018847</created>
+      <option name="number" value="00169" />
+      <option name="presentableId" value="LOCAL-00169" />
+      <option name="project" value="LOCAL" />
+      <updated>1637982018847</updated>
+    </task>
+    <task id="LOCAL-00170" summary="Mapa por provincia del estado de la TB en el país. Lógica del frontend. Visualizar los años existentes de casos con TB para la búsqueda.">
+      <created>1637983720888</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1637983720888</updated>
+    </task>
+    <task id="LOCAL-00171" summary="Gráficos. Casos por categoría de entrada. Casos por categoría de entrada por provincias. Casos por categoría de entrada por municipios. Comparación de casos notificados por años. Casos por categoría de entrada por grupos vulnerables. Lógica del backend.">
+      <created>1638410797182</created>
+      <option name="number" value="00171" />
+      <option name="presentableId" value="LOCAL-00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1638410797184</updated>
+    </task>
+    <task id="LOCAL-00172" summary="Gráficos. Buscar por rango de fecha en todos los gráficos. Lógica del backend.">
+      <created>1638505134721</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1638505134722</updated>
+    </task>
+    <task id="LOCAL-00173" summary="Graficos. Casos por resultado de tratamiento. Casos por resultado de tratamiento y grupos vulnerables. Lógica del frontend.">
+      <created>1638841443310</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1638841443312</updated>
+    </task>
+    <task id="LOCAL-00174" summary="Mapa. Actualización de la búsqueda por el año en curso.">
+      <created>1639418224844</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1639418224846</updated>
+    </task>
+    <task id="LOCAL-00175" summary="Reporte contactos nuevos. Actualizacion del backend.">
+      <created>1639418285276</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1639418285276</updated>
+    </task>
+    <task id="LOCAL-00176" summary="Reporte cohorte baciloscopia fin primera etapa. Actualizar  exportar a excel.">
+      <created>1639420629978</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1639420629978</updated>
+    </task>
+    <task id="LOCAL-00177" summary="Actualización de la versión.">
+      <created>1639421038125</created>
+      <option name="number" value="00177" />
+      <option name="presentableId" value="LOCAL-00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1639421038125</updated>
+    </task>
+    <task id="LOCAL-00178" summary="Reporte contactos con otros factores de riesgos. Actualizacion del backend.">
+      <created>1639428813083</created>
+      <option name="number" value="00178" />
+      <option name="presentableId" value="LOCAL-00178" />
+      <option name="project" value="LOCAL" />
+      <updated>1639428813084</updated>
+    </task>
+    <task id="LOCAL-00179" summary="Reporte contactos con PCT_IGRA. Actualización del backend.">
+      <created>1639440719003</created>
+      <option name="number" value="00179" />
+      <option name="presentableId" value="LOCAL-00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1639440719004</updated>
+    </task>
+    <task id="LOCAL-00180" summary="Reporte contactos con Síntomas Respiratorios. Actualización del backend.">
+      <created>1639442556573</created>
+      <option name="number" value="00180" />
+      <option name="presentableId" value="LOCAL-00180" />
+      <option name="project" value="LOCAL" />
+      <updated>1639442556573</updated>
+    </task>
+    <task id="LOCAL-00181" summary="NC. Actualización">
+      <created>1640271474656</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1640271474657</updated>
+    </task>
+    <task id="LOCAL-00182" summary="Gráficos. Actualizar nombre de las categorías.">
+      <created>1640271535993</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1640271535993</updated>
+    </task>
+    <task id="LOCAL-00183" summary="Reportes. Actualización de título y columna.">
+      <created>1640271583427</created>
+      <option name="number" value="00183" />
+      <option name="presentableId" value="LOCAL-00183" />
+      <option name="project" value="LOCAL" />
+      <updated>1640271583427</updated>
+    </task>
+    <task id="LOCAL-00184" summary="Reportes. Actualización de reporte de casos nuevos.">
+      <created>1640272843893</created>
+      <option name="number" value="00184" />
+      <option name="presentableId" value="LOCAL-00184" />
+      <option name="project" value="LOCAL" />
+      <updated>1640272843893</updated>
+    </task>
+    <task id="LOCAL-00185" summary="Reportes Excel. Imprimir contactos nuevos.">
+      <created>1641936560285</created>
+      <option name="number" value="00185" />
+      <option name="presentableId" value="LOCAL-00185" />
+      <option name="project" value="LOCAL" />
+      <updated>1641936560286</updated>
+    </task>
+    <task id="LOCAL-00186" summary="Listados. Listado nominal de casos resistentes.">
+      <created>1641936624448</created>
+      <option name="number" value="00186" />
+      <option name="presentableId" value="LOCAL-00186" />
+      <option name="project" value="LOCAL" />
+      <updated>1641936624448</updated>
+    </task>
+    <option name="localTasksCounter" value="187" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Gestión de pacientes. Incorporar al frontend de ver paciente los nuevos atributos por covit." />
+    <MESSAGE value="Gestión de pacientes. Crud en el backend de los nuevos atributos por covit." />
+    <MESSAGE value="Reportes de registros. Ajustes en el backend" />
+    <MESSAGE value="Actualizar la versión." />
+    <MESSAGE value="Actualización biblioteca js de gráficos." />
+    <MESSAGE value="Actualización biblioteca js de mapas" />
+    <MESSAGE value="Actualización biblioteca js de gráficos avanzados" />
+    <MESSAGE value="Mapa por provincia del estado de la TB en el país. Lógica del frontend." />
+    <MESSAGE value="Mapa por provincia del estado de la TB en el país. Lógica del frontend. Visualizar los años existentes de casos con TB para la búsqueda." />
+    <MESSAGE value="Gráficos. Casos por categoría de entrada. Casos por categoría de entrada por provincias. Casos por categoría de entrada por municipios. Comparación de casos notificados por años. Casos por categoría de entrada por grupos vulnerables. Lógica del backend." />
+    <MESSAGE value="Gráficos. Buscar por rango de fecha en todos los gráficos. Lógica del backend." />
+    <MESSAGE value="Graficos. Casos por resultado de tratamiento. Casos por resultado de tratamiento y grupos vulnerables. Lógica del frontend." />
+    <MESSAGE value="Mapa. Actualización de la búsqueda por el año en curso." />
+    <MESSAGE value="Reporte contactos nuevos. Actualizacion del backend." />
+    <MESSAGE value="Reporte cohorte baciloscopia fin primera etapa. Actualizar  exportar a excel." />
+    <MESSAGE value="Actualización de la versión." />
+    <MESSAGE value="Reporte contactos con otros factores de riesgos. Actualizacion del backend." />
+    <MESSAGE value="Reporte contactos con PCT_IGRA. Actualización del backend." />
+    <MESSAGE value="Reporte contactos con Síntomas Respiratorios. Actualización del backend." />
+    <MESSAGE value="NC. Actualización" />
+    <MESSAGE value="Gráficos. Actualizar nombre de las categorías." />
+    <MESSAGE value="Reportes. Actualización de título y columna." />
+    <MESSAGE value="Reportes. Actualización de reporte de casos nuevos." />
+    <MESSAGE value="Reportes Excel. Imprimir contactos nuevos." />
+    <MESSAGE value="Listados. Listado nominal de casos resistentes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Listados. Listado nominal de casos resistentes." />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="862" y="272" key="#TODO" timestamp="1637958028183">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="862" y="272" key="#TODO/0.0.1920.1040@0.0.1920.1040" timestamp="1637958028183" />
+    <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1638031606609">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1638031606609" />
+    <state x="703" y="342" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1641936489406">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="703" y="342" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1641936489406" />
+    <state x="1159" y="144" key="FileChooserDialogImpl" timestamp="1641301088760">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1159" y="144" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1641301088760" />
+    <state width="1877" height="273" key="GridCell.Tab.0.bottom" timestamp="1638060811043">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="273" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1638060811043" />
+    <state width="1877" height="273" key="GridCell.Tab.0.center" timestamp="1638060811042">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="273" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1638060811042" />
+    <state width="1877" height="273" key="GridCell.Tab.0.left" timestamp="1638060811042">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="273" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1638060811042" />
+    <state width="1877" height="273" key="GridCell.Tab.0.right" timestamp="1638060811042">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="273" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1638060811042" />
+    <state x="48" y="0" key="MergeDialog" timestamp="1634530363092">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="48" y="0" key="MergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1634530363092" />
+    <state x="840" y="385" width="702" height="269" key="MultipleFileMergeDialog" timestamp="1634530363101">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="840" y="385" width="702" height="269" key="MultipleFileMergeDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1634530363101" />
+    <state x="741" y="226" key="NewPhpClassDialog" timestamp="1641188101701">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="741" y="226" key="NewPhpClassDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1641188101701" />
+    <state x="461" y="165" width="1234" height="735" key="SettingsEditor" timestamp="1637960086830">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="165" width="1234" height="735" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1637960086830" />
+    <state width="572" height="446" key="SwitcherDM" timestamp="1638833866135">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="572" height="446" key="SwitcherDM/0.0.1920.1040@0.0.1920.1040" timestamp="1638833866135" />
+    <state x="668" y="98" width="583" height="843" key="find.popup" timestamp="1640786055896">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="668" y="98" width="583" height="843" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1640786055896" />
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup" timestamp="1637975329376">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" width="672" height="677" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1637975329376" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Resources/views/Contactos/Evaluaciones/addEvaluacion.html.twig</url>
+          <line>618</line>
+          <option name="timeStamp" value="114" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/app/Resources/views/Reportes/reporteContactosFactoresCriteriosEntrada.html.twig</url>
+          <line>134</line>
+          <option name="timeStamp" value="123" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/AppBundle/Controller/ReporteSalidaController.php</url>
+          <line>1544</line>
+          <option name="timeStamp" value="133" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/AppBundle/Controller/ReporteSalidaController.php</url>
+          <line>1812</line>
+          <option name="timeStamp" value="134" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/AppBundle/Controller/ReporteSalidaController.php</url>
+          <line>1271</line>
+          <option name="timeStamp" value="136" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/AppBundle/Controller/ReporteSalidaController.php</url>
+          <line>490</line>
+          <option name="timeStamp" value="137" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="hg4idea.settings">
+    <option name="CHECK_INCOMING_OUTGOING" value="false" />
+    <option name="RECENT_HG_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+</project>

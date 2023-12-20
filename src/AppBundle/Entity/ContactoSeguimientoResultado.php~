@@ -1,0 +1,65 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * ContactoSeguimientoResultado
+ *
+ * @ORM\Table(name="contacto_seguimiento_resultado")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ContactoSeguimientoResultadoRepository")
+ */
+class ContactoSeguimientoResultado
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\OneToOne(targetEntity="ContactoSeguimientoEvaluacion" ,inversedBy="contactoSeguimientoResultado")
+     * @ORM\JoinColumn(name="contactoSeguimiento_id" , referencedColumnName="id")
+     */
+    private $contactoSeguimientoEvaluacion;
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set contactoSeguimientoEvaluacion
+     *
+     * @param \AppBundle\Entity\ContactoSeguimientoEvaluacion $contactoSeguimientoEvaluacion
+     *
+     * @return ContactoSeguimientoResultado
+     */
+    public function setContactoSeguimientoEvaluacion(\AppBundle\Entity\ContactoSeguimientoEvaluacion $contactoSeguimientoEvaluacion = null)
+    {
+        $this->contactoSeguimientoEvaluacion = $contactoSeguimientoEvaluacion;
+
+        return $this;
+    }
+
+    /**
+     * Get contactoSeguimientoEvaluacion
+     *
+     * @return \AppBundle\Entity\ContactoSeguimientoEvaluacion
+     */
+    public function getContactoSeguimientoEvaluacion()
+    {
+        return $this->contactoSeguimientoEvaluacion;
+    }
+}

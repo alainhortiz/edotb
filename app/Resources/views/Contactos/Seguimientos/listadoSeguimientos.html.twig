@@ -1,0 +1,103 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3 form-cont">
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Localizar
+                    Contacto</h3>
+                <div class="row">
+                    <div class="col-md-8" style="margin-top: 20px">
+                            <label for="ci">CI:</label>
+                            <input type="text" class="form-control" placeholder="Teclee el carnet de identidad" id="ci">
+                    </div>
+                    <div class="col-md-4" style="margin-top: 40px">
+                        <button id="btnBuscar" type="button" class="btn btn-primario"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="blockSeguimientos"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            (function () {
+                {% if not (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_VISUALIZADOR")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            })();
+
+            //Formulario Buscar persona
+            $('#ci').on("keyup", function () {
+
+                if ($('#ci').val().trim().length >= 11) {
+                    $('#btnBuscar').prop("disabled", false);
+                } else {
+                    $('#btnBuscar').prop("disabled", true);
+                }
+            });
+
+            var carnet = '';
+
+            //Boton localizar
+            $('#btnBuscar').on("click", function(){
+
+                $(".preload").removeClass('hidden');
+
+                carnet = $("#ci").val();
+
+                var mat_datos = {
+                    carnetIdentidad: carnet
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("localizarSeguimientosContacto") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    $(".preload").addClass('hidden');
+
+                    if (data == 'no') {
+                        $('#blockSeguimientos').addClass('hidden');
+                        alertify.alert('<strong>Contacto no encontrado</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Advertencia</h4>')
+                            .set('label', 'Aceptar')
+                    } else if(data.indexOf('dataSeguimientos') != -1){
+
+                        $('#blockSeguimientos').replaceWith(data);
+                        $('#blockSeguimientos').removeClass('hidden');
+                        $('#dataSeguimientos').DataTable();
+
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                        $("#blockSeguimientos").addClass('hidden');
+                    }
+                });
+            });
+
+        });
+    </script>
+{% endblock %}

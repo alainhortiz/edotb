@@ -1,0 +1,69 @@
+<div class="container-fluid" id="containerResultado">
+    <div  class="row" style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242;">
+        <div class="col-md-12">
+            <table id="dataPaciente" class="display" cellspacing="0" width="100%" >
+                <thead>
+                <tr>
+                    {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+                        <th>Provincia</th>
+                    {% endif %}
+                    {% if app.user.getNivelAcceso().id > 2 %}
+                        <th>Municipio</th>
+                    {% endif %}
+                    <th>Nombre</th>
+                    <th>Primer Apellido</th>
+                    <th>Segundo Apellido</th>
+                    <th>Fecha Notificación</th>
+                    <th>Enfermedad</th>
+                    <th>Resultado Tratamiento</th>
+                    <th>Trimestre</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for evolucion in evoluciones %}
+                    <tr  data-id ="{{ evolucion.id }}">
+                        {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+                            {% if  evolucion.getAreaSalud() != null %}
+                                <td>{{ evolucion.getAreaSalud().getMunicipio().getProvincia().codigo~'-'~evolucion.getAreaSalud().getMunicipio().getProvincia().nombre  }}</td>
+                            {% elseif evolucion.hospital != null %}
+                                <td>{{ evolucion.hospital.getMunicipio().getProvincia().codigo~'-'~evolucion.hospital.getMunicipio().getProvincia().nombre  }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        {% endif %}
+                        {% if app.user.getNivelAcceso().id > 2 %}
+                            {% if  evolucion.getAreaSalud() != null %}
+                                <td>{{ evolucion.getAreaSalud().getMunicipio().codigo~'-'~evolucion.getAreaSalud().getMunicipio().nombre  }}</td>
+                            {% elseif evolucion.getHospital() != null %}
+                                <td>{{ evolucion.hospital.getMunicipio().codigo~'-'~evolucion.hospital.getMunicipio().nombre  }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        {% endif %}
+                        <td>{{ evolucion.getPaciente().nombre }}</td>
+                        <td>{{ evolucion.getPaciente().primerApellido }}</td>
+                        <td>{{ evolucion.getPaciente().segundoApellido }}</td>
+                        <td>{{ evolucion.fechaNotificacion|date('Y-m-d') }}</td>
+                        <td>{{ evolucion.getEnfermedad() == null ? '' : evolucion.getEnfermedad().codigo  }}</td>
+                        <td>{{ evolucion.getResultadosFinales[(evolucion.getResultadosFinales|length) - 1].getResultadoTratamiento().resultado }}</td>
+                        {% set mes = evolucion.fechaNotificacion|date('m') %}
+                        {% if mes < 4 %}                  <td>Primero</td>
+                        {% elseif mes > 3 and mes < 7 %}  <td>Segundo</td>
+                        {% elseif mes > 6 and mes < 10 %} <td>Tercero</td>
+                        {% elseif mes >= 10 %}             <td>Cuarto</td>
+                        {% endif %}
+                        <td>
+                            <div class="btn-opt" id="ver" style="background: #ffffff; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Datos">
+                                <a href="{{ path('verPaciente' , {ci:evolucion.getPaciente().carnetIdentidad , origen:'pacientesNotificadosAnno'}) }}" style="text-decoration: none; color: #1f1f1f">
+                                    <i class="glyphicon glyphicon-eye-open" style="font-size: 20px"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

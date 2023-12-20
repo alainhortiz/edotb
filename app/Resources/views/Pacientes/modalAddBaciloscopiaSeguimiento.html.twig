@@ -1,0 +1,54 @@
+<div class="modal fade" id="addBaciloscopiaSeguimiento" data-backdrop="static" data-keyboard=false tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header mh" style="background-color: #717070; color: whitesmoke;">
+                <span class="glyphicon glyphicon-user" style="font-size: 20px"></span>
+                <h4 class="modal-title" style="display: inline-block; margin-left: 5px">Nueva Baciloscopía</h4>
+            </div>
+            <div class="modal-body">
+                <div id="errorBaciloscopia" class="alert alert-danger hidden"  role="alert">
+                    <div class="container"></div>
+                </div>
+                <form>
+                    <div class="row" >
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label " for="baciloscopiaAdd">Resultado de la Baciloscopía:</label>
+                                <select class="form-control input-sm" id="baciloscopiaAdd" name="baciloscopiaAdd">
+                                    <option value="vacio">Seleccione un resultado</option>
+                                    {% for baciloscopia in  baciloscopias %}
+                                        <option value="{{ baciloscopia.clasificacion }}">{{ baciloscopia.descripcion~' ('~baciloscopia.clasificacion~')' }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        {% set fechaMin = evolucion.fechaNotificacion|date('Y-m-d')  %}
+                        {% if evolucion.baciloscopiaSeguimientos|length != 0 %}
+                            {% set lastBaciloscopia = evolucion.baciloscopiaSeguimientos[(evolucion.baciloscopiaSeguimientos|length) - 1] %}
+                            {% set fechaMin = lastBaciloscopia.fecha|date('Y-m-d') %}
+                        {% endif %}
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label " for="fechaBaciloscopiaAdd">Fecha:</label>
+                                <div>
+                                    <input type="date" min="{{ fechaMin }}" max="{{ 'now'|date('Y-m-d') }}"  id="fechaBaciloscopiaAdd" name="fechaBaciloscopiaAdd">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label"   for="categoriaBaciloscopia">Categoría:</label>
+                                <input type="text" disabled value="{{ categoriaBaciloscopia }}" class="form-control" name="categoriaBaciloscopia" id="categoriaBaciloscopia">
+                            </div>
+                        </div>
+                    </div >
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-primario" id="maceptarAddBaciloscopia"  value="ACEPTAR" >
+                        <input type="button" class="btn btn-primario" id="mcerrar" value="CERRAR" data-dismiss="modal" style="cursor: default">
+                    </div>
+                </form>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

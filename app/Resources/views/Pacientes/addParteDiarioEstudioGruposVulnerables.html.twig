@@ -1,0 +1,551 @@
+ {% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12  form-cont">
+                    <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Agregar Parte Diario del Estudio a Grupos Vulnerables</h3>
+                    <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label " for="fecha">Fecha:</label>
+                                        <div>
+                                            <input type="date" id="fecha" name="fecha">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="grupoVulnerable">Grupos Vulnerables:</label>
+                                    <div class="form-group">
+                                        <select class="form-control input-sm" id="grupoVulnerable"  name="grupoVulnerable">
+                                            <option value="0">Seleccione un grupo vulnerable</option>
+                                            {% for grupo in  gruposVulnerable %}
+                                                <option value="{{ grupo.id }}">{{ grupo.grupo }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="identificados">Identificados:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="identificados" name="identificados">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="identificadosMenores5">Identificados Menores de 5 años:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="identificadosMenores5" name="identificadosMenores5">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                {% if app.user.getNivelAcceso().nivel == 'unidad' %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().nombre : app.user.hospital.municipio.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Unidad:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().nombre : '' }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {#<div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.hospital != null ? app.user.hospital.nombre : ''}}</strong>
+                                            </div>
+                                        </div>
+                                    </div>#}
+                                {% elseif app.user.getNivelAcceso().nivel == 'municipal'%}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre}}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().nombre : app.user.hospital.municipio.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Unidad:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="areaSalud" name="areaSalud">
+                                                <option value="0">Seleccione una unidad </option>
+                                                {% for area in  areasSalud %}
+                                                    <option value="{{ area.id }}">{{ area.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {#<div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="hospital" name="hospital">
+                                                <option value="0">Seleccione un hospital</option>
+                                                {% for hospital in  hospitales %}
+                                                    <option value="{{ hospital.id }}">{{ hospital.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>#}
+                                {% elseif  app.user.getNivelAcceso().nivel == 'provincial' %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <div>
+                                                <strong>{{ app.user.getAreaSalud() != null ? app.user.getAreaSalud().getMunicipio().getProvincia().nombre : app.user.hospital.municipio.provincia.nombre }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm" id="municipio" name="municipio">
+                                                <option value="0">Seleccione un municipio </option>
+                                                {% for municipio in  municipios %}
+                                                    <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Unidad:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="areaSalud" name="areaSalud">
+                                                <option value="0">Seleccione una unidad</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {#<div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <select  class="form-control input-sm " id="hospital" name="hospital">
+                                                <option  value="0">Seleccione un hospital</option>
+                                            </select>
+                                        </div>
+                                    </div>#}
+                                {% else %}
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label  class="control-label " for="provincia">Provincia:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="provincia" name="provincia">
+                                                <option value="0">Seleccione una provincia </option>
+                                                {% for provincia in  provincias %}
+                                                    <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label   class="control-label " for="municipio">Municipio:</label>
+                                        <div class="form-group">
+                                            <select  class="form-control input-sm" id="municipio" name="municipio">
+                                                <option  value="0">Seleccione un municipio</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="areaSalud">Unidad:</label>
+                                        <div class="form-group">
+                                            <select  class="form-control input-sm " id="areaSalud" name="areaSalud">
+                                                <option  value="0">Seleccione una unidad</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {#<div class="col-md-3" style="border-top: none">
+                                        <label class="control-label " for="hospital">Hospital:</label>
+                                        <div class="form-group">
+                                            <select class="form-control input-sm " id="hospital" name="hospital">
+                                                <option  value="0">Seleccione un hospital</option>
+                                            </select>
+                                        </div>
+                                    </div>#}
+                                {% endif %}
+                            </div>
+                        </fieldset>
+                        <fieldset style="margin-top: 15px">
+                            <h3 style="margin: 5px; padding-bottom: 7px;  color: #717070; text-align: center"><strong>Pruebas de Tuberculina</strong></h3>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="control-label " for="tuberculinasRealizadas">Realizadas:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="tuberculinasRealizadas" name="tuberculinasRealizadas">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="tuberculinasRealizadasMenores5">Realizadas a Menores de 5 años:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="tuberculinasRealizadasMenores5" name="tuberculinasRealizadasMenores5">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="tuberculinasPositivas">Positivas:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="tuberculinasPositivas" name="tuberculinasPositivas">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="tuberculinasPositivasMenores5">Positivas a Menores de 5 años:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="tuberculinasPositivasMenores5" name="tuberculinasPositivasMenores5">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <fieldset style="margin-top: 15px">
+                            <h3 style="margin: 5px; padding-bottom: 7px;  color: #717070; text-align: center"><strong>Terapia Preventiva con Isoniazida</strong></h3>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="control-label " for="terapiaPreventivaIsoniazidaIniciadas">Iniciaron:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="terapiaPreventivaIsoniazidaIniciadas" name="terapiaPreventivaIsoniazidaIniciadas">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="terapiaPreventivaIsoniazidaIniciadasMenores5">Iniciaron Menores de 5 años:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="terapiaPreventivaIsoniazidaIniciadasMenores5" name="terapiaPreventivaIsoniazidaIniciadasMenores5">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="terapiaPreventivaIsoniazidaTerminadas">Terminaron:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="terapiaPreventivaIsoniazidaTerminadas" name="terapiaPreventivaIsoniazidaTerminadas">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label " for="terapiaPreventivaIsoniazidaTerminadasMenores5">Terminaron Menores de 5 años:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="terapiaPreventivaIsoniazidaTerminadasMenores5" name="terapiaPreventivaIsoniazidaTerminadasMenores5">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hidden"  id="opcional">
+                                <div class="col-md-6">
+                                    <label class="control-label " for="cotrimoxazolPacientesCoinfectados">Cotrimoxazol a Pacientes Coinfectados:</label>
+                                    <div class="form-group">
+                                        <input placeholder="Teclee la cantidad" type="number" id="cotrimoxazolPacientesCoinfectados" name="cotrimoxazolPacientesCoinfectados">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <p class="text-center" style="margin-top: 20px">
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                        <button id="btnSalir" type="button" class="btn btn-primario"> Salir </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function ()
+            {
+                window.location.href = "{{ path(origen) }}";
+
+            });
+            //----------Relacionar selects --------------------------
+            {% if  app.user.getNivelAcceso().nivel != 'unidad' %}
+                {{ include('Generales/relacionarSelectProvMun.html.twig') }}
+            {% endif %}
+
+            $("#grupoVulnerable").on('change' , function () {
+
+                var grupo = $(this).val();
+
+                {%  for grupoVulnerable in gruposVulnerable %}
+
+                    id = "{{ grupoVulnerable.id }}";
+                    grupoVul = "{{ grupoVulnerable.numero }}";
+                    if(grupo == id && grupoVul == 3)
+                    {
+                        $("#opcional").removeClass('hidden');
+                        return false;
+                    }
+
+                {% endfor %}
+
+                $("#opcional").addClass('hidden');
+            });
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function ()
+            {
+
+                if ($("#fecha").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+
+                if ($("#fecha").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha  no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#grupoVulnerable").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar  un grupo vulnerable.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#identificados").val() == '') {
+                    alertify.alert('<strong>El campo identificados es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#provincia").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar la provincia en que se realizó el estudio.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#municipio").val() == '0') {
+                    alertify.alert('<strong>Debe seleccionar el municipio en que se realizó el estudio.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                var identificados = parseInt($("#identificados").val());
+                var identificadosMenores5 = $("#identificadosMenores5").val() == '' ? 0 : parseInt($("#identificadosMenores5").val());
+                var tuberculinasRealizadas = $("#tuberculinasRealizadas").val() == '' ? 0 : parseInt($("#tuberculinasRealizadas").val());
+                var tuberculinasRealizadasMenores5 = $("#tuberculinasRealizadasMenores5").val() == '' ? 0 : parseInt($("#tuberculinasRealizadasMenores5").val());
+                var tuberculinasPositivas = $("#tuberculinasPositivas").val() == '' ? 0 : parseInt($("#tuberculinasPositivas").val());
+                var tuberculinasPositivasMenores5 = $("#tuberculinasPositivasMenores5").val() == '' ? 0 : parseInt($("#tuberculinasPositivasMenores5").val());
+                var terapiaPreventivaIsoniazidaIniciadas = $("#terapiaPreventivaIsoniazidaIniciadas").val() == '' ? 0 : parseInt($("#terapiaPreventivaIsoniazidaIniciadas").val());
+                var terapiaPreventivaIsoniazidaIniciadasMenores5 = $("#terapiaPreventivaIsoniazidaIniciadasMenores5").val() == '' ? 0 : parseInt($("#terapiaPreventivaIsoniazidaIniciadasMenores5").val());
+                var terapiaPreventivaIsoniazidaTerminadas = $("#terapiaPreventivaIsoniazidaTerminadas").val() == '' ? 0 : parseInt($("#terapiaPreventivaIsoniazidaTerminadas").val());
+                var terapiaPreventivaIsoniazidaTerminadasMenores5 = $("#terapiaPreventivaIsoniazidaTerminadasMenores5").val() == '' ? 0 : parseInt($("#terapiaPreventivaIsoniazidaTerminadasMenores5").val());
+                var cotrimoxazolPacientesCoinfectados = $("#cotrimoxazolPacientesCoinfectados").val() == '' ? 0 : parseInt($("#cotrimoxazolPacientesCoinfectados").val());
+
+                if(identificadosMenores5 > identificados){
+                    alertify.alert('<strong>La cantidad de identificados no puede ser menor que la cantidad de  identificados menores de 5 años.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasRealizadas > identificados){
+                    alertify.alert('<strong>La cantidad de identificados no puede ser menor que la cantidad de  pruebas de tuberculina realizadas.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasRealizadasMenores5 > identificados){
+                    alertify.alert('<strong>La cantidad de identificados no puede ser menor que la cantidad de  pruebas de tuberculina realizadas a menores de 5 años.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasPositivas > identificados){
+                    alertify.alert('<strong>La cantidad de identificados no puede ser menor que la cantidad de  pruebas de tuberculina positivas.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasPositivasMenores5 > identificados){
+                    alertify.alert('<strong>La cantidad de identificados no puede ser menor que la cantidad de  pruebas de tuberculina positivas a menores de 5 años.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(cotrimoxazolPacientesCoinfectados > identificados){
+                    alertify.alert('<strong>La cantidad de identificados no puede ser menor que la cantidad de pacientes coinfectados.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasRealizadasMenores5 > identificadosMenores5){
+                    alertify.alert('<strong>La cantidad de identificados menores de 5 años no puede ser menor que la cantidad de  pruebas de tuberculina realizadas a menores de 5 años.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasPositivasMenores5 > identificadosMenores5){
+                    alertify.alert('<strong>La cantidad de identificados menores de 5 años no puede ser menor que la cantidad de  pruebas de tuberculina positivas a menores de 5 años.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasRealizadasMenores5 > tuberculinasRealizadas){
+                    alertify.alert('<strong>La cantidad de pruebas de tuberculina realizadas no puede ser menor que la cantidad de  pruebas de tuberculina realizadas a menores de 5 años.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasPositivas > tuberculinasRealizadas){
+                    alertify.alert('<strong>La cantidad de pruebas de tuberculina realizadas no puede ser menor que la cantidad de  pruebas de tuberculina positivas.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasPositivasMenores5 > tuberculinasRealizadas){
+                    alertify.alert('<strong>La cantidad de pruebas de tuberculina realizadas no puede ser menor que la cantidad de  pruebas de tuberculina positivas a menores de 5 años.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasPositivasMenores5 > tuberculinasRealizadasMenores5){
+                    alertify.alert('<strong>La cantidad de pruebas de tuberculina realizadas a menores de 5 años no puede ser menor que la cantidad de  pruebas de tuberculina positivas a menores de 5 años.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(tuberculinasPositivasMenores5 > tuberculinasPositivas){
+                    alertify.alert('<strong>La cantidad de pruebas de tuberculina positivas no puede ser menor que la cantidad de  pruebas de tuberculina positivas a menores de 5 años.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(terapiaPreventivaIsoniazidaIniciadasMenores5 > terapiaPreventivaIsoniazidaIniciadas){
+                    alertify.alert('<strong>La cantidad que iniciaron la terapia preventiva con isoniazida no puede ser menor que la cantidad de menores de 5 años que iniciaron dicha terapia.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(terapiaPreventivaIsoniazidaTerminadasMenores5 > terapiaPreventivaIsoniazidaTerminadas){
+                    alertify.alert('<strong>La cantidad que terminaron la terapia preventiva con isoniazida no puede ser menor que la cantidad de menores de 5 años que terminaron dicha terapia.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                var areaSalud = '{{ app.user.getAreaSalud().id }}';
+                {% if not (app.user.getNivelAcceso().nivel == 'unidad') %}
+                    if($("#areaSalud").val() == '0'){
+                        alertify.alert('<strong>Debe seleccionar el centro en que se realizó el estudio.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar');
+                        return false;
+                    }
+                    areaSalud = $("#areaSalud").val();
+                {% endif %}
+
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    fecha: $("#fecha").val(),
+                    grupoVulnerable: $("#grupoVulnerable").val(),
+                    identificados: identificados,
+                    identificadosMenoresCinco: identificadosMenores5,
+                    tuberculinasRealizadas: tuberculinasRealizadas,
+                    tuberculinasRealizadasMenoresCinco: tuberculinasRealizadasMenores5,
+                    tuberculinasPositivas: tuberculinasPositivas,
+                    tuberculinasPositivasMenoresCinco: tuberculinasPositivasMenores5,
+                    terapiaPreventivaIsoniazidaIniciadas: terapiaPreventivaIsoniazidaIniciadas,
+                    terapiaPreventivaIsoniazidaIniciadasMenoresCinco: terapiaPreventivaIsoniazidaIniciadasMenores5,
+                    terapiaPreventivaIsoniazidaTerminadas: terapiaPreventivaIsoniazidaTerminadas,
+                    terapiaPreventivaIsoniazidaTerminadasMenoresCinco: terapiaPreventivaIsoniazidaTerminadasMenores5,
+                    cotrimoxazolPacientesCoinfectados: cotrimoxazolPacientesCoinfectados,
+                    areaSalud: areaSalud
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertParteDiarioEstudioGruposVulnerables") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $("#errorClient").addClass('hidden');
+                    $('input').each(function(){
+                        $(this).val('');
+                    });
+                    $('select').val(0);
+
+                    $(".preload").addClass('hidden');
+                    if(data == 'ok'){
+
+                        alertify.alert('<strong>El parte ha sido insertado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

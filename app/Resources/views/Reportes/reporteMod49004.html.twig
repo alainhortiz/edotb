@@ -1,0 +1,1037 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    {% set anno_actual =  "now"|date("Y") %}
+
+    <div class="contaniner">
+        <div class="container-fluid">
+            <div class="row" style="margin:5px">
+
+                <div class="form-cont">
+
+                    <h2 id="titulo_fecha" align="center">INDICADORES SELECCIONADOS DEL  PROGRAMA DE CONTROL DE LA TUBERCULOSIS</h2>
+                    <h2 id="titulo_fecha" align="center">Modelo 241-490-04</h2>
+                    <br>
+
+                    <div class="btn-toolbar">
+                        <div class="btn-group" style="margin-bottom: 5px;">
+                            <a id="imp_rpt_mod_49004" class="btn btn-default">
+                                <span class="glyphicon glyphicon-save"></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <table id="id_tb_diario" class="table table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <th colspan="16" style="text-align: center">
+                                        <form class="form-horizontal" role="form">
+                                            <div class="form-group" style="margin-top: 10px;margin-bottom: 10px;">
+                                                <label for="id_provincia" class="col-lg-1 col-lg-offset-1 control-label">PROVINCIA:</label>
+                                                <div class="col-lg-2">
+                                                    <select class="form-control" id="id_provincia">
+                                                        <option value="0">Seleccione provincia</option>
+                                                        {% for provincia in  provincias %}
+                                                            <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+
+                                                <label for="id_municipio" class="col-lg-1 control-label">MUNICIPIO:</label>
+                                                <div class="col-lg-2">
+                                                    <select class="form-control" id="id_municipio">
+                                                        <option value="0">Seleccione un municipio</option>
+                                                    </select>
+                                                </div>
+
+                                                <label for="id_select_lab" class="col-lg-1 control-label" style="padding-right: 5px;padding-left: 0px;margin-left: 15px;">ÁREA DE SALUD:</label>
+                                                <div class="col-lg-3">
+                                                    <select class="form-control" id="id_select_lab">
+                                                        <option value="0">Seleccione un área de salud</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th colspan="16" style="text-align: center">
+                                        TRIMESTRE
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th colspan="16" style="text-align: center">
+                                        <input type="radio" name="trimestre" id="trim_1" value="1" checked> I TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="trimestre" id="trim_2" value="2"> II TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="trimestre" id="trim_3" value="3"> III TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="trimestre" id="trim_4" value="4"> IV TRIMESTRE &nbsp;&nbsp;&nbsp;&nbsp;
+                                        </br>
+                                        </br>
+                                        <div class="form-group">
+                                            <div class="col-md-1 col-md-offset-5">
+                                                <select name="anno" id="id_anno_select" class="form-control col-md-2">
+                                                    {% for i in range(1990, anno_actual) %}
+                                                        <option value="{{ i }}" {% if i == anno_actual|trans %} selected {% endif %}> {{ i }} </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="bt_search" class="btn btn-default" type="submit">Buscar</button>
+                                            </div>
+                                        </div>
+                                    </th>
+                                </tr>
+
+                                <tr>
+                                    <th colspan="3" rowspan="2" style="text-align: center; vertical-align: middle">INDICADORES</th>
+                                    <th  rowspan="2" style="text-align: center; vertical-align: middle">FILA</th>
+                                    <th colspan="9" style="text-align: center; vertical-align: middle">ESTRATIFICACIÓN SEGÚN RIESGO INDIVIDUAL</th>
+                                    <th  rowspan="2" style="text-align: center; vertical-align: middle">TOTAL</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; vertical-align: middle">Contactos</th>
+                                    <th style="text-align: center; vertical-align: middle">Reclusos Exreclusos</th>
+                                    <th style="text-align: center; vertical-align: middle">Personas Viviendo con VIH</th>
+                                    <th style="text-align: center; vertical-align: middle">Trabajadores SNS</th>
+                                    <th style="text-align: center; vertical-align: middle">Extranjero</th>
+                                    <th style="text-align: center; vertical-align: middle">Fumadores</th>
+                                    <th style="text-align: center; vertical-align: middle">Diabetes Mellitus</th>
+                                    <th style="text-align: center; vertical-align: middle">Alcohólicos</th>
+                                    <th style="text-align: center; vertical-align: middle">Otros</th>
+                                </tr>
+
+                                <tr>
+                                    <th colspan="3" style="text-align: center">A</th>
+                                    <th style="text-align: center">B</th>
+                                    <th style="text-align: center">1</th>
+                                    <th style="text-align: center">2</th>
+                                    <th style="text-align: center">3</th>
+                                    <th style="text-align: center">4</th>
+                                    <th style="text-align: center">5</th>
+                                    <th style="text-align: center">6</th>
+                                    <th style="text-align: center">7</th>
+                                    <th style="text-align: center">8</th>
+                                    <th style="text-align: center">9</th>
+                                    <th style="text-align: center">10</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb_body_replace">
+                            {#POLICLINICO#}
+                                <tr>
+                                    <th rowspan="7" style="text-align: center; vertical-align: middle">POLICLÍNICO</th>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Consultas de medicina</th>
+                                    <th style="text-align: center; vertical-align: middle">1</th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Sintomático Respiratorio + 21 días (SR+21)</th>
+                                    <th style="text-align: center; vertical-align: middle">2</th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Examen Directo I y II realizados</th>
+                                    <th style="text-align: center; vertical-align: middle">3</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Total de positivos</th>
+                                    <th style="text-align: center; vertical-align: middle">4</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Cultivos realizados</th>
+                                    <th style="text-align: center; vertical-align: middle">5</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Total de positivos</th>
+                                    <th style="text-align: center; vertical-align: middle">6</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Positivos con prueba de sensibilidad realizada</th>
+                                    <th style="text-align: center; vertical-align: middle">7</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+
+                            {#ESTUDIOS A GRUPOS VULNERABLES#}
+                                <tr>
+                                    <th rowspan="11" style="text-align: center; vertical-align: middle">ESTUDIOS A GRUPOS VULNERABLES</th>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Identificados</th>
+                                    <th style="text-align: center; vertical-align: middle">8</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                    <th style="text-align: center; vertical-align: middle">9</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Pruebas de Tuberculina realizadas</th>
+                                    <th style="text-align: center; vertical-align: middle">10</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                    <th style="text-align: center; vertical-align: middle">11</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Positivas</th>
+                                    <th style="text-align: center; vertical-align: middle">12</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                    <th style="text-align: center; vertical-align: middle">13</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th rowspan="4" style="text-align: center; vertical-align: middle">Terapia Preventiva con Isoniazida</th>
+                                    <th style="text-align: left; vertical-align: middle">Iniciaron</th>
+                                    <th style="text-align: center; vertical-align: middle">14</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                    <th style="text-align: center; vertical-align: middle">15</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: left; vertical-align: middle">Terminaron</th>
+                                    <th style="text-align: center; vertical-align: middle">16</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; vertical-align: middle">De ello: - 5 años</th>
+                                    <th style="text-align: center; vertical-align: middle">17</th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Cotrimoxazol a pacientes coinfectados</th>
+                                    <th style="text-align: center; vertical-align: middle">18</th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <th style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+
+                            {#HOSPITAL#}
+                                <tr>
+                                    <th rowspan="6" style="text-align: center; vertical-align: middle">HOSPITAL</th>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Examen Directo I y II realizados</th>
+                                    <th style="text-align: center; vertical-align: middle">19</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Total de positivos</th>
+                                    <th style="text-align: center; vertical-align: middle">20</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Cultivos realizados</th>
+                                    <th style="text-align: center; vertical-align: middle">21</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Total de positivos</th>
+                                    <th style="text-align: center; vertical-align: middle">22</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Positivos con prueba de sensibilidad realizada</th>
+                                    <th style="text-align: center; vertical-align: middle">23</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Positivos a otras pruebas diagnósticas</th>
+                                    <th style="text-align: center; vertical-align: middle">24</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                            {#CASOS NUEVOS DE TUBERCULOSIS#}
+                                <tr>
+                                    <th rowspan="4" style="text-align: center; vertical-align: middle">CASOS NUEVOS DE TUBERCULOSIS</th>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">PULMONAR</th>
+                                    <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                    <th style="text-align: center; vertical-align: middle">25</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                    <th style="text-align: center; vertical-align: middle">26</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                                <tr>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">EXTRA-PULMONAR</th>
+                                    <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                    <th style="text-align: center; vertical-align: middle">27</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                    <th style="text-align: center; vertical-align: middle">28</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+
+                            {#RECAÍDA DE TUBERCULOSIS#}
+                                <tr>
+                                    <th rowspan="4" style="text-align: center; vertical-align: middle">RECAÍDA DE TUBERCULOSIS</th>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">PULMONAR</th>
+                                    <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                    <th style="text-align: center; vertical-align: middle">29</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                    <th style="text-align: center; vertical-align: middle">30</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                                <tr>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">EXTRA-PULMONAR</th>
+                                    <th style="text-align: center; vertical-align: middle">Bacteriologicamente confirmado</th>
+                                    <th style="text-align: center; vertical-align: middle">31</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; vertical-align: middle">Clínicamente diagnosticado</th>
+                                    <th style="text-align: center; vertical-align: middle">32</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+
+                            {#CASO PREVIAMENTE TRATADO#}
+                                <tr>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">CASO PREVIAMENTE TRATADO</th>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Fracaso terapeútico</th>
+                                    <th style="text-align: center; vertical-align: middle">33</th>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Pérdida al seguimiento</th>
+                                    <th style="text-align: center; vertical-align: middle">34</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+
+                                <tr style="border-right: hidden;">
+                                    <th colspan="14" style="text-align: center; border-left: hidden; border-right: hidden"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="14" style="text-align: center; background-color: #a7a7a7">RED DE LABORATORIOS</th>
+                                </tr>
+                                <thead>
+                                    <tr>
+                                        <th colspan="3" rowspan="2" style="text-align: center; vertical-align: middle">INDICADORES</th>
+                                        <th  rowspan="2" style="text-align: center; vertical-align: middle">FILA</th>
+                                        <th colspan="9" style="text-align: center; vertical-align: middle">ESTRATIFICACIÓN SEGÚN RIESGO INDIVIDUAL</th>
+                                        <th  rowspan="2" style="text-align: center; vertical-align: middle">TOTAL</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: center; vertical-align: middle">Contactos</th>
+                                        <th style="text-align: center; vertical-align: middle">Reclusos Exreclusos</th>
+                                        <th style="text-align: center; vertical-align: middle">Personas Viviendo con VIH</th>
+                                        <th style="text-align: center; vertical-align: middle">Trabajadores SNS</th>
+                                        <th style="text-align: center; vertical-align: middle">Extranjero</th>
+                                        <th style="text-align: center; vertical-align: middle">Fumadores</th>
+                                        <th style="text-align: center; vertical-align: middle">Diabetes Mellitus</th>
+                                        <th style="text-align: center; vertical-align: middle">Alcohólicos</th>
+                                        <th style="text-align: center; vertical-align: middle">Otros</th>
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="3" style="text-align: center">A</th>
+                                        <th style="text-align: center">B</th>
+                                        <th style="text-align: center">1</th>
+                                        <th style="text-align: center">2</th>
+                                        <th style="text-align: center">3</th>
+                                        <th style="text-align: center">4</th>
+                                        <th style="text-align: center">5</th>
+                                        <th style="text-align: center">6</th>
+                                        <th style="text-align: center">7</th>
+                                        <th style="text-align: center">8</th>
+                                        <th style="text-align: center">9</th>
+                                        <th style="text-align: center">10</th>
+                                    </tr>
+                                </thead>
+                            {#CULTIVOS REALIZADOS POR TÉCNICAS#}
+                                <tr>
+                                    <th rowspan="3" style="text-align: center; vertical-align: middle">CULTIVOS REALIZADOS POR TÉCNICAS</th>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Convencional</th>
+                                    <th style="text-align: center; vertical-align: middle">35</th>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                    <td align="center" style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Rápido en medio líquido</th>
+                                    <th style="text-align: center; vertical-align: middle">36</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">Gene-Xpert</th>
+                                    <th style="text-align: center; vertical-align: middle">37</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                            {#PRUEBAS DE SUSCEPTIBILIDAD#}
+                                <tr>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">PRUEBAS DE SUSCEPTIBILIDAD</th>
+                                    <th rowspan="2" style="text-align: center; vertical-align: middle">MÉTODOS</th>
+                                    <th style="text-align: center; vertical-align: middle">Fenotípicos (proporciones y nitrato reductasa)</th>
+                                    <th style="text-align: center; vertical-align: middle">38</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; vertical-align: middle">Genotípicos (genotype)</th>
+                                    <th style="text-align: center; vertical-align: middle">39</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                </tr>
+                            {#CASOS DETECTADOS#}
+                                <tr>
+                                    <th rowspan="5" style="text-align: center; vertical-align: middle">CASOS DETECTADOS</th>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Monorresistentes </th>
+                                    <th style="text-align: center; vertical-align: middle">40</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Multidrogorresistencia (MDR)</th>
+                                    <th style="text-align: center; vertical-align: middle">41</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Polirresistentes</th>
+                                    <th style="text-align: center; vertical-align: middle">42</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Extensamente resistentes (XDR)</th>
+                                    <th style="text-align: center; vertical-align: middle">43</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: left; vertical-align: middle">Resistencia a la rifampicina</th>
+                                    <th style="text-align: center; vertical-align: middle">44</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" style="text-align: left; vertical-align: middle">Determinaciones (patrones genéticos)</th>
+                                    <th style="text-align: center; vertical-align: middle">45</th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <th style="text-align: center; vertical-align: middle"></th>
+                                    <td style="text-align: center; vertical-align: middle"></td>
+                                </tr>
+
+                            <tr style="border-right: hidden;">
+                                <th colspan="14" style="text-align: center; border-left: hidden; border-right: hidden"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="14" style="text-align: center; background-color: #a7a7a7">CONTROL DE LA CALIDAD EN LA RED</th>
+                            </tr>
+                            <thead>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">BACILOSCOPIAS</th>
+                                    <th style="text-align: center; vertical-align: middle">FILA</th>
+                                    <th style="text-align: center; vertical-align: middle">NÚMERO</th>
+                                    <th colspan="8" style="text-align: center; vertical-align: middle">CULTIVOS</th>
+                                    <th style="text-align: center; vertical-align: middle">FILA</th>
+                                    <th style="text-align: center; vertical-align: middle">NÚMERO</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2" style="text-align: center; vertical-align: middle">C</th>
+                                    <th style="text-align: center; vertical-align: middle">D</th>
+                                    <th style="text-align: center; vertical-align: middle; color: red">11</th>
+                                    <th colspan="8" style="text-align: center; vertical-align: middle">E</th>
+                                    <th style="text-align: center; vertical-align: middle">F</th>
+                                    <th style="text-align: center; vertical-align: middle; color: red">12</th>
+                                </tr>
+                            </thead>
+
+                            <tr>
+                                <th colspan="2" style="text-align: center; vertical-align: middle">Determinaciones (número de láminas analizadas)</th>
+                                <th style="text-align: center; vertical-align: middle">46</th>
+                                <th style="text-align: center; vertical-align: middle;"></th>
+                                <th colspan="4" rowspan="5" style="text-align: center; vertical-align: middle">BACILOSCOPIA</th>
+                                <th colspan="4" style="text-align: left; vertical-align: middle">(-) / cultivo (+)</th>
+                                <th style="text-align: center; vertical-align: middle;">49</th>
+                                <th style="text-align: center; vertical-align: middle;"></th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2" style="text-align: center; vertical-align: middle">CONCORDANCIA DE LÁMINAS (número)</th>
+                                <th style="text-align: left; vertical-align: middle">Positivas</th>
+                                <th style="text-align: center; vertical-align: middle;">47</th>
+                                <th style="text-align: center; vertical-align: middle;"></th>
+
+                                <th colspan="4" style="text-align: left; vertical-align: middle">(+) / cultivo (+)</th>
+                                <th style="text-align: center; vertical-align: middle;">50</th>
+                                <th style="text-align: center; vertical-align: middle;"></th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left; vertical-align: middle">Negativas</th>
+                                <th style="text-align: center; vertical-align: middle;">48</th>
+                                <th style="text-align: center; vertical-align: middle;"></th>
+
+                                <th colspan="4" style="text-align: left; vertical-align: middle">(+) / cultivo (-)</th>
+                                <th style="text-align: center; vertical-align: middle;">51</th>
+                                <th style="text-align: center; vertical-align: middle;"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" rowspan="2" style="background: repeating-linear-gradient(135deg, grey, grey 1px, white 1px, white 5px)"></th>
+                                <th colspan="4" style="text-align: left; vertical-align: middle">(+) cultivo contaminado</th>
+                                <th style="text-align: center; vertical-align: middle;">52</th>
+                                <th style="text-align: center; vertical-align: middle;"></th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: left; vertical-align: middle">(+) cultivo no realizado</th>
+                                <th style="text-align: center; vertical-align: middle;">53</th>
+                                <th style="text-align: center; vertical-align: middle;"></th>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <br/>
+                    <br/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+
+            var laboratorio = -1;
+
+            var md = $('#processing-modal');
+
+            var id_anno = '';
+            var provincia = '';
+            var municipio = '';
+
+            $("#bt_search").click(function () {
+
+                md.modal('show');
+
+                var trim = $('input:radio[name=trimestre]:checked').val();
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("reporteMod49004") }}',
+                    data: {trimestre: trim,anno: id_anno,idAreaSalud:laboratorio, idProvincia:provincia,idMunicipio:municipio}
+                }).done(function (data) {
+                    md.modal('hide');
+                    //$("#tb_body_replace").replaceWith( data );
+                });
+            });
+
+            $('#id_anno_select').change(function () {
+                id_anno = $("#id_anno_select").val();
+            });
+
+
+            $('#id_municipio').change(function () {
+                idMunicipio = $("#id_municipio").val();
+            });
+
+            $('#imp_rpt_mod_49004').click(function () {
+
+                var trim = $('input:radio[name=trimestre]:checked').val();
+                var trimestre = trim;
+                var anno = $("#id_anno_select").val();
+                var provincia_id = -1;
+                var municipio_id = -1;
+
+                if(provincia != '' && provincia > 0)
+                    provincia_id = provincia;
+                if(municipio != '' && municipio > 0)
+                    municipio_id = municipio;
+
+                var ruta_actual = window.location.href;
+                var ruta_rpte = ruta_actual.replace('reporteMod49004','impExcelModelo49004/'+ trimestre +'/'+ anno +'/'+ laboratorio +'/'+ provincia_id +'/'+ municipio_id+'/'+ hospital);
+//                alert(ruta_rpte);
+                window.open(ruta_rpte);
+            });
+
+            $('#id_select_lab').change(function() {
+                laboratorio = $("#id_select_lab").val();
+            });
+
+            //----------Relacionar selects --------------------------
+            $('#id_provincia').on('change', function () {
+
+                provincia = $(this).val();
+                municipio = '';
+                laboratorio = -1;
+
+                //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+                var html    = '<option value="0">Seleccione un municipio</option>';
+                var htmlLab = '<option value="0">Seleccione un área de salud</option>';
+
+                {% for municipio in  municipios %}
+                    var idProvincia = '{{ municipio.getProvincia().id }}';
+
+                    if (idProvincia == provincia) {
+                        var idMunicipio = '{{ municipio.id }}';
+                        var name = '{{ municipio.nombre }}';
+                        html += '<option value="' + idMunicipio + '">' + name + '</option>';
+                    }
+                {% endfor %}
+
+                $("#id_municipio").html(html);
+                $("#id_select_lab").html(htmlLab);
+            });
+
+            $('#id_municipio').on('change', function () {
+
+                municipio = $(this).val();
+                laboratorio = -1;
+
+                //ESTE CICLO ES PARA BUSCAR LOS LABORATORIOS PERTENECIENTES A UN MUNICIPIO
+                var htmlLab = '<option value="0">Seleccione un área de salud</option>';
+
+                {% for lab in areasSalud %}
+                    var idMunicipio = '{{ lab.getMunicipio().id }}';
+
+                    if (idMunicipio == municipio) {
+                        var idLab = '{{ lab.id }}';
+                        var nameLab = '{{ lab.nombre }}';
+                        htmlLab += '<option value="' + idLab +'">' + nameLab + '</option>';
+                    }
+                {% endfor %}
+
+                $("#id_select_lab").html(htmlLab);
+            });
+
+            $('#imp_rpt_mod_49004').tooltip({
+                toggle: "tooltip",
+                placement: "top",
+                title: "Exportar Excel",
+                delay: { show: 100, hide: 100 }
+            });
+
+        });
+    </script>
+{% endblock %}

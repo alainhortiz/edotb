@@ -1,0 +1,267 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="top-datatable" style="background: #434242; padding: 5px">
+        <div class="row" style=" margin-right: auto">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 class="no-padding" style="color: #70cbb1">{{ titulo }}</h2>
+                    </div>
+                </div>
+                {% if origen == 'pacientesEnTratamiento' %}
+                    {% set anno_actual =  "now"|date("Y") %}
+                    <div class="col-md-6" style="padding-top: 4px" >
+                        <form  id="buscarSemana"   method="post" action="{{ path('pacientesSemanaEstadistica') }}">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-4" style="float: right">
+                                    <select class="form-control input-sm" id="semana"  name="semana">
+                                        <option value="0">Seleccione una semana estadística</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-2" style="float: right">
+                                    <select name="anno" id="anno" class="form-control col-md-2">
+                                        <option value="0">Año</option>
+                                        {% for i in range(2018, anno_actual) %}
+                                            <option value="{{ i }}" > {{ i }} </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" id="containerSemanaEstadistica">
+        <div class="row" style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242">
+            <div class="col-md-12">
+                <table id="dataPaciente" class="display" cellspacing="0" width="100%" >
+                    <thead>
+                    <tr>
+                        {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+                            <th>Provincia</th>
+                        {% endif %}
+                        {% if app.user.getNivelAcceso().id > 2 %}
+                            <th>Municipio</th>
+                        {% endif %}
+                        <th>Nombre</th>
+                        <th>Primer Apellido</th>
+                        <th>Segundo Apellido</th>
+                        <th>Fecha Notificación</th>
+                        <th>Enfermedad</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+                            <th>
+                                <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                    <input id="buscador_provincia" type="text" class="form-control" name="buscador_provincia" placeholder="Buscar "  />
+                                </div>
+                            </th>
+                        {% endif %}
+                        {% if app.user.getNivelAcceso().id > 2 %}
+                            <th>
+                                <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                    <input id="buscador_municipio" type="text" class="form-control" name="buscador_municipio" placeholder="Buscar "  />
+                                </div>
+                            </th>
+                        {% endif %}
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_nombre" type="text" class="form-control " name="buscador_nombre" placeholder="Buscar "  />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_primerApellido" type="text" class="form-control " name="buscador_primerApellido" placeholder="Buscar "  />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_segundoApellido" type="text" class="form-control " name="buscador_segundoApellido" placeholder="Buscar "  />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_fechaNotificacion" type="text" class="form-control " name="buscador_fechaNotificacion" placeholder="Buscar "  />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_enfermedad" type="text" class="form-control " name="buscador_enfermedad" placeholder="Buscar "  />
+                            </div>
+                        </th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <style>
+        #dataPaciente tfoot input{
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_VISUALIZADOR")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+            $(".preload").removeClass('hidden');
+
+            var rutaAjax = '{{ origen~'Ajax' }}';
+            var columnDefs = [];
+
+            {% import 'Generales/columnDefNivelDataTable.html.twig' as definicion %}
+            {{ definicion.definir() }}
+            {% import 'Generales/configDataTableAjax.html.twig' as table %}
+            {{ table.configurar() }}
+
+            $('#dataPaciente tbody').on('click', '.delete', function () {
+
+                var row = $(this).parents('tr');
+
+                var mat_datos = { idEvolucion: this.id };
+
+                alertify.confirm('Basic: false').set('message', 'Seguro que desea eliminar el paciente seleccionado').set('onok', function(){
+
+                    $(".preload").removeClass('hidden');
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "html",
+                        url: '{{ path("deletePaciente") }}',
+                        data: mat_datos
+                    }).done(function (data) {
+                        $(".preload").addClass('hidden');
+                        if(data == 'ok'){
+
+                            alertify.alert('<strong>El paciente  ha sido eliminado correctamente</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                                .set('onok', function(){
+
+                                    row.fadeOut();
+                                });
+                        }else {
+                            alertify.alert('<strong>'+data+'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                        }
+                    });
+                });
+            });
+
+            {% if origen == 'pacientesEnTratamiento' %}
+                $("#semana").select2({
+                    allowClear: false
+                });
+                $("#anno").select2();
+
+                //----------Relacionar selects --------------------------
+                $('#anno').on('change', function () {
+                    var anno = $(this).val();
+
+                    //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+                    var html   = '<option value="0">Seleccione una semana estadística</option>';
+
+                    {% for semana in  semanasEstadisticas %}
+                        var annoSemana = '{{ semana.fechaInicio|date("Y") }}';
+
+                        if (anno == annoSemana) {
+                            var id = {{ semana.id }};
+                            var name = '{{ semana.getSemana()~'/  '~semana.getFechaInicio()|date('Y-m-d')~'  '~semana.getFechaFinal()|date('Y-m-d') }}';
+                            html += '<option  value="' + id + '">' + name + '</option>';
+                        }
+                    {% endfor %}
+
+                    $("#semana").html(html);
+                    $('#semana').select2().val('0')
+                });
+
+                $('#semana').on('change' , function () {
+
+                    $(".preload").removeClass('hidden');
+
+                    var mat_datos = {
+
+                        idSemana: $('#semana').val(),
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "html",
+                        url: '{{ path("pacientesSemanaEstadistica") }}',
+                        data: mat_datos
+                    }).done(function (data) {
+
+                        $('#containerSemanaEstadistica').replaceWith(data);
+                        $(".preload").addClass('hidden');
+
+                    }).fail(function (jqXHR, textStatus) {
+
+                        alertify.alert('<strong>Ha habido un problema en el servidor. Intentelo de nuevo.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                            .set('label','Aceptar')
+                    });
+
+                });
+            {% endif %}
+
+        });
+    </script>
+{% endblock %}

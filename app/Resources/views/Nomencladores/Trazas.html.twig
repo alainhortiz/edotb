@@ -1,0 +1,134 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="top-datatable" style="background: #434242; padding: 5px">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 class="no-padding" style="color: #70cbb1">TRAZAS</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row" style="background: #fff; padding: 10px 0;  margin-bottom: 20px; border-bottom: 2px solid #434242;">
+            <div class="col-md-12">
+                <table id="dataTraza" class="display" cellpadding="0"  style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Usuario</th>
+                        <th>Nombre</th>
+                        <th>Operación</th>
+                        <th>Descripción</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                    <tr>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_fecha" type="text" class="form-control" name="buscador_fecha" placeholder="Buscar por Fecha"  />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_username" type="text" class="form-control" name="buscador_username" placeholder="Buscar por Usuario"  />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_nombre" type="text" class="form-control " name="buscador_nombre" placeholder="Buscar por Nombre"  />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_operacion" type="text" class="form-control " name="buscador_operacion" placeholder="Buscar por Operación"  />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group">
+                                <span class="input-group-addon ">
+                                    <i class="glyphicon glyphicon-search" style="font-size: 15px"></i>
+                                </span>
+                                <input id="buscador_descripcion" type="text" class="form-control " name="buscador_descripcion" placeholder="Buscar por Descripción"  />
+                            </div>
+                        </th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <style>
+        #dataTraza tfoot input{
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            function verificarusuario(){
+                {% if not ((is_granted("ROLE_ADMINISTRADOR") and  app.user.getNivelAcceso().nivel == 'nacional')  or is_granted("ROLE_SUPERUSUARIO")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+
+            var table = $('#dataTraza').DataTable({
+                dom: 'B<"float-left"i><"float-right"f>t<"float-left"l><"float-right"p><"clearfix">',
+                responsive: true,
+                sortingCode: false,
+                processing: true,
+                serverSide: true,
+                ajax: "dataTableTrazasAjax",
+                columnDefs: [
+                   /* {"bSortable": false, "targets": [0,1,2,3,4] },*/
+                    { "name": "fecha", "targets": 0 },
+                    { "name": "username", "targets": 1 },
+                    { "name": "nombre", "targets": 2 },
+                    { "name": "operacion ", "targets": 3 },
+                    { "name": "descripcion", "targets": 4 },
+                ],
+                "initComplete": function () {
+                    this.api().columns().every( function () {
+                        var that = this;
+
+                        $( 'input', this.footer() ).on( 'keyup change', function () {
+                            if ( that.search() !== this.value ) {
+                                that
+                                    .search( this.value )
+                                    .draw();
+                            }
+                        });
+                    });
+                },
+                searchDelay: 1000
+            });
+        });
+    </script>
+{% endblock %}

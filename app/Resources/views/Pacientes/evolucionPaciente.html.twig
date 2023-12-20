@@ -1,0 +1,548 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="form-cont">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div style="margin: auto; width: 500px; text-align: center">
+                        <h1 class="glyphicon glyphicon-user"
+                            style="color: #70cbb1; font-size: 54px; margin-bottom: 13px;"></h1>
+                        <h4>Carnet de Identidad: <strong>{{ evoluciones[0].getPaciente().carnetIdentidad }}</strong>
+                        </h4>
+                        <h4>Nombre: <strong>{{ evoluciones[0].getPaciente().nombre }}</strong></h4>
+                        <h4>Primer Apellido: <strong>{{ evoluciones[0].getPaciente().primerApellido }}</strong></h4>
+                        <h4>Segundo Apellido: <strong>{{ evoluciones[0].getPaciente().segundoApellido }}</strong></h4>
+                        <h4>Sexo: <strong>{{ evoluciones[0].getPaciente().sexo }}</strong></h4>
+                    </div>
+                    <div style="margin: auto; width: 500px; text-align: center">
+                        {% if is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO") %}
+                            {% if not (origen == 'pacientesNotificadosAnno') %}
+                                {% set lastEvolucion = evoluciones|last %}
+                                {% set lastResult = (lastEvolucion.resultadosFinales)|last %}
+                                {% if lastResult.resultadoTratamiento.resultado != 'No evaluado' %}
+                                    <a href="{{ path('nuevaEvolucion' , {ci:evoluciones[0].getPaciente().carnetIdentidad , carnet:ci ,origen:origen}) }}"
+                                       class="btn btn-primario" id="btnNueva">NUEVO SEGUIMIENTO</a>
+                                {% endif %}
+                                <span {{ ci != -1 ? 'hidden' }}><a
+                                            href="{{ path('continuarEvolucion' , {ci:evoluciones[0].getPaciente().carnetIdentidad ,origen:origen}) }}"
+                                            class="btn btn-primario" id="btnContinuar">CONTINUAR SEGUIMIENTO</a></span>
+                            {% endif %}
+                        {% endif %}
+                        <input type="button" class="btn btn-primario" value="SALIR" id="btnSalir">
+                    </div>
+                    {% for evolucion in evoluciones %}
+                        <div id="esputos{{ evolucion.id }}" class="hidden">
+                            {% if evolucion.localizacionAnatomica != 'Extrapulmonar' %}
+                                <h3 style="margin-top: 15px">Seguimiento por esputos</h3>
+                                <div style="margin-top: 20px; background-color: #7abfbb">
+                                    <div role="tabpanel">
+
+                                        <!-- Nav tabs -->
+                                        <ul style="margin-bottom: 10px" class="nav nav-tabs" role="tablist" id="myTab">
+                                            <li role="presentation" class="active">
+                                                <a href="#baciloscopiaTab" aria-controls="baciloscopiaTab" role="tab"
+                                                   data-toggle="tab">
+                                                    <strong>Baciloscopias</strong>
+                                                </a>
+                                            </li>
+                                            <li role="presentation">
+                                                <a href="#cultivoTab" aria-controls="cultivoTab" role="tab"
+                                                   data-toggle="tab">
+                                                    <strong>Cultivos</strong>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <!-- Tab panes -->
+                                        <div class="tab-content">
+                                            <div role="tabpanel" class="tab-pane fade in active" id="baciloscopiaTab">
+                                                <div class="container-fluid">
+                                                    <div class="row"
+                                                         style="background: #7abfbb; padding: 10px ; margin-bottom: 10px;">
+                                                        <table data-id="baciloscopia" id="dataBaciloscopia">
+                                                            <thead style="color: #242524">
+                                                            <tr>
+                                                                <th>Fecha</th>
+                                                                <th>Resultado</th>
+                                                                <th>Categoría</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody class="table-striped">
+                                                            {% for seguimiento in evolucion.baciloscopiaSeguimientos %}
+                                                                <tr data-id="{{ seguimiento.id }}">
+                                                                    <td>{{ seguimiento.fecha|date('Y-m-d') }}</td>
+                                                                    <td>{{ seguimiento.getBaciloscopia().descripcion~' ('~seguimiento.getBaciloscopia().clasificacion~')' }}</td>
+                                                                    <td>{{ seguimiento.categoria }}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div role="tabpanel" class="tab-pane fade" id="cultivoTab">
+                                                <div class="container-fluid">
+                                                    <div class="row"
+                                                         style="background: #7abfbb; padding: 10px ; margin-bottom: 10px;">
+                                                        <table data-id="cultivo" id="dataCultivo">
+                                                            <thead style="color: #242524">
+                                                            <tr>
+                                                                <th>Fecha</th>
+                                                                <th>Codificación</th>
+                                                                <th>Resultado</th>
+                                                                <th>Categoría</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody class="table-striped">
+                                                            {% for seguimiento in evolucion.cultivoSeguimientos %}
+                                                                <tr data-id="{{ seguimiento.id }}">
+                                                                    <td>{{ seguimiento.fecha|date('Y-m-d') }}</td>
+                                                                    <td>{{ seguimiento.getCultivo().descripcion~' ('~seguimiento.getCultivo().clasificacion~')' }}</td>
+                                                                    <td>{{ seguimiento.salidaCultivo.salida }}</td>
+                                                                    <td>{{ seguimiento.categoria }}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    {% set i = 1 %}
+                    {% for evolucion in  evoluciones %}
+
+                        <div style="border-left: 1px solid #424242;">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                {# ELEMENTOS DEL ACORDION #}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading drop-header" role="tab" id="heading{{ i }}">
+                                        <h4 class="panel-title">
+                                            <span class="glyphicon glyphicon-list-alt"
+                                                  style="margin-right: 10px ; font-size: 25px; color: #393939"></span>
+                                            <a class="collapsed evolucion" data-toggle="collapse"
+                                               data-parent="#accordion" href="#collapse{{ i }}" aria-expanded="false"
+                                               aria-controls="collapse{{ i }}"
+                                               style="font-weight: bold; vertical-align: super">
+                                                Seguimiento {{ i }}
+                                            </a>
+                                            <input type="hidden" value="{{ evolucion.id }}"/>
+                                        </h4>
+                                    </div>
+                                    {% set lastEsquema =  evolucion.esquemasMedicamentos ? evolucion.esquemasMedicamentos|last : null %}
+                                    <div id="collapse{{ i }}" class="panel-collapse collapse" role="tabpanel"
+                                         aria-labelledby="heading{{ i }}">
+                                        <div class="panel-body" style="padding: 15px; background: #eeeeee">
+                                            <ul style="padding: 0; margin: 0" class="opciones">
+                                                <li style="padding: 5px">
+                                                    <h3>
+                                                        {% if  lastEsquema  != null and lastEsquema.asistenciasTratamientos|length <= 60 %}
+                                                            Etapa en Curso: Primera Fase
+                                                        {% elseif lastEsquema  != null and lastEsquema.asistenciasTratamientos|length > 60 and lastEsquema.asistenciasTratamientos|length <= 84 %}
+                                                            Etapa en Curso: Segunda Fase
+                                                        {% elseif lastEsquema  != null and lastEsquema.asistenciasTratamientos|length > 84 and lastEsquema.asistenciasTratamientos|length < 108 %}
+                                                            Etapa en Curso: Final de Tratamiento
+                                                        {% elseif lastEsquema  != null and lastEsquema.asistenciasTratamientos|length >= 108 %}
+                                                            Etapa en Curso: Tratamiento Terminado
+                                                        {% else %}
+                                                            Etapa en Curso: Primera Fase
+                                                        {% endif %}
+                                                    </h3>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Fecha de Diagnóstico: {{ evolucion.fechaDiagnostico()|date("Y-m-d") }}  </span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Fecha de Notificación: {{ evolucion.fechaNotificacion()|date("Y-m-d") }}  </span>
+                                                </li>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Enfermedad: {{ evolucion.getEnfermedad() == null ? '' : evolucion.getEnfermedad().codigo }}  </span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Edad: {{ evolucion.edad }}  </span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Teléfono: {{ evolucion.telefono }}  </span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">País de Residencia: {{ evolucion.getPais().nombre }}</span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <h4>Localización del Paciente</h4>
+                                                    <ul>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Dirección de Carnet: {{ evolucion.direccionCarnet != null ? evolucion.direccionCarnet.direccion }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Provincia de Carnet: {{  evolucion.direccionCarnet != null ? evolucion.direccionCarnet.getMunicipio().getProvincia().nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Municipio de Carnet: {{ evolucion.direccionCarnet != null ? evolucion.direccionCarnet.getMunicipio().nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Dirección de Residencia: {{ evolucion.direccionPaciente != null ? evolucion.direccionPaciente.direccion }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Provincia de Residencia: {{  evolucion.direccionPaciente != null ? evolucion.direccionPaciente.getMunicipio().getProvincia().nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Municipio de Residencia: {{ evolucion.direccionPaciente != null ? evolucion.direccionPaciente.getMunicipio().nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Centro de Residencia: {{ evolucion.centroResidencia != null ? evolucion.centroResidencia.tipoAreaSalud.nombre ~' - '~evolucion.centroResidencia.nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Provincia de Diagnóstico: {{  evolucion.centroDiagnostico != null ? evolucion.centroDiagnostico.getMunicipio().getProvincia().nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Municipio de Diagnóstico: {{ evolucion.centroDiagnostico != null ? evolucion.centroDiagnostico.getMunicipio().nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Centro de Diagnóstico: {{ evolucion.centroDiagnostico != null ? evolucion.centroDiagnostico.tipoAreaSalud.nombre~' - '~evolucion.centroDiagnostico.nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Provincia de Atención: {{  evolucion.areaSalud != null ? evolucion.areaSalud.getMunicipio().getProvincia().nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Municipio de Atención: {{ evolucion.areaSalud != null ? evolucion.areaSalud.getMunicipio().nombre }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right" style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Centro de Atención: {{ evolucion.areaSalud != null ?  evolucion.areaSalud.tipoAreaSalud.nombre ~' - '~evolucion.areaSalud.nombre }}</span>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    {% if evolucion.getFechaInicioTrat()|date("Y-m-d") == '1700-01-01' %}
+                                                        <span style="font-size: 15px; font-weight: bold">Inicio del Tratamiento: Tratamiento no iniciado</span>
+                                                    {% else %}
+                                                        <span style="font-size: 15px; font-weight: bold">Inicio del Tratamiento: {{ evolucion.getFechaInicioTrat()|date("Y-m-d") }}</span>
+                                                    {% endif %}
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Definición del Caso: {{ evolucion.definicionCaso }}</span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    {% if evolucion.rayosX  == 1 %}
+                                                        <span style="font-size: 15px; font-weight: bold">Rayos X: <span
+                                                                    class="glyphicon glyphicon-check"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% else %}
+                                                        <span style="font-size: 15px; font-weight: bold">Rayos X: <span
+                                                                    class="glyphicon glyphicon-minus"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% endif %}
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    {% if evolucion.anatomiaPatologica  == 1 %}
+                                                        <span style="font-size: 15px; font-weight: bold">Anatomía Patológica: <span
+                                                                    class="glyphicon glyphicon-check"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% else %}
+                                                        <span style="font-size: 15px; font-weight: bold">Anatomía Patológica: <span
+                                                                    class="glyphicon glyphicon-minus"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% endif %}
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    {% if evolucion.necro  == 1 %}
+                                                        <span style="font-size: 15px; font-weight: bold">Necro: <span
+                                                                    class="glyphicon glyphicon-check"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% else %}
+                                                        <span style="font-size: 15px; font-weight: bold">Necro: <span
+                                                                    class="glyphicon glyphicon-minus"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% endif %}
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <h4>Análisis Iniciales:</h4>
+                                                    <ul>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right"
+                                                                  style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">
+                                                                Fecha: {{ evolucion.getResultadoBCX().fecha|date('Y-m-d') }}
+                                                            </span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right"
+                                                                  style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Xpert: {{ evolucion.getResultadoBCX().getXpert().descripcion~' ('~evolucion.getResultadoBCX().getXpert().clasificacion~')' }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right"
+                                                                  style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Baciloscopía: {{ evolucion.getResultadoBCX().getBaciloscopia().descripcion~' ('~evolucion.getResultadoBCX().getBaciloscopia().clasificacion~')' }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right"
+                                                                  style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Segunda Baciloscopía: {{ evolucion.getResultadoBCX().getBaciloscopia2() == null ? 'No realizado' :evolucion.getResultadoBCX().getBaciloscopia2().descripcion~' ('~evolucion.getResultadoBCX().getBaciloscopia2().clasificacion~')' }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right"
+                                                                  style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Cultivo: {{ evolucion.getResultadoBCX().getCultivo().descripcion~' ('~evolucion.getResultadoBCX().getCultivo().clasificacion~')' }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right"
+                                                                  style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Resultado Cultivo: {{ evolucion.getResultadoBCX().getSalidaCultivo().salida }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right"
+                                                                  style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Biopsia: {{ evolucion.getResultadoBCX().getBiopsia().descripcion }}</span>
+                                                        </li>
+                                                        <li style="padding: 5px">
+                                                            <span class="glyphicon glyphicon-triangle-right"
+                                                                  style="font-weight: bold;font-size: 18px"></span>
+                                                            <span style="font-size: 15px; font-weight: bold">Parcial de Orina: {{ evolucion.getResultadoBCX().getOrina().descripcion }}</span>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Localización Anatómica: {{ evolucion.localizacionAnatomica }}</span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Tipo de Enfermo: {{ evolucion.getTipoEnfermo().tipo }}</span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    {% if evolucion.getFechaVIH()|date("Y-m-d") == '1700-01-01' %}
+                                                        <span style="font-size: 15px; font-weight: bold">Fecha de Diagnóstico VIH: Sin diagnóstico</span>
+                                                    {% else %}
+                                                        <span style="font-size: 15px; font-weight: bold">Fecha de Diagnóstico VIH: {{ evolucion.getFechaVIH()|date("Y-m-d") }}</span>
+                                                    {% endif %}
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Estado de VIH: {{ evolucion.getResultadoVIH() }}</span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Covit-19: {{ (evolucion.getCovit() == '1') ? 'positivo':'negativo' }}</span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    {% if evolucion.getFechaCovit() %}
+                                                        <span style="font-size: 15px; font-weight: bold">Fecha de Covit-19: {{ evolucion.getFechaCovit()|date("Y-m-d") }}</span>
+                                                    {% else %}
+                                                        <span style="font-size: 15px; font-weight: bold">Fecha de Covit-19: Sin covit</span>
+                                                    {% endif %}
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    {% if evolucion.tarv  == 1 %}
+                                                        <span style="font-size: 15px; font-weight: bold">TARV: <span
+                                                                    class="glyphicon glyphicon-check"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% else %}
+                                                        <span style="font-size: 15px; font-weight: bold">TARV: <span
+                                                                    class="glyphicon glyphicon-minus"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% endif %}
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    {% if evolucion.tcp  == 1 %}
+                                                        <span style="font-size: 15px; font-weight: bold">TCP: <span
+                                                                    class="glyphicon glyphicon-check"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% else %}
+                                                        <span style="font-size: 15px; font-weight: bold">TCP: <span
+                                                                    class="glyphicon glyphicon-minus"
+                                                                    style="font-weight: bold;font-size: 18px"></span></span>
+                                                    {% endif %}
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Prueba de Sensibilidad: {{ evolucion.getPruebaSensibilidad().nombre }}</span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Resistencia: {{ evolucion.getResistencia().descripcion }}</span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Grupo Vulnerable: {{ evolucion.getGrupoVulnerable().grupo }}</span>
+                                                </li>
+                                                <li style="padding: 5px" {{ evolucion.recluso == null ? 'hidden' }}>
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Tipo de recluso: {{ evolucion.recluso }}</span>
+                                                </li>
+                                                {% if evolucion.esquemasMedicamentos != null %}
+                                                    <li style="padding: 5px">
+                                                        <h4>Esquemas de Medicamentos:</h4>
+                                                        <ul>
+                                                            {% for esquema in evolucion.esquemasMedicamentos %}
+                                                                {% set texto = esquema.medicamentos[0].nombre %}
+                                                                {% for medicamento in esquema.medicamentos %}
+                                                                    {% if loop.first == false %}
+                                                                        {% set texto = texto~' - '~medicamento.nombre %}
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                                <li style="padding: 5px">
+                                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                                    <span style="font-size: 15px; font-weight: bold">
+                                                                        Fecha de Inicio del Tratamiento : {{ esquema.fechaInicio|date('Y-m-d') }}
+                                                                    </span>
+                                                                </li>
+                                                                <li style="padding: 5px">
+                                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                                    <span style="font-size: 15px; font-weight: bold">
+                                                                        Medicamentos: {{ texto }}
+                                                                    </span>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                {% endif %}
+                                                <li style="padding: 5px">
+                                                    <h4>Resultados del Tratamiento</h4>
+                                                    {% for resultado in evolucion.getResultadosFinales() %}
+                                                        <ul>
+                                                            <li style="padding: 5px">
+                                                                <span class="glyphicon glyphicon-triangle-right"
+                                                                      style="font-weight: bold;font-size: 18px"></span>
+                                                                <span style="font-size: 15px; font-weight: bold">Fecha: {{ resultado.fecha|date('Y-m-d') }}</span>
+                                                            </li>
+                                                            <li style="padding: 5px ; {{ loop.last == false ? 'border-bottom: 2px dotted #1D4B4B' }}">
+                                                                <span class="glyphicon glyphicon-triangle-right"
+                                                                      style="font-weight: bold;font-size: 18px"></span>
+                                                                <span style="font-size: 15px; font-weight: bold">Resultado: {{ resultado.getResultadoTratamiento().resultado }}</span>
+                                                            </li>
+                                                        </ul>
+                                                    {% endfor %}
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    <span style="font-size: 15px; font-weight: bold">Observaciones: {{ evolucion.observaciones }}</span>
+                                                </li>
+                                                <li style="padding: 5px">
+                                                    <span class="glyphicon glyphicon-triangle-right"
+                                                          style="font-weight: bold;font-size: 18px"></span>
+                                                    {% if evolucion.cambiadoTratSegundaLinea  == 1 %}
+                                                        <span style="font-size: 15px; font-weight: bold">Cambiado al registro de tratamiento con segunda línea: Si</span>
+                                                    {% else %}
+                                                        <span style="font-size: 15px; font-weight: bold">Cambiado al registro de tratamiento con segunda línea: No</span></span>
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+
+            function verificarusuario() {
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_VISUALIZADOR")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+
+            verificarusuario();
+
+            $('h4').each(function () {
+                $(this).css('margin-bottom', '10px');
+            });
+            $('#dataBaciloscopia, #dataCultivo').DataTable();
+
+            //--------- abandonar la pagina -----------------
+            $('#btnSalir').on('click', function () {
+                {% if ci == -1 %}
+                window.location.href = "{{ path(origen) }}";
+                {% else %}
+                window.location.href = "{{ path('buscarPaciente' , {carnet:ci}) }}";
+                {% endif %}
+            });
+            //hacer visible los esputos de la evolucion seleccionada
+            $('.evolucion').on('click', function () {
+                var idEvolucion = $(this).next().val();
+
+                if ($(this).hasClass('collapsed') === true) {
+                    $('#esputos' + idEvolucion).removeClass('hidden');
+
+                } else {
+                    $('#esputos' + idEvolucion).addClass('hidden');
+                }
+            });
+        })
+    </script>
+{% endblock %}

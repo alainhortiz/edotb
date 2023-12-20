@@ -1,0 +1,148 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * AnalisisSeguimiento
+ *
+ * @ORM\Table(name="analisis_seguimiento")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\AnalisisSeguimientoRepository")
+ */
+class AnalisisSeguimiento
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fachaBaciloscopia", type="date", nullable=true)
+     */
+    private $fachaBaciloscopia;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fechaCultivo", type="date", nullable=true)
+     */
+    private $fechaCultivo;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="categoria", type="string", length=20)
+     */
+    private $categoria;
+
+    /**
+     * @var string
+     *
+     * @ORM\ManyToOne(targetEntity="Baciloscopia", inversedBy="seguimientos")
+     */
+    private $baciloscopia;
+
+    /**
+     * @var string
+     *
+     * @ORM\ManyToOne(targetEntity="Cultivo", inversedBy="seguimientos")
+     */
+    private $cultivo;
+
+    /**
+     * @var string
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PacienteEvolucion", inversedBy="seguimientos")
+     */
+    private $pacienteEvolucion;
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set fachaBaciloscopia
+     *
+     * @param \DateTime $fachaBaciloscopia
+     *
+     * @return AnalisisSeguimiento
+     */
+    public function setFachaBaciloscopia($fachaBaciloscopia)
+    {
+        $this->fachaBaciloscopia = $fachaBaciloscopia;
+
+        return $this;
+    }
+
+    /**
+     * Get fachaBaciloscopia
+     *
+     * @return \DateTime
+     */
+    public function getFachaBaciloscopia()
+    {
+        return $this->fachaBaciloscopia;
+    }
+
+    /**
+     * Set fechaCultivo
+     *
+     * @param \DateTime $fechaCultivo
+     *
+     * @return AnalisisSeguimiento
+     */
+    public function setFechaCultivo($fechaCultivo)
+    {
+        $this->fechaCultivo = $fechaCultivo;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaCultivo
+     *
+     * @return \DateTime
+     */
+    public function getFechaCultivo()
+    {
+        return $this->fechaCultivo;
+    }
+
+    /**
+     * Set categoria
+     *
+     * @param string $categoria
+     *
+     * @return AnalisisSeguimiento
+     */
+    public function setCategoria($categoria)
+    {
+        $this->categoria = $categoria;
+
+        return $this;
+    }
+
+    /**
+     * Get categoria
+     *
+     * @return string
+     */
+    public function getCategoria()
+    {
+        return $this->categoria;
+    }
+}
+

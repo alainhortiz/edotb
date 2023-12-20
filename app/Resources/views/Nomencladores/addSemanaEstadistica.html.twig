@@ -1,0 +1,127 @@
+{% extends 'comun.html.twig' %}
+
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-lg-offset-4 form-cont">
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Agregar Semana Estadística</h3>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <label class="control-label " for="semana">Semana:</label>
+                    <input placeholder="Teclee la semana" type="text" class="form-control" id="semana" name="semana">
+
+                    <div style="margin-top: 10px"></div>
+
+                    <label class="control-label " for="fechaInicio">Fecha Inicial:</label>
+                    <input placeholder="Teclee la fecha inicial" type="date" class="form-control" id="fechaInicio" name="fechaInicio">
+
+                    <div style="margin-top: 10px"></div>
+
+                    <label class="control-label " for="fechaFinal">Fecha Final:</label>
+                    <input placeholder="Teclee la fecha final" type="date" class="form-control" id="fechaFinal" name="fechaFinal">
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                    <button id="btnSalir" type="button" class="btn btn-primario"> Salir </button>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not ((is_granted("ROLE_ADMINISTRADOR") and  app.user.getNivelAcceso().nivel == 'nacional')  or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function ()
+            {
+                window.location.href = "{{ path('gestionarSemanasEstadisticas') }}";
+
+            });
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function () {
+
+                var fechaInicio = $("#fechaInicio").val();
+                var fechaFinal = $("#fechaFinal").val();
+
+                if($("#semana").val().trim() == ''){
+                    alertify.alert('<strong>El campo semana es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if( fechaInicio == ''){
+                    alertify.alert('<strong>Debe seleccionar la fecha inicial de la semana estadística.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if(fechaFinal == ''){
+                    alertify.alert('<strong>Debe seleccionar la fecha final de la semana estadística.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if( fechaInicio >= fechaFinal)
+                {
+                    alertify.alert('<strong>Error: la fecha inicial no puede ser mayor que la final, rectifíquelas.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    semana: $("#semana").val(),
+                    fechaInicio: $("#fechaInicio").val(),
+                    fechaFinal: $("#fechaFinal").val()
+                };
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertSemanaEstadistica") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $('input').each(function(){
+                        $(this).val('');
+                    });
+                    $(".preload").addClass('hidden');
+                    if(data == 'ok'){
+
+                        alertify.alert('<strong>La semana estadística ha sido insertada correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

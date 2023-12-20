@@ -1,0 +1,191 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('public/css/progressSquare.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="top-datatable" style="background: #434242; padding: 5px">
+        <div class="row" style=" margin-right: auto">
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="no-margin">
+                        <h2 class="no-padding" style="color: #70cbb1">Pacientes con Estudio de Susceptibilidad</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div id="todos" class="row" style="background: #fff; padding: 10px 0; margin-bottom: 20px; border-bottom: 2px solid #434242;">
+            <div class="col-md-12">
+                <table id="dataPacienteSuscept" class="display" cellspacing="0" width="100%" >
+                    <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Primer Apellido</th>
+                        <th>Segundo Apellido</th>
+                        <th>Carnet Identidad</th>
+                        <th>Edad</th>
+                        <th>Sexo</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for paciente in pacientes %}
+                        <tr  data-id ="{{ paciente.idTablaPac }}">
+                            <td>{{ paciente.getPacienteEvolucion().getPaciente().getNombre() }}</td>
+                            <td>{{ paciente.getPacienteEvolucion().getPaciente().getPrimerApellido() }}</td>
+                            <td>{{ paciente.getPacienteEvolucion().getPaciente().getSegundoApellido() }}</td>
+                            <td>{{ paciente.getPacienteEvolucion().getPaciente().getCarnetIdentidad() }}</td>
+                            <td>{{ paciente.getPacienteEvolucion().getEdad() }}</td>
+                            <td>{{ paciente.getPacienteEvolucion().getPaciente().getSexo() }}</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-sm" style="font-size: 14px; font-weight: bold;" id="historico_pac">
+                                    Histórico
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/progresssquare.gif') }}" alt="progress" class="icon">
+                        <h5><span class="modal-text">Procesando, espere por favor....</span></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal modal-static fade" id="repo-historico" style="width: 350px;">
+        <div class="" style="margin: 0px 5px;">
+            <div class="" id="list_lab_pac">
+                <form class="form-row" role="form" style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <div class="panel panel-success" id="listadoAnalisis">
+                        <div class="panel-heading ">
+                            <label for="">ANALISIS SUSCEPTIBILIDAD DEL PACIENTE</label>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel-box-less">
+                                <div id="replaceAnalisis"></div>
+                                <p class="text-center" style="margin-top: 20px">
+                                    <button id="btnSalirModal" type="button" class="btn btn-default"> Salir </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+            $('#dataPacienteSuscept').DataTable();
+            $('#dataPaciente thead th').addClass('text-center');
+            $('#dataPaciente tbody td').addClass('text-center');
+
+            var md = $('#processing-modal');
+            var md_pac = $('#repo-historico');
+
+            $('#dataPacienteSuscept tbody').on('click', '#historico_pac', function () {
+
+                var row = $(this).parents('tr');
+
+                md.modal({
+                    backdrop: 'static',
+                    keyboard: false
+                },'show');
+
+                var html = '';
+                html = '<div id="replaceAnalisis">';
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '{{ path("analisisSusceptHechosPac") }}',
+                    data: {idPacListado:row.data('id')}
+                }).done(function (data) {
+
+                    if(data.length > 0){
+
+                        var ruta_actual = location.href;
+                        var ruta_rpte = ruta_actual.replace('pacientesSusceptHechos','rpteSusceptHechosPac');
+
+                        for(var i=0; i < data.length; i++){
+                            html += '<p style="margin: 10px;"><a href="'+ruta_rpte + '/' + data[0].idEvolucion + '/' + 0 + '/' + data[i].id +'" class="btn btn-sm btn-block" style="font-size: 18px; color: #225c0b;background-color: #dff0d8;font-weight: bold;"><span class="glyphicon glyphicon-open-file" style="margin-right: 10px ;font-size: 18px"></span>'+data[i].codigoMuestra+'</a></p>';
+                        }
+
+                        html += '<p style="margin: 10px; margin-top: 20px;"><a href="'+ruta_rpte + '/' + data[0].idEvolucion + '/' +  1 + '/' + -1 +'" class="btn btn-sm btn-block" style="font-size: 18px; color: #dff0d8;background-color: #444;font-weight: bold;"><span class="glyphicon glyphicon-open-file" style="margin-right: 10px ;font-size: 18px"></span>TODOS</a></p>';
+                        html += '</div>';
+
+                        $("#replaceAnalisis").replaceWith(html);
+
+                        md.modal('hide');
+
+                        md_pac.modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        },'show');
+                    }
+                    else{
+                        md.modal('hide');
+
+                        alertify.alert('<strong>El paciente no presenta análisis de susceptibilidad.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                                .set('label','Aceptar');
+
+                    }
+
+                }).fail(function (jqXHR, textStatus) {
+                    md.modal('hide');
+                    alertify.alert('<strong>Ha habido un problema en el servidor. Intente volver a conectarse.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Información</h4>')
+                            .set('label','Aceptar')
+                });
+
+
+
+            });
+
+            //--------- esconder el modal del historico ------
+            $('#btnSalirModal').on('click', function (){
+                html = '<div id="replaceAnalisis"></div>';
+                $("#replaceAnalisis").replaceWith(html);
+                md_pac.modal('hide');
+            });
+        });
+    </script>
+{% endblock %}

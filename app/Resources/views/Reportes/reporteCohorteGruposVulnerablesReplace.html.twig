@@ -1,0 +1,64 @@
+<div id="tb_table_replace">
+    {% if hospitales != "" or areasSalud != "" %}
+        {% set columnas = hospitales|length + areasSalud|length %}
+    {% elseif provMunicipios != "" %}
+        {% set columnas = provMunicipios|length %}
+    {% else %}
+        {% set columnas = provincias|length  %}
+    {% endif %}
+    <table  class="table table-bordered table-responsive">
+        <thead>
+        <tr>
+            <th  colspan="2" rowspan="2" style="text-align: center; vertical-align: middle">CÓDIGO DE ENTRADA A LA COHORTE</th>
+            {% if hospitales != "" or areasSalud != "" %}
+                {% if areasSalud|length > 0 %}
+                    <th colspan="{{ areasSalud|length }}" style="text-align: center; vertical-align: middle">AREAS DE SALUD</th>
+                {% endif %}
+                {% if hospitales|length > 0 %}
+                    <th colspan="{{ hospitales|length }}" style="text-align: center; vertical-align: middle">HOSPITALES</th>
+                {% endif %}
+                <th  rowspan="2" style="text-align: center; vertical-align: middle">TOTAL</th>
+            {% elseif provMunicipios != "" %}
+                <th colspan="{{ columnas }}" style="text-align: center; vertical-align: middle">MUNICIPIOS</th>
+                <th  rowspan="2" style="text-align: center; vertical-align: middle">TOTAL</th>
+            {% else %}
+                <th colspan="{{ columnas }}" style="text-align: center; vertical-align: middle">PROVINCIAS</th>
+                <th  rowspan="2" style="text-align: center; vertical-align: middle">TOTAL</th>
+            {% endif %}
+        </tr>
+        <tr>
+            {% if hospitales != "" or areasSalud != "" %}
+                {% for area in  areasSalud  %}
+                    <th  style="text-align: center; vertical-align: middle">{{ area.nombre }}</th>
+                {% endfor %}
+                {% for hospital in  hospitales %}
+                    <th  style="text-align: center; vertical-align: middle">{{ hospital.nombre }}</th>
+                {% endfor %}
+            {% elseif provMunicipios != "" %}
+                {% for municipio in  provMunicipios %}
+                    <th  style="text-align: center; vertical-align: middle">{{ municipio.nombre }}</th>
+                {% endfor %}
+            {% else %}
+                {% for provincia in  provincias %}
+                    <th  style="text-align: center; vertical-align: middle">{{ provincia.nombre }}</th>
+                {% endfor %}
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for dato in datos %}
+            <tr>
+                {% if loop.last != true  %}
+                    <td style="font-weight: bold">{{ dato['enfemedadCodigo'] }}</td>
+                    <td style="font-weight: bold">{{ dato['enfemedadCriterioCompleto'] }}</td>
+                {% else %}
+                    <td colspan="2"  style="font-weight: bold;text-align: center; vertical-align: middle">{{ dato['enfemedadCodigo'] }}</td>
+                {% endif %}
+                {% for paciente in dato['pacientes'] %}
+                    <td  class="text-center"  >{{ paciente }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,1317 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/select2-bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/stylesheet/styles.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin//multiselect/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container-fluid" style="margin-top: 20px">
+        <div class="form-cont">
+            <div class="row" style="padding: 20px">
+                <h2 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">
+                    <span style="color: #434242">CONTACTO CI:</span>
+                    {{ seguimiento.contacto.carnetIdentidad ~ ' - ' ~ seguimiento.contacto.nombreCompleto() }}
+                </h2>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <div role="tabpanel">
+                        <!-- Nav tabs -->
+                        <ul style="margin-bottom: 10px" class="nav nav-tabs" role="tablist" id="myTab">
+                            <li role="presentation" class="active">
+                                <a href="#evaluacionTab" aria-controls="evaluacionTab" role="tab" data-toggle="tab">
+                                    <strong>Mes {{ mes }} de Evaluación</strong>
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#resultadoTab" aria-controls="resultadoTab" role="tab" data-toggle="tab">
+                                    <strong>Resultados</strong>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="evaluacionTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="fechaInicioEvaluacion">Fecha de
+                                                        inicio:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaInicioEvaluacion"
+                                                               name="fechaInicioEvaluacion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="examenMedico">EXAMEN
+                                                        MÉDICO:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="examenMedico"
+                                                               value="1">
+                                                        <label for="examenMedicoSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="examenMedico" value="0" checked>
+                                                        <label for="examenMedicoNo">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaExamenMedico" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaExamenMedico">Fecha:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaExamenMedico"
+                                                               name="fechaExamenMedico">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="sintomaRespiratorio">¿SÍNTOMAS
+                                                        RESPIRATORIOS?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio"
+                                                               name="sintomaRespiratorio"
+                                                               value="1">
+                                                        <label for="sintomaRespiratorioSi">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="sintomaRespiratorio" value="0" checked>
+                                                        <label for="sintomaRespiratorioNo">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="mostrarExamenes" style="display: none">
+                                             <span>
+                                            <strong>Prueba Cutánea de Tuberculina (PCT) o Ensayo de liberación de Interferón (IGRA)</strong>
+                                             </span>
+                                            <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px"></div>
+                                            <div class="row">
+                                                <div class="col-md-3"
+                                                     style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="pctIGRAIndicado">¿PCT/IGRA
+                                                            indicada?:</label>
+                                                        <div style="margin-left: 50px">
+                                                            <input type="radio" name="pctIGRAIndicado"
+                                                                   value="1">
+                                                            <label for="pctIGRAIndicadoSi">Si</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="pctIGRAIndicado" value="0" checked>
+                                                            <label for="pctIGRAIndicadoNo">No</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div id="mostrarFechaPCTIGRAIndicado" class="form-group"
+                                                         style="margin-left: 50px;display: none">
+                                                        <label class="control-label" for="fechaPCTIGRAIndicado">Fecha de
+                                                            indicada:</label>
+                                                        <div>
+                                                            <input type="date"
+                                                                   name="fechaPCTIGRAIndicado"
+                                                                   id="fechaPCTIGRAIndicado">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3"
+                                                     style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="pctIGRARealizado">¿Se realiza
+                                                            PCT/IGRA?:</label>
+                                                        <div style="margin-left: 50px">
+                                                            <input type="radio" name="pctIGRARealizado"
+                                                                   value="1">
+                                                            <label for="pctIGRARealizadoSi">Si</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="pctIGRARealizado" value="0" checked>
+                                                            <label for="pctIGRARealizadoNo">No</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div id="mostrarFechaPCTIGRARealizado" class="form-group"
+                                                         style="margin-left: 50px;display: none">
+                                                        <label class="control-label" for="fechaPCTIGRARealizado">Fecha
+                                                            de
+                                                            realizada:</label>
+                                                        <div>
+                                                            <input type="date" id="fechaPCTIGRARealizado"
+                                                                   name="fechaPCTIGRARealizado">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12" id="mostrarPorqueNoPCTIGRA">
+                                                    <label class="control-label " for="porqueNoPCTIGRA">¿Por qué no se
+                                                        realiza?:</label>
+                                                    <textarea
+                                                            style=" width: 100%; resize: none ; height: 100px ; margin-top: 2px"
+                                                            id="porqueNoPCTIGRA"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6"
+                                                     style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="resultadoPCT">Resultado de
+                                                            PCT:</label>
+                                                        <div style="margin-left: 50px">
+                                                            <input type="radio" name="resultadoPCT" value="Positiva">
+                                                            <label for="resultadoPCT">Positiva</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="resultadoPCT" value="Negativa">
+                                                            <label for="resultadoPCT">Negativa</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="resultadoPCT" value="No leida" checked>
+                                                            <label for="resultadoPCT">No leída</label>
+                                                        </div>
+                                                    </div>
+                                                    <div id="mostrarResultadoCuantitativo" class="form-group"
+                                                         style="display: none">
+                                                        <label class="control-label " for="resultadoCuantitativo">Resultado
+                                                            cuantitativo:</label>
+                                                        <div>
+                                                            <input placeholder="Teclee el diametro en mm" type="tel"
+                                                                   class="form-control input-sm"
+                                                                   id="resultadoCuantitativo"
+                                                                   name="resultadoCuantitativo">
+                                                        </div>
+                                                    </div>
+                                                    <div id="mostrarFechaLectura" class="form-group"
+                                                         style="display: none">
+                                                        <label class="control-label" for="fechaLectura">Fecha
+                                                            de
+                                                            lectura:</label>
+                                                        <div>
+                                                            <input type="date" id="fechaLectura"
+                                                                   name="fechaLectura">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="control-label " for="resultadoIGRA">Resultado de
+                                                            IGRA:</label>
+                                                        <div style="margin-left: 50px">
+                                                            <input type="radio" name="resultadoIGRA" value="Positivo">
+                                                            <label for="resultadoIGRA">Positiva</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="resultadoIGRA" value="Negativo">
+                                                            <label for="resultadoIGRA">Negativa</label>
+
+                                                            <input style="margin-left: 20px" type="radio"
+                                                                   name="resultadoIGRA" value="Indeterminado" checked>
+                                                            <label for="resultadoIGRA">Indeterminado</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span>
+                                            <strong>EXAMENES INDICADOS PARA DESCARATAR_CONFIRMAR TB</strong>
+                                        </span>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="baciloscopiaIndicado">¿Baciloscopía
+                                                        indicada?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="baciloscopiaIndicado"
+                                                               value="1">
+                                                        <label for="baciloscopiaIndicado">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="baciloscopiaIndicado" value="0" checked>
+                                                        <label for="baciloscopiaIndicado">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaBaciloscopiaIndicado" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaBaciloscopiaIndicado">Fecha
+                                                        de
+                                                        indicada:</label>
+                                                    <div>
+                                                        <input type="date"
+                                                               name="fechaBaciloscopiaIndicado"
+                                                               id="fechaBaciloscopiaIndicado">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="baciloscopiaRealizado">¿Se
+                                                        realiza Baciloscopía?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="baciloscopiaRealizado"
+                                                               value="1">
+                                                        <label for="baciloscopiaRealizado">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="baciloscopiaRealizado" value="0" checked>
+                                                        <label for="baciloscopiaRealizadoNo">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaBaciloscopiaRealizado" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaBaciloscopiaRealizado">Fecha
+                                                        de
+                                                        realizada:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaBaciloscopiaRealizado"
+                                                               name="fechaBaciloscopiaRealizado">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="cultivoIndicado">¿Cultivo
+                                                        indicado?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="cultivoIndicado"
+                                                               value="1">
+                                                        <label for="cultivoIndicado">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="cultivoIndicado" value="0" checked>
+                                                        <label for="cultivoIndicado">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaCultivoIndicado" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaCultivoIndicado">Fecha de
+                                                        indicado:</label>
+                                                    <div>
+                                                        <input type="date"
+                                                               name="fechaCultivoIndicado" id="fechaCultivoIndicado">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="cultivoRealizado">¿Se realiza
+                                                        Cultivo?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="cultivoRealizado"
+                                                               value="1">
+                                                        <label for="cultivoRealizado">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="cultivoRealizado" value="0" checked>
+                                                        <label for="cultivoRealizado">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaCultivoRealizado" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaCultivoRealizado">Fecha de
+                                                        realizado:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaCultivoRealizado"
+                                                               name="fechaCultivoRealizado">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="rayosXIndicado">¿Rayos X Tórax
+                                                        indicado?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="rayosXIndicado"
+                                                               value="1">
+                                                        <label for="rayosXIndicado">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="rayosXIndicado" value="0" checked>
+                                                        <label for="rayosXIndicado">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaRayosXIndicado" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaRayosXIndicado">Fecha de
+                                                        indicado:</label>
+                                                    <div>
+                                                        <input type="date"
+                                                               name="fechaRayosXIndicado" id="fechaRayosXIndicado">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="rayosXRealizado">¿Se realiza
+                                                        Rayos X Tórax?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="rayosXRealizado"
+                                                               value="1">
+                                                        <label for="rayosXRealizado">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="rayosXRealizado" value="0" checked>
+                                                        <label for="rayosXRealizado">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaRayosXRealizado" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaRayosXRealizado">Fecha de
+                                                        realizado:</label>
+                                                    <div>
+                                                        <input type="date" id="fechaRayosXRealizado"
+                                                               name="fechaRayosXRealizado">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="xpertIndicado">¿Xpert MTB/RIF
+                                                        indicado?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="xpertIndicado"
+                                                               value="1">
+                                                        <label for="xpertIndicado">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="xpertIndicado" value="0" checked>
+                                                        <label for="xpertIndicado">No</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="resultadoTab">
+                                <div class="container-fluid">
+                                    <fieldset>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="baciloscopiaHayResultado">¿Baciloscopía
+                                                        hay resultado?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="baciloscopiaHayResultado"
+                                                               value="Si">
+                                                        <label for="baciloscopiaHayResultado">Si</label>
+
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="baciloscopiaHayResultado" value="No">
+                                                        <label for="baciloscopiaHayResultado">No</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="baciloscopiaHayResultado" value="No útil" checked>
+                                                        <label for="baciloscopiaHayResultado">No útil</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaBaciloscopiaResultado" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaBaciloscopiaResultado">Fecha
+                                                        de
+                                                        resultado:</label>
+                                                    <div>
+                                                        <input type="date"
+                                                               name="fechaBaciloscopiaResultado"
+                                                               id="fechaBaciloscopiaResultado">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="baciloscopiaResultado">Resultado
+                                                        de la Baciloscopía?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="baciloscopiaResultado"
+                                                               value="Positivo">
+                                                        <label for="baciloscopiaResultado">Positivo</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="baciloscopiaResultado" value="Negativo">
+                                                        <label for="baciloscopiaResultado">Negativo</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="baciloscopiaResultado" value="No útil" checked>
+                                                        <label for="baciloscopiaResultado">No útil</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label " for="baciloscopiaCodificacion">Codificación:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee ..." type="number"
+                                                               class="form-control input-sm"
+                                                               id="baciloscopiaCodificacion"
+                                                               name="baciloscopiaCodificacion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="cultivoHayResultado">¿Cultivo
+                                                        hay resultado?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="cultivoHayResultado"
+                                                               value="Si">
+                                                        <label for="cultivoHayResultado">Si</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="cultivoHayResultado" value="No">
+                                                        <label for="cultivoHayResultado">No</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="cultivoHayResultado" value="No útil" checked>
+                                                        <label for="cultivoHayResultado">No útil</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaCultivoResultado" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaCultivoResultado">Fecha de
+                                                        resultado:</label>
+                                                    <div>
+                                                        <input type="date"
+                                                               name="fechaCultivoResultado" id="fechaCultivoResultado">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="cultivoResultado">Resultado del
+                                                        Cultivo:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="cultivoResultado"
+                                                               value="Positivo">
+                                                        <label for="cultivoResultado">Positivo</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="cultivoResultado" value="Negativo">
+                                                        <label for="cultivoResultado">Negativo</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="cultivoResultado" value="No útil" checked>
+                                                        <label for="cultivoResultado">No útil</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label " for="cultivoCodificacion">Codificación:</label>
+                                                    <div>
+                                                        <input placeholder="Teclee ..." type="number"
+                                                               class="form-control input-sm" id="cultivoCodificacion"
+                                                               name="cultivoCodificacion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="rayosXHayResultado">¿Rayos X
+                                                        Tórax
+                                                        hay resultado?:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="rayosXHayResultado"
+                                                               value="Si">
+                                                        <label for="rayosXHayResultado">Si</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="rayosXHayResultado" value="No">
+                                                        <label for="rayosXHayResultado">No</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="rayosXHayResultado" value="No útil" checked>
+                                                        <label for="rayosXHayResultado">No útil</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id="mostrarFechaRayosXResultado" class="form-group"
+                                                     style="margin-left: 50px;display: none">
+                                                    <label class="control-label" for="fechaRayosXResultado">Fecha de
+                                                        resultado:</label>
+                                                    <div>
+                                                        <input type="date"
+                                                               name="fechaRayosXResultado" id="fechaRayosXResultado">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <label class="control-label " for="rayosXResultado">Resultado
+                                                        Rayos X Tórax:</label>
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="rayosXResultado"
+                                                               value="Positivo">
+                                                        <label for="rayosXResultado">Positivo</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="rayosXResultado" value="Negativo">
+                                                        <label for="rayosXResultado">Negativo</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="rayosXResultado" value="No útil" checked>
+                                                        <label for="rayosXResultado">No útil</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label " for="rayosXLesiones">Lesiones de
+                                                        TB:</label>
+                                                    <div class="md-checkbox" style="left: 30%">
+                                                        <input type="checkbox" id="rayosXLesiones" name="rayosXLesiones"
+                                                               class="md-check">
+                                                        <label for="rayosX">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label " for="rayosXOtrasLesiones">Otras
+                                                        lesiones:</label>
+                                                    <div class="md-checkbox" style="left: 30%">
+                                                        <input type="checkbox" id="rayosXOtrasLesiones"
+                                                               name="rayosXOtrasLesiones" class="md-check">
+                                                        <label for="rayosX">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label class="control-label " for="observaciones">Observaciones:</label>
+                                                <textarea
+                                                        style=" width: 100%; resize: none ; height: 100px ; margin-top: 2px"
+                                                        id="observaciones"></textarea>
+                                            </div>
+                                        </div>
+                                        <span>
+                                            <strong>RESULTADO DE LA EVALUACIÓN</strong>
+                                             </span>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px"></div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="control-label"
+                                                           for="fechaResultadoEvaluacion">Fecha:</label>
+                                                    <div>
+                                                        <input type="date"
+                                                               name="fechaResultadoEvaluacion" id="fechaResultadoEvaluacion">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-9" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="resultadoEvaluacion"
+                                                               value="Infección tuberculosa">
+                                                        <label for="resultadoEvaluacion">Infección tuberculosa latente
+                                                            (ITBL)</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="resultadoEvaluacion" value="TB activa">
+                                                        <label for="resultadoEvaluacion">TB activa</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="resultadoEvaluacion"
+                                                               value="Ninguna de las anteriores">
+                                                        <label for="resultadoEvaluacion">Ninguna de las
+                                                            anteriores</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-bottom: 20px; border-bottom: 1px solid #393939; padding-bottom: 2px;padding-top: 10px"></div>
+                                        <div class="row">
+                                            <div class=col-md-12" style="background: #eeeeee;border: 2px solid #d0d0d0">
+                                                <div class="form-group">
+                                                    <div style="margin-left: 50px">
+                                                        <input type="radio" name="estadoPaciente"
+                                                               value="Sigue en TPT">
+                                                        <label for="estadoPaciente">Sigue en TPT</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="estadoPaciente" value="Terminó TPT">
+                                                        <label for="estadoPaciente">Terminó TPT</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="estadoPaciente" value="Suspendió TPT">
+                                                        <label for="estadoPaciente">Suspendió TPT</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="estadoPaciente"
+                                                               value="Pérdida de seguimiento">
+                                                        <label for="estadoPaciente">Pérdida de seguimiento</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="estadoPaciente"
+                                                               value="Fallecido">
+                                                        <label for="estadoPaciente">Fallecido</label>
+                                                        <input style="margin-left: 20px" type="radio"
+                                                               name="estadoPaciente"
+                                                               value="Diagnóstico de TB">
+                                                        <label for="estadoPaciente">Diagnóstico de TB</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    {% if (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                        <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                    {% endif %}
+                    <button id="btnCancelar" type="button" class="btn btn-primario"> Salir</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/javascript/select2.full.min.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.mockjax.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/javascript/jquery.autocomplete.js') }}"></script>
+    <script src="{{ asset('bundles/easyadmin/multiselect/js/jquery.multi-select.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            (function () {
+                {% if not (is_granted("ROLE_CONTACTO") or is_granted("ROLE_SUPERUSUARIO") or is_granted("ROLE_VISUALIZADOR")) %}
+                window.location.href = "{{ path('login') }}";
+                {% endif %}
+            })();
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir, #btnCancelar').on('click', function () {
+                var enlace = "{{ path('localizarPacienteContactoCI', {ci:'id'}) }}";
+                var ruta = enlace.replace('id', '{{ ci }}');
+                window.location.href = ruta;
+            });
+
+            //Formulario Buscar persona
+            $('#ci').on("keyup", function () {
+
+                if ($('#ci').val().trim().length === 11) {
+                    $('#btnBuscar').prop("disabled", false);
+                } else {
+                    $('#btnBuscar').prop("disabled", true);
+                }
+            });
+
+            $("input[name='examenMedico']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFechaExamenMedico").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFechaExamenMedico").hide();
+                    $("#fechaExamenMedico").val('');
+                }
+            });
+
+            $("input[name='sintomaRespiratorio']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarExamenes").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarExamenes").hide();
+                }
+            });
+
+            $("input[name='pctIGRAIndicado']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFechaPCTIGRAIndicado").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFechaPCTIGRAIndicado").hide();
+                    $("#fechaPCTIGRAIndicado").val('');
+                }
+            });
+
+            $("input[name='pctIGRARealizado']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFechaPCTIGRARealizado").show();
+                    $("#mostrarPorqueNoPCTIGRA").hide();
+                    $("#porqueNoPCTIGRA").val('');
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFechaPCTIGRARealizado").hide();
+                    $("#fechaPCTIGRARealizado").val('');
+                    $("#mostrarPorqueNoPCTIGRA").show();
+                }
+            });
+
+            $("input[name='resultadoPCT']:radio").click(function () {
+
+                if ($(this).attr("value") === "Negativa") {
+                    $("#mostrarFechaLectura").show();
+                    $("#mostrarResultadoCuantitativo").hide();
+                    $("#resultadoCuantitativo").val('');
+                } else if ($(this).attr("value") === "Positiva") {
+                    $("#mostrarFechaLectura").show();
+                    $("#mostrarResultadoCuantitativo").show();
+                } else if ($(this).attr("value") === "No leida") {
+                    $("#mostrarFechaLectura").hide();
+                    $("#mostrarResultadoCuantitativo").hide();
+                    $("#fechaLectura").val('');
+                    $("#resultadoCuantitativo").val('');
+                }
+            });
+
+            $("input[name='baciloscopiaIndicado']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFechaBaciloscopiaIndicado").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFechaBaciloscopiaIndicado").hide();
+                    $("#fechaBaciloscopiaIndicado").val('');
+                }
+            });
+
+            $("input[name='baciloscopiaRealizado']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFechaBaciloscopiaRealizado").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFechaBaciloscopiaRealizado").hide();
+                    $("#fechaBaciloscopiaRealizado").val('');
+                }
+            });
+
+            $("input[name='cultivoIndicado']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFechaCultivoIndicado").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFechaCultivoIndicado").hide();
+                    $("#fechaCultivoIndicado").val('');
+                }
+            });
+
+            $("input[name='cultivoRealizado']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFechaCultivoRealizado").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFechaCultivoRealizado").hide();
+                    $("#fechaCultivoRealizado").val('');
+                }
+            });
+
+            $("input[name='rayosXIndicado']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFechaRayosXIndicado").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFechaRayosXIndicado").hide();
+                    $("#fechaRayosXIndicado").val('');
+                }
+            });
+
+            $("input[name='rayosXRealizado']:radio").click(function () {
+                if ($(this).attr("value") == "1") {
+                    $("#mostrarFechaRayosXRealizado").show();
+                } else if ($(this).attr("value") == "0") {
+                    $("#mostrarFechaRayosXRealizado").hide();
+                    $("#fechaRayosXRealizado").val('');
+                }
+            });
+
+            $("input[name='baciloscopiaHayResultado']:radio").click(function () {
+                if ($(this).attr("value") == "Si") {
+                    $("#mostrarFechaBaciloscopiaResultado").show();
+                } else if ($(this).attr("value") == "No") {
+                    $("#mostrarFechaBaciloscopiaResultado").hide();
+                    $("#fechaBaciloscopiaResultado").val('');
+                }
+            });
+
+            $("input[name='cultivoHayResultado']:radio").click(function () {
+                if ($(this).attr("value") == "Si") {
+                    $("#mostrarFechaCultivoResultado").show();
+                } else if ($(this).attr("value") == "No") {
+                    $("#mostrarFechaCultivoResultado").hide();
+                    $("#fechaCultivoResultadoo").val('');
+                }
+            });
+
+            $("input[name='rayosXHayResultado']:radio").click(function () {
+                if ($(this).attr("value") == "Si") {
+                    $("#mostrarFechaRayosXResultado").show();
+                } else if ($(this).attr("value") == "No") {
+                    $("#mostrarFechaRayosXResultado").hide();
+                    $("#fechaRayosXResultado").val('');
+                }
+            });
+
+            $('#btnGuardar').on('click', function () {
+
+                //Validaciones Evaluación
+                if ($("#fechaInicioEvaluacion").val() == '') {
+                    alertify.alert('<strong>Debe seleccionar la fecha de inicio de la evaluación.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+                var hoy = '{{ "now"|date('Y-m-d') }}';
+
+                if ($("#fechaInicioEvaluacion").val() > hoy) {
+                    alertify.alert('<strong>Error: la fecha de inicio de la evaluación no puede ser mayor que la fecha actual.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label', 'Aceptar');
+                    return false;
+                }
+
+                if ($('input:radio[name=examenMedico]:checked').val() == '1') {
+                    if ($("#fechaExamenMedico").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de examen médico.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaExamenMedico").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de examen médico no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=sintomaRespiratorio]:checked').val() == '1') {
+                    if ($('input:radio[name=pctIGRAIndicado]:checked').val() == '1') {
+                        if ($("#fechaPCTIGRAIndicado").val() == '') {
+                            alertify.alert('<strong>Debe seleccionar la fecha que se indicó el PCT.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                .set('label', 'Aceptar');
+                            return false;
+                        }
+
+                        if ($("#fechaPCTIGRAIndicado").val() > hoy) {
+                            alertify.alert('<strong>Error: la fecha que se indicó el PCT no puede ser mayor que la fecha actual.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                .set('label', 'Aceptar');
+                            return false;
+                        }
+                    }
+
+                    if ($('input:radio[name=pctIGRARealizado]:checked').val() == '1') {
+                        if ($("#fechaPCTIGRARealizado").val() == '') {
+                            alertify.alert('<strong>Debe seleccionar la fecha que se realizó el PCT.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                .set('label', 'Aceptar');
+                            return false;
+                        }
+
+                        if ($("#fechaPCTIGRARealizado").val() > hoy) {
+                            alertify.alert('<strong>Error: la fecha que se realizó el PCT no puede ser mayor que la fecha actual.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                .set('label', 'Aceptar');
+                            return false;
+                        }
+                        if ($('input:radio[name=resultadoPCT]:checked').val() != 'No leida') {
+                            if ($('input:radio[name=resultadoPCT]:checked').val() == 'Positiva') {
+                                if ($("#resultadoCuantitativo").val().trim() == '') {
+                                    alertify.alert('<strong>El campo resultado cuantitativo es obligatorio, no puede quedar en blanco.</strong>')
+                                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                        .set('label', 'Aceptar');
+                                    return false;
+                                }
+                                if (parseInt($("#resultadoCuantitativo").val()) > 99) {
+                                    alertify.alert('<strong>El campo resultado cuantitativo debe ser menor que 100.</strong>')
+                                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                        .set('label', 'Aceptar');
+                                    return false;
+                                }
+                            }
+                            if ($("#fechaLectura").val() == '') {
+                                alertify.alert('<strong>Debe seleccionar la fecha de lectura del resultado del PCT.</strong>')
+                                    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                    .set('label', 'Aceptar');
+                                return false;
+                            }
+
+                            if ($("#fechaLectura").val() > hoy) {
+                                alertify.alert('<strong>Error: la fecha de lectura del resultado del PCT no puede ser mayor que la fecha actual.</strong>')
+                                    .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                        '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                    .set('label', 'Aceptar');
+                                return false;
+                            }
+                        }
+                    } else {
+                        if ($("#porqueNoPCTIGRA").val().trim() == '') {
+                            alertify.alert('<strong>El campo por qué no se realiza es obligatorio, no puede quedar en blanco.</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                                .set('label', 'Aceptar');
+                            return false;
+                        }
+                    }
+
+                }
+
+                if ($('input:radio[name=baciloscopiaIndicado]:checked').val() == '1') {
+                    if ($("#fechaBaciloscopiaIndicado").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha indicada de la baciloscopia.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaBaciloscopiaIndicado").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha indicada de la baciloscopia no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=baciloscopiaRealizado]:checked').val() == '1') {
+                    if ($("#fechaBaciloscopiaRealizado").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de realización de la baciloscopia.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaBaciloscopiaRealizado").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de realización de la baciloscopia no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=cultivoIndicado]:checked').val() == '1') {
+                    if ($("#fechaCultivoIndicado").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha indicada de cultivo.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaCultivoIndicado").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha indicada de cultivo no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=cultivoRealizado]:checked').val() == '1') {
+                    if ($("#fechaCultivoRealizado").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de realización de cultivo.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaCultivoRealizado").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de realización de cultivo no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=rayosXIndicado]:checked').val() == '1') {
+                    if ($("#fechaRayosXIndicado").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha indicada de rayos x.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaRayosXIndicado").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha indicada de rayos x no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=rayosXRealizado]:checked').val() == '1') {
+                    if ($("#fechaRayosXRealizado").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de realización de rayos x.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaRayosXRealizado").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de realización de rayos x no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                //Validaciones Resultados
+                if ($('input:radio[name=baciloscopiaHayResultado]:checked').val() == 'Si') {
+                    if ($("#fechaBaciloscopiaResultado").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de resultado de la baciloscopia.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaBaciloscopiaResultado").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de resultado de la baciloscopia no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    var codificacionBaciloscopia = parseInt($("#baciloscopiaCodificacion").val());
+
+                    if ($("#baciloscopiaCodificacion").val() == '') {
+                        alertify.alert('<strong>El campo codificación del resultado de la baciloscopia es obligatorio, no puede quedar en blanco.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if (codificacionBaciloscopia < 0 || codificacionBaciloscopia > 9) {
+                        alertify.alert('<strong>El campo codificación del resultado de la baciloscopia debe ser un valor entre 0 y 9.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=cultivoHayResultado]:checked').val() == 'Si') {
+                    if ($("#fechaCultivoResultado").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de resultado de cultivo.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaCultivoResultado").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de resultado de cultivo no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    var codificacionCultivo = parseInt($("#cultivoCodificacion").val());
+
+                    if ($("#cultivoCodificacion").val() == '') {
+                        alertify.alert('<strong>El campo codificación del resultado de cultivo es obligatorio, no puede quedar en blanco.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if (codificacionCultivo < 0 || codificacionCultivo > 9) {
+                        alertify.alert('<strong>El campo codificación del resultado de cultivo debe ser un valor entre 0 y 9.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                if ($('input:radio[name=rayosXHayResultado]:checked').val() == 'Si') {
+                    if ($("#fechaRayosXResultado").val() == '') {
+                        alertify.alert('<strong>Debe seleccionar la fecha de resultado de rayos x.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                    if ($("#fechaRayosXResultado").val() > hoy) {
+                        alertify.alert('<strong>Error: la fecha de resultado de rayos x no puede ser mayor que la fecha actual.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                }
+
+                var cierreEvaluacion = 0;
+
+                if (!$("#fechaResultadoEvaluacion").val() == '') {
+                    cierreEvaluacion = 1;
+                    if ($('input:radio[name=resultadoEvaluacion]:checked').val() == null) {
+                        alertify.alert('<strong>Debe seleccionar un resultado.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+                    if ($('input:radio[name=estadoPaciente]:checked').val() == null) {
+                        alertify.alert('<strong>Debe seleccionar un estado del paciente.</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar');
+                        return false;
+                    }
+
+                }
+
+                var rayoXLesionTB = 0;
+                if ($('#rayosXLesiones').prop('checked')) {
+                    rayoXLesionTB = 1;
+                }
+
+                var rayoXOtraLesion = 0;
+                if ($('#rayosXOtrasLesiones').prop('checked')) {
+                    rayoXOtraLesion = 1;
+                }
+
+                var mat_datos = {
+                    idSeguimiento: {{ seguimiento.id }},
+                    mes: {{ mes }},
+                    fechaInicioEvaluacion: $("#fechaInicioEvaluacion").val(),
+                    examenMedico: $('input:radio[name=examenMedico]:checked').val(),
+                    fechaExamenMedico: $("#fechaExamenMedico").val(),
+                    sintomaRespiratorio: $('input:radio[name=sintomaRespiratorio]:checked').val(),
+                    pctIgraIndicado: $('input:radio[name=pctIGRAIndicado]:checked').val(),
+                    fechaPctIgraIndicado: $("#fechaPctIgraIndicado").val(),
+                    pctIgraRealizado: $('input:radio[name=pctIGRARealizado]:checked').val(),
+                    fechaPctIgraRealizado: $("#fechaPCTIGRARealizado").val(),
+                    porqueNoPctIgra: $("#porqueNoPCTIGRA").val(),
+                    resultadoPCT: $('input:radio[name=resultadoPCT]:checked').val(),
+                    resultadoCuantitativo: $("#resultadoCuantitativo").val(),
+                    fechaLecturaPCT: $("#fechaLectura").val(),
+                    resultadoIGRA: $('input:radio[name=resultadoIGRA]:checked').val(),
+                    baciloscopiaIndicado: $('input:radio[name=baciloscopiaIndicado]:checked').val(),
+                    fechaBaciloscopiaIndicado: $("#fechaBaciloscopiaIndicado").val(),
+                    baciloscopiaRealizado: $('input:radio[name=baciloscopiaRealizado]:checked').val(),
+                    fechaBaciloscopiaRealizado: $("#fechaBaciloscopiaRealizado").val(),
+                    cultivoIndicado: $('input:radio[name=cultivoIndicado]:checked').val(),
+                    fechaCultivoIndicado: $("#fechaCultivoIndicado").val(),
+                    cultivoRealizado: $('input:radio[name=cultivoRealizado]:checked').val(),
+                    fechaCultivoRealizado: $("#fechaCultivoRealizado").val(),
+                    rayosXIndicado: $('input:radio[name=rayosXIndicado]:checked').val(),
+                    fechaRayosXIndicado: $("#fechaRayosXIndicado").val(),
+                    rayosXRealizado: $('input:radio[name=rayosXRealizado]:checked').val(),
+                    fechaRayosXRealizado: $("#fechaRayosXRealizado").val(),
+                    xpertIndicado: $('input:radio[name=xpertIndicado]:checked').val(),
+                    hayResultadoBaciloscopia: $('input:radio[name=baciloscopiaHayResultado]:checked').val(),
+                    fechaBaciloscopiaResultado: $("#fechaBaciloscopiaResultado").val(),
+                    resultadoBaciloscopia: $('input:radio[name=baciloscopiaResultado]:checked').val(),
+                    codificacionBaciloscopia: $("#baciloscopiaCodificacion").val(),
+                    hayResultadoCultivo: $('input:radio[name=cultivoHayResultado]:checked').val(),
+                    fechaCultivoResultado: $("#fechaCultivoResultado").val(),
+                    resultadoCultivo: $('input:radio[name=cultivoResultado]:checked').val(),
+                    codificacionCultivo: $("#cultivoCodificacion").val(),
+                    hayResultadoRayosX: $('input:radio[name=rayosXHayResultado]:checked').val(),
+                    fechaRayosXResultado: $("#fechaRayosXResultado").val(),
+                    resultadoRayosX: $('input:radio[name=rayosXResultado]:checked').val(),
+                    rayoXLesionTB: rayoXLesionTB,
+                    rayoXOtraLesion: rayoXOtraLesion,
+                    fechaResultado: $("#fechaResultadoEvaluacion").val(),
+                    resultadoEvaluacion: $('input:radio[name=resultadoEvaluacion]:checked').val(),
+                    observaciones: $("#observaciones").val().trim(),
+                    estadoPaciente: $('input:radio[name=estadoPaciente]:checked').val(),
+
+                };
+
+                if (cierreEvaluacion === 1) {
+                    alertify.confirm('Basic: false').set('message', 'Seguro que desea cerrar la evaluación de este seguimiento').set('onok', function () {
+                        EnviarEvaluacion(mat_datos)
+                    });
+                } else {
+                    EnviarEvaluacion(mat_datos);
+                }
+
+            });
+
+            function EnviarEvaluacion(datos) {
+                $(".preload").removeClass('hidden');
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertEvaluacionContacto") }}',
+                    data: datos
+                }).done(function (data) {
+
+                    $(".preload").addClass('hidden');
+
+                    if (data == 'ok') {
+
+                        alertify.alert('<strong>La evaluación del contacto ha sido insertada correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                            .set('label', 'Aceptar')
+                            .set('onok', function () {
+                                var enlace = "{{ path('localizarPacienteContactoCI', {ci:'id'}) }}";
+                                var ruta = enlace.replace('id', '{{ ci }}');
+                                window.location.href = ruta;
+                            });
+                    } else {
+                        alertify.alert('<strong>' + data + '</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label', 'Aceptar')
+                    }
+                });
+            }
+
+        });
+    </script>
+{% endblock %}

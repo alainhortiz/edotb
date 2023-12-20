@@ -1,0 +1,755 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="form-cont">
+            <div class="row" style="padding: 20px">
+                <h2 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Seguimiento por Esputo</h2>
+            </div>
+            <div class="row" style="margin-bottom: 5px">
+                <div class="col-lg-3 col-md-3">
+                    <h5>Carnet de Identidad: <strong>{{ evolucion.paciente.carnetIdentidad }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Nombre: <strong>{{ evolucion.paciente.nombre }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Primer Apellido: <strong>{{ evolucion.paciente.primerApellido }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Segundo Apellido: <strong>{{ evolucion.paciente.segundoApellido }}</strong></h5>
+                </div>
+            </div>
+            {% if evolucion.localizacionAnatomica != 'Extrapulmonar' %}
+                <div style="margin-top: 20px; background-color: #7abfbb">
+                    <div role="tabpanel">
+
+                        <!-- Nav tabs -->
+                        <ul style="margin-bottom: 10px" class="nav nav-tabs" role="tablist" id="myTab">
+                            <li role="presentation" {{ tabActivo == 'baciloscopia' ? 'class="active"'}}>
+                                <a  href="#baciloscopiaTab" aria-controls="baciloscopiaTab" role="tab" data-toggle="tab">
+                                    <strong>Baciloscopias</strong>
+                                </a>
+                            </li>
+                            <li role="presentation" {{ tabActivo == 'cultivo' ? 'class="active"'}}>
+                                <a href="#cultivoTab" aria-controls="cultivoTab" role="tab" data-toggle="tab">
+                                    <strong>Cultivos</strong>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade {{ tabActivo == 'baciloscopia' ? 'in active'}}" id="baciloscopiaTab">
+                                <div class="container-fluid">
+                                    <div  class="row" style="background: #7abfbb; padding: 10px ; margin-bottom: 10px;">
+                                        <p style="float: inherit; margin-top: -10px; margin-bottom: -20px" class="text-center">
+                                            <a href="#" data-toggle="modal" data-target="#addBaciloscopiaSeguimiento" style="text-decoration: none" class="btn btn-primario">Agregar Baciloscopía</a>
+                                        </p>
+                                        <table  data-id ="baciloscopia"   id="dataBaciloscopia">
+                                            <thead style="color: #242524">
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Resultado</th>
+                                                <th>Categoría</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody  class="table-striped">
+                                            {% for seguimiento in evolucion.baciloscopiaSeguimientos %}
+                                                <tr  data-id = "{{ seguimiento.id }}">
+                                                    <td>{{ seguimiento.fecha|date('Y-m-d') }}</td>
+                                                    <td>{{ seguimiento.getBaciloscopia().descripcion~' ('~seguimiento.getBaciloscopia().clasificacion~')' }}</td>
+                                                    <td>{{ seguimiento.categoria }}</td>
+                                                    <td>
+                                                        <div class="btn-opt" id="actualizar" style="background: #3a81b8; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Actualizar">
+                                                            <a href="#" style="text-decoration: none; color: #ffffff">
+                                                                <i class="glyphicon glyphicon-pencil" style="font-size: 20px"></i>
+                                                            </a>
+                                                        </div>
+                                                        {% if seguimiento.categoria == 'Seguimiento' %}
+                                                            <div class="btn-opt delete" id="borrar" style="background: #e42d26; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Borrar">
+                                                                <i class="glyphicon glyphicon-erase" style="font-size: 20px"></i>
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade {{ tabActivo == 'cultivo' ? 'in active'}}" id="cultivoTab">
+                                <div class="container-fluid">
+                                    <div class="row" style="background: #7abfbb; padding: 10px ; margin-bottom: 10px;">
+                                        <p style="float: inherit; margin-top: -10px; margin-bottom: -20px" class="text-center">
+                                            <a href="#" data-toggle="modal" data-target="#addCultivoSeguimiento" style="text-decoration: none" class="btn btn-primario">Agregar Cultivo</a>
+                                        </p>
+                                        <table data-id ="cultivo"  id="dataCultivo">
+                                            <thead style="color: #242524">
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Codificación</th>
+                                                <th>Resultado</th>
+                                                <th>Categoría</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody  class="table-striped">
+                                            {% for seguimiento in evolucion.cultivoSeguimientos %}
+                                                <tr  data-id = "{{ seguimiento.id }}">
+                                                    <td>{{ seguimiento.fecha|date('Y-m-d') }}</td>
+                                                    <td>{{ seguimiento.getCultivo().descripcion~' ('~seguimiento.getCultivo().clasificacion~')' }}</td>
+                                                    <td>{{ seguimiento.salidaCultivo.salida }}</td>
+                                                    <td>{{ seguimiento.categoria }}</td>
+                                                    <td>
+                                                        <div class="btn-opt" id="actualizar" style="background: #3a81b8; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Actualizar">
+                                                            <a href="#" style="text-decoration: none; color: #ffffff">
+                                                                <i class="glyphicon glyphicon-pencil" style="font-size: 20px"></i>
+                                                            </a>
+                                                        </div>
+                                                        {% if seguimiento.categoria == 'Seguimiento' %}
+                                                            <div class="btn-opt delete" id="borrar" style="background: #e42d26; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Borrar">
+                                                                <i class="glyphicon glyphicon-erase" style="font-size: 20px"></i>
+                                                            </div>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="row" style="margin-top: 20px">
+                <div class="container-fluid">
+                    <form>
+                        <fieldset>
+                            <h3 style="margin: 5px; padding-bottom: 7px;  color: #717070; text-align: center"><strong>Análisis Iniciales</strong></h3>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="xpertBCX">Resultado del Xpert:</label>
+                                        <select class="form-control input-sm" id="xpertBCX" name="xpertBCX">
+                                            {% for xpert in  xperts %}
+                                                <option {{ evolucion.getResultadoBCX().xpert.clasificacion == xpert.clasificacion ? 'selected' }}
+                                                        value="{{ xpert.clasificacion }}">{{ xpert.descripcion ~' ('~xpert.clasificacion~')' }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="baciloscopiaBCX">Resultado de la Baciloscopía:</label>
+                                        <select class="form-control input-sm" id="baciloscopiaBCX" name="baciloscopiaBCX">
+                                            {% for baciloscopia in  baciloscopias %}
+                                                <option {{ evolucion.getResultadoBCX().baciloscopia.clasificacion == baciloscopia.clasificacion ? 'selected' }}
+                                                        value="{{ baciloscopia.clasificacion }}">{{ baciloscopia.descripcion~' ('~baciloscopia.clasificacion~')' }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="baciloscopia2BCX">Resultado Segunda Baciloscopía:</label>
+                                        <select class="form-control input-sm" id="baciloscopia2BCX" name="baciloscopia2BCX">
+                                            {% for baciloscopia in  baciloscopias %}
+                                                <option {{ evolucion.getResultadoBCX().baciloscopia2.clasificacion == baciloscopia.clasificacion ? 'selected' }}
+                                                        value="{{ baciloscopia.clasificacion }}">{{ baciloscopia.descripcion~' ('~baciloscopia.clasificacion~')' }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="cultivoBCX">Codificación del Cultivo:</label>
+                                        <select class="form-control input-sm" id="cultivoBCX" name="cultivoBCX">
+                                            {% for cultivo in  cultivos %}
+                                                <option {{ evolucion.getResultadoBCX().cultivo.clasificacion == cultivo.clasificacion ? 'selected' }}
+                                                        value="{{ cultivo.clasificacion }}">{{ cultivo.descripcion~' ('~cultivo.clasificacion~')' }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="salidaCultivoBCX">Resultado del Cultivo:</label>
+                                        <select class="form-control input-sm" id="salidaCultivoBCX" name="salidaCultivoBCX">
+                                            {% for salidaCultivo in  salidasCultivo %}
+                                                <option {{ evolucion.getResultadoBCX().salidaCultivo.salida == salidaCultivo.salida ? 'selected' }}
+                                                        value="{{ salidaCultivo.salida }}">{{  salidaCultivo.salida  }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="biopsia">Biopsia:</label>
+                                        <select class="form-control input-sm" id="biopsia" name="biopsia">
+                                            <option value="{{ evolucion.getResultadoBCX().getBiopsia().clasificacion }}">
+                                                {{ evolucion.getResultadoBCX().getBiopsia().descripcion }}
+                                            </option>
+                                            {% for biopsia in  biopsias %}
+                                                <option value="{{ biopsia.clasificacion }}">{{ biopsia.descripcion }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label " for="orina">Parcial de Orina:</label>
+                                        <select class="form-control input-sm" id="orina" name="orina">
+                                            <option value="{{ evolucion.getResultadoBCX().getOrina().clasificacion }}">
+                                                {{ evolucion.getResultadoBCX().getOrina().descripcion }}
+                                            </option>
+                                            {% for orina in  orinas %}
+                                                <option value="{{ orina.clasificacion }}">{{  orina.descripcion  }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group" style="margin-top: 20px">
+                                        <button id="btnEditAnalisisIniciales" type="button" class="btn btn-primario">Guardar Cambios en Análisis Iniciales</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            <p class="text-center" style="margin-top: 20px">
+                <button id="btnSalir" type="button" class="btn btn-primario"> Salir</button>
+            </p>
+        </div>
+    </div>
+    {{ include('Pacientes/modalAddBaciloscopiaSeguimiento.html.twig') }}
+    {{ include('Pacientes/modalEditBaciloscopiaSeguimiento.html.twig') }}
+    {{ include('Pacientes/modalAddCultivoSeguimiento.html.twig') }}
+    {{ include('Pacientes/modalEditCultivoSeguimiento.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+            $('h4').each(function(){
+                $(this).css('margin-bottom','10px');
+            });
+            $('#dataBaciloscopia, #dataCultivo').DataTable();
+            $('[data-toggle="tooltip"]').tooltip();
+
+            //--------- abandonar la pagina -----------------
+            $('#btnSalir').on('click', function (){
+
+                window.location.href = "{{ path('pacientesEnTratamiento') }}";
+            });
+
+            {% if evolucion.baciloscopiaSeguimientos|length != 0 or evolucion.cultivoSeguimientos|length != 0  %}
+                $('#xpertBCX , #baciloscopiaBCX , #baciloscopia2BCX , #cultivoBCX , #salidaCultivoBCX , #orina , #biopsia').prop('disabled' , true);
+                $('#btnEditAnalisisIniciales').addClass('hidden');
+            {% endif %}
+
+            //-----relacionar selects--------
+            $("#cultivoAdd").on('change', function(){
+
+                if($(this).val() == 'SC'){
+                    $("#salidaCultivoAdd").val('No realizado').prop('disabled', true);
+                }
+                else{ $("#salidaCultivoAdd").val('vacio').prop('disabled', false); }
+            });
+
+            $("#salidaCultivoAdd").on('change', function(){
+
+                if($(this).val() == 'No realizado'){
+                    $("#cultivoAdd").val('SC');
+                    $("#salidaCultivoAdd").prop('disabled', true);
+                }
+            });
+
+            $("#cultivoEdit").on('change', function(){
+
+                if($(this).val() == 'SC'){
+                    $("#salidaCultivoEdit").val('No realizado').prop('disabled', true);
+                }
+                else{
+                    if($("#salidaCultivoEdit").val() == 'No realizado'){ $("#salidaCultivoEdit").val('vacio').prop('disabled', false); }
+                }
+            });
+
+            $("#salidaCultivoEdit").on('change', function(){
+
+                if($(this).val() == 'No realizado'){
+                    $("#cultivoEdit").val('SC');
+                    $("#salidaCultivoEdit").prop('disabled', true);
+                }
+                else{
+                    if($("#cultivoEdit").val() == 'SC'){ $("#cultivoEdit").val('vacio'); }
+                }
+            });
+
+            $("#cultivoBCX").on('change', function(){
+
+                if($(this).val() == 'SC'){
+                    $("#salidaCultivoBCX").val('No realizado').prop('disabled', true);
+                }
+                else{
+                    if($("#salidaCultivoBCX").val() == 'No realizado'){ $("#salidaCultivoBCX").val('vacio').prop('disabled', false); }
+                }
+            });
+            $("#salidaCultivoBCX").on('change', function(){
+
+                if($(this).val() == 'No realizado'){
+                    $("#cultivoBCX").val('SC');
+                    $("#salidaCultivoBCX").prop('disabled', true);
+                }
+                else{
+                    if($("#cultivoBCX").val() == 'SC'){ $("#cultivoBCX").val('vacio'); }
+                }
+            });
+
+            //--------- enviar el formulario de agregar baciloscopia-----------------
+            $('#maceptarAddBaciloscopia').click(function ()
+            {
+                if($('#baciloscopiaAdd').val() == 'vacio')
+                {
+                    $("#errorBaciloscopia").text('Debe selecionar un resultado para la baciloscopía').removeClass('hidden');
+                    $("#baciloscopiaAdd").focus();
+                    return false;
+                }
+
+                $('#addBaciloscopiaSeguimiento').modal('hide');
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    baciloscopia: $("#baciloscopiaAdd").val(),
+                    fechaBaciloscopiaAdd: $("#fechaBaciloscopiaAdd").val(),
+                    categoria: '{{ categoriaBaciloscopia }}',
+                    idEvolucion: '{{ evolucion.id }}'
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertBaciloscopiaSeguimiento") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    if(data == 'ok'){
+
+                        $(".preload").addClass('hidden');
+                        alertify.alert('<strong>La baciloscopía ha sido insertada correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                            .set('onok', function () {
+                                $(".preload").removeClass('hidden');
+                                window.location.href = "{{ path('mostrarVistaSeguimientoPaciente' , {idEvolucion:evolucion.id , tabActivo: 'baciloscopia'}) }}";
+                            });
+
+
+                    }else{
+                        $(".preload").addClass('hidden');
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+
+            //--------- enviar el formulario de agregar baciloscopia-----------------
+            $('#maceptarAddCultivo').click(function ()
+            {
+                if($('#cultivoAdd').val() == 'vacio')
+                {
+                    $("#errorCultivo").text('Debe selecionar una codificación para el cultivo').removeClass('hidden');
+                    $("#cultivoAdd").focus();
+                    return false;
+                }
+                if($('#salidaCultivoAdd').val() == 'vacio')
+                {
+                    $("#errorCultivo").text('Debe selecionar un resultado  para el cultivo').removeClass('hidden');
+                    $("#salidaCultivoAdd").focus();
+                    return false;
+                }
+                if($('#cultivoAdd').val() == '0' && $("#salidaCultivoAdd").val() == 'Complejo Mycobacterium tuberculosis')
+                {
+                    $("#errorCultivo").text('Si la codificación del cultivo es 0 no puede tener como resultado : Complejo Mycobacterium tuberculosis.').removeClass('hidden');
+                    $("#cultivoAdd").focus();
+                    return false;
+                }
+                if($('#cultivoAdd').val() == '0' && $("#salidaCultivoAdd").val() == 'No realizado')
+                {
+                    $("#errorCultivo").text('Si la codificación del cultivo es 0 no puede tener como resultado : No realizado.').removeClass('hidden');
+                    $("#cultivoAdd").focus();
+                    return false;
+                }
+
+                $('#addCultivoSeguimiento').modal('hide');
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    cultivo: $("#cultivoAdd").val(),
+                    salidaCultivo: $("#salidaCultivoAdd").val(),
+                    categoria: '{{ categoriaCultivo }}',
+                    fechaCultivoAdd: $("#fechaCultivoAdd").val(),
+                    idEvolucion: '{{ evolucion.id }}'
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("insertCultivoSeguimiento") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    if(data == 'ok'){
+
+                        $(".preload").addClass('hidden');
+                        alertify.alert('<strong>El cultivo ha sido insertado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                            .set('onok', function () {
+                                $(".preload").removeClass('hidden');
+                                window.location.href = "{{ path('mostrarVistaSeguimientoPaciente' , {idEvolucion:evolucion.id , tabActivo: 'cultivo'}) }}";
+                            });
+
+                    }else{
+                        $(".preload").addClass('hidden');
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+
+            // función que carga datos en el formulario para editar una baciloscopia
+            var idBaciloscopiaSeguimiento = '';
+            $('#dataBaciloscopia tbody').on('click', '#actualizar', function () {
+
+                var row = $(this).parents('tr');
+                idSeguimientoBaciloscopia = row.data('id');
+
+                {% for seguimiento in evolucion.baciloscopiaSeguimientos %}
+                    var id = '{{ seguimiento.id }}';
+                    if( id == idSeguimientoBaciloscopia)
+                    {
+                        $('#baciloscopiaEdit').val('{{ seguimiento.baciloscopia.clasificacion }}');
+                        $('#fechaBaciloscopiaEdit').val('{{ seguimiento.fecha|date('Y-m-d') }}');
+                        $('#categoriaEditBaciloscopia').val('{{ seguimiento.categoria }}');
+                        idBaciloscopiaSeguimiento = '{{ seguimiento.id }}';
+                    }
+                {% endfor %}
+                $('#editBaciloscopiaSeguimiento').modal('show');
+            });
+
+            var idCultivoSeguimiento = '';
+            // función que carga datos en el formulario para editar una baciloscopia
+            $('#dataCultivo tbody').on('click', '#actualizar', function () {
+
+                var row = $(this).parents('tr');
+                idSeguimientoCultivo = row.data('id');
+
+                {% for seguimiento in evolucion.cultivoSeguimientos %}
+                var id = '{{ seguimiento.id }}';
+                if( id == idSeguimientoCultivo)
+                {
+                    $('#cultivoEdit').val('{{ seguimiento.cultivo.clasificacion }}');
+                    $('#salidaCultivoEdit').val('{{ seguimiento.salidaCultivo.salida }}');
+                    $('#fechaCultivoEdit').val('{{ seguimiento.fecha|date('Y-m-d') }}');
+                    $('#categoriaEditCultivo').val('{{ seguimiento.categoria }}');
+                    idCultivoSeguimiento = '{{ seguimiento.id }}';
+                }
+                {% endfor %}
+                $("#salidaCultivoEdit").prop('disabled', false);
+                $('#editCultivoSeguimiento').modal('show');
+            });
+
+            //--------- enviar el formulario de editar una baciloscopia-----------------
+            $('#maceptarEditBaciloscopia').click(function ()
+            {
+                $('#editBaciloscopiaSeguimiento').modal('hide');
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    baciloscopia: $("#baciloscopiaEdit").val(),
+                    idBaciloscopiaSeguimmiento: idBaciloscopiaSeguimiento
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updateBaciloscopiaSeguimiento") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    if(data == 'ok'){
+
+                        $(".preload").addClass('hidden');
+                        alertify.alert('<strong>La baciloscopía ha sido modificada correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                            .set('onok', function () {
+                                $(".preload").removeClass('hidden');
+                                window.location.href = "{{ path('mostrarVistaSeguimientoPaciente' , {idEvolucion:evolucion.id , tabActivo: 'baciloscopia'}) }}";
+                            });
+
+
+                    }else{
+                        $(".preload").addClass('hidden');
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+
+            //--------- enviar el formulario de editar un cultivo-----------------
+            $('#maceptarEditCultivo').click(function ()
+            {
+                if($('#cultivoEdit').val() == 'vacio')
+                {
+                    $("#errorCultivoEdit").text('Debe selecionar una codificación para el cultivo').removeClass('hidden');
+                    $("#cultivoEdit").focus();
+                    return false;
+                }
+                if($('#salidaCultivoEdit').val() == 'vacio')
+                {
+                    $("#errorCultivoEdit").text('Debe selecionar un resultado  para el cultivo').removeClass('hidden');
+                    $("#salidaCultivoEdit").focus();
+                    return false;
+                }
+                if($('#cultivoEdit').val() == '0' && $("#salidaCultivoEdit").val() == 'Complejo Mycobacterium tuberculosis')
+                {
+                    $("#errorCultivoEdit").text('Si la codificación del cultivo es 0 no puede tener como resultado : Complejo Mycobacterium tuberculosis.').removeClass('hidden');
+                    $("#cultivoEdit").focus();
+                    return false;
+                }
+
+                $('#editCultivoSeguimiento').modal('hide');
+                $(".preload").removeClass('hidden');
+
+                var mat_datos = {
+                    cultivo: $("#cultivoEdit").val(),
+                    salidaCultivo: $("#salidaCultivoEdit").val(),
+                    idCultivoSeguimiento: idCultivoSeguimiento
+                };
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updateCultivoSeguimiento") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    if(data == 'ok'){
+
+                        $(".preload").addClass('hidden');
+                        alertify.alert('<strong>El cultivo ha sido modificado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+                            .set('onok', function () {
+                                $(".preload").removeClass('hidden');
+                                window.location.href = "{{ path('mostrarVistaSeguimientoPaciente' , {idEvolucion:evolucion.id , tabActivo: 'cultivo'}) }}";
+                            });
+
+                    }else{
+                        $(".preload").addClass('hidden');
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+
+            //----------eliminar uan baciloscopia-------------------------------
+            $('#dataBaciloscopia tbody').on('click', '.delete', function () {
+
+                var row = $(this).parents('tr');
+
+                var mat_datos = { idBaciloscopiaSeguimiento: row.data('id') };
+
+                alertify.confirm('Basic: false').set('message', 'Seguro que desea eliminar la baciloscopía seleccionada').set('onok', function(){
+
+                    $(".preload").removeClass('hidden');
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "html",
+                        url: '{{ path("deleteBaciloscopiaSeguimiento") }}',
+                        data: mat_datos
+                    }).done(function (data) {
+
+                        $(".preload").addClass('hidden');
+
+                        if(data == 'ok'){
+
+                            alertify.alert('<strong>La baciloscopía  ha sido eliminada correctamente</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                                .set('onok', function(){
+
+                                    row.fadeOut();
+                                });
+                        }else {
+                            alertify.alert('<strong>'+data+'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                        }
+                    });
+                });
+            });
+
+            //----------eliminar uan cultivo-------------------------------
+            $('#dataCultivo tbody').on('click', '.delete', function () {
+
+                var row = $(this).parents('tr');
+
+                var mat_datos = { idCultivoSeguimiento: row.data('id') };
+
+                alertify.confirm('Basic: false').set('message', 'Seguro que desea eliminar el cultivo seleccionado').set('onok', function(){
+
+                    $(".preload").removeClass('hidden');
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "html",
+                        url: '{{ path("deleteCultivoSeguimiento") }}',
+                        data: mat_datos
+                    }).done(function (data) {
+
+                        $(".preload").addClass('hidden');
+
+                        if(data == 'ok'){
+
+                            alertify.alert('<strong>El cultivo  ha sido eliminado correctamente</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                                .set('onok', function(){
+
+                                    row.fadeOut();
+                                });
+                        }else {
+                            alertify.alert('<strong>'+data+'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                        }
+                    });
+                });
+            });
+
+            //--------- enviar el formulario de editar los analisis iniciales---------------
+            $('#btnEditAnalisisIniciales').click(function ()
+            {
+                if($("#cultivoBCX").val() == 'vacio'){
+                    alertify.alert('<strong>Debe selecionar una codificación para el cultivo.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if($("#salidaCultivoBCX").val() == 'vacio'){
+                    alertify.alert('<strong>Debe selecionar un resultado  para el cultivo.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if($("#cultivoBCX").val() != 'SC' && $("#salidaCultivoBCX").val() == 'No realizado'){
+                    alertify.alert('<strong>Si existe una codificación de cultivo el resultado no puede ser : no realizado.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if ($("#cultivoBCX").val() == '0' && $("#salidaCultivoBCX").val() == 'Complejo Mycobacterium tuberculosis') {
+                    alertify.alert('<strong>Si la codificación del cultivo es 0 no puede tener como resultado : Complejo Mycobacterium tuberculosis.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+
+                var mat_datos = {
+                    idEvolucion: '{{ evolucion.id }}',
+                    xpertBCX: $("#xpertBCX").val(),
+                    baciloscopiaBCX: $("#baciloscopiaBCX").val(),
+                    baciloscopia2BCX: $("#baciloscopia2BCX").val(),
+                    cultivoBCX: $("#cultivoBCX").val(),
+                    salidaCultivoBCX: $("#salidaCultivoBCX").val(),
+                    biopsia: $("#biopsia").val(),
+                    orina: $("#orina").val(),
+                };
+
+
+                $(".preload").removeClass('hidden');
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updateAnalisisIniciales") }}',
+                    data: mat_datos
+                }).done(function (data) {
+                    $(".preload").addClass('hidden');
+                    if(data == 'ok'){
+
+                        alertify.alert('<strong>Los análisis iniciales han sido modificados correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                            .set('label','Aceptar')
+
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+
+                    }
+                });
+            });
+
+
+        });
+    </script>
+{% endblock %}

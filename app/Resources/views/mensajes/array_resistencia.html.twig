@@ -1,0 +1,20 @@
+{# La siguiente macro recorrera el arreglo de resistencia y ademas tiene como parametro el objeto resistencia guardado en BD #}
+{# resistencia_id: parametro que viene con analisisSeleccionado[0].getResistencia() #}
+{# resistencias: parametro que viene con el arreglo de resistencias #}
+
+{% macro array_resistecia(resistencia_id,resistencias)%}
+    {% if (resistencia_id is null )%}
+        <option value="" selected></option>
+        {% for resistencia in resistencias %}
+            <option value="{{ resistencia.id }}" >{{ resistencia.descripcion }} -- ({{ resistencia.clasificacion }})</option>
+        {% endfor %}
+    {% else %}
+        {% for resistencia in resistencias %}
+            {% if resistencia_id.getId() == resistencia.id %}
+                <option value="{{ resistencia.id }}" selected>{{ resistencia.descripcion }} -- ({{ resistencia.clasificacion }})</option>
+            {% else %}
+                <option value="{{ resistencia.id }}" >{{ resistencia.descripcion }} -- ({{ resistencia.clasificacion }})</option>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endmacro %}

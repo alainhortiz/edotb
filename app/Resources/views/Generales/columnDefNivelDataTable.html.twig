@@ -1,0 +1,95 @@
+{% macro definir() %}
+    var columnDefs = [];
+    {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+        columnDefs = [
+        { "bSortable": false, "aTargets": [7] },
+        { "name": "provincia", "targets": 0 },
+        { "name": "municipio", "targets": 1 },
+        { "name": "nombre", "targets": 2 },
+        { "name": "primerApellido", "targets": 3 },
+        { "name": "segundoApellido", "targets": 4 },
+        { "name": "fechaNotificacion", "targets": 5 , class: "text-center"},
+        { "name": "enfermedad", "targets": 6 , class: "text-center"},
+        { "sWidth": "9%", "targets": [ 5 ] },
+        { "sWidth": "9%", "aTargets": [ 6 ] },
+        { "sWidth": "16%", "targets": [ 7 ] }
+        ];
+        order = [[0, 'asc'] , [1, 'asc'] , [5, 'asc']];
+
+    {% elseif  app.user.getNivelAcceso().nivel == 'provincial' %}
+        columnDefs = [
+        { "bSortable": false, "aTargets": [6] },
+        { "name": "municipio", "targets": 0 },
+        { "name": "nombre", "targets": 1 },
+        { "name": "primerApellido", "targets": 2 },
+        { "name": "segundoApellido", "targets": 3 },
+        { "name": "fechaNotificacion", "targets": 4 , class: "text-center"},
+        { "name": "enfermedad", "targets": 5 , class: "text-center"},
+        { "sWidth": "9%", "targets": [ 4 ] },
+        { "sWidth": "9%", "aTargets": [ 5 ] },
+        { "sWidth": "16%", "targets": [ 6 ] }
+        ];
+        order = [[0, 'asc'] , [4, 'asc']];
+    {% else %}
+        columnDefs = [
+        { "bSortable": false, "aTargets": [5] },
+        { "name": "nombre", "targets": 0 },
+        { "name": "primerApellido", "targets": 1 },
+        { "name": "segundoApellido", "targets": 2 },
+        { "name": "fechaNotificacion", "targets": 3 , class: "text-center"},
+        { "name": "enfermedad", "targets": 4 , class: "text-center"},
+        { "sWidth": "9%", "targets": [ 3 ] },
+        { "sWidth": "9%", "aTargets": [ 4 ] },
+        { "sWidth": "16%", "targets": [ 5 ] }
+        ];
+        order = [[3, 'asc']];
+    {% endif %}
+{% endmacro %}
+
+{% macro definirPoblacion() %}
+    {% if app.user.getNivelAcceso().nivel == 'nacional' %}
+        var columnDefs = [];
+        columnDefs = [
+        { "bSortable": false, "aTargets": [6] },
+        { "name": "year", "targets": 0 , class: "text-center"},
+        { "name": "provincia", "targets": 1 },
+        { "name": "municipio", "targets": 2 },
+        { "name": "edad", "targets": 3 , class: "text-center"},
+        { "name": "sexo", "targets": 4 , class: "text-center"},
+        { "name": "total", "targets": 5 , class: "text-center"},
+        { "sWidth": "9%", "targets": [ 0 ] },
+        { "sWidth": "16%", "targets": [ 6 ], class: "text-center"}
+        ];
+        order = [[0, 'asc'] , [1, 'asc'] , [2, 'asc']];
+
+    {% elseif  app.user.getNivelAcceso().nivel == 'provincial' %}
+
+        var columnDefs = [];
+        columnDefs = [
+        { "bSortable": false, "aTargets": [5] },
+        { "name": "year", "targets": 0 , class: "text-center"},
+        { "name": "municipio", "targets": 1 },
+        { "name": "edad", "targets": 2 , class: "text-center"},
+        { "name": "sexo", "targets": 3 , class: "text-center"},
+        { "name": "total", "targets": 4 , class: "text-center"},
+        { "sWidth": "9%", "targets": [ 0 ] },
+        { "sWidth": "16%", "targets": [ 5 ], class: "text-center"}
+        ];
+        order = [[0, 'asc'] , [1, 'asc']];
+
+    {% else %}
+
+        var columnDefs = [];
+        columnDefs = [
+        { "bSortable": false, "aTargets": [4] },
+        { "name": "year", "targets": 0 , class: "text-center"},
+        { "name": "edad", "targets": 1 , class: "text-center"},
+        { "name": "sexo", "targets": 2 , class: "text-center"},
+        { "name": "total", "targets": 3 , class: "text-center"},
+        { "sWidth": "9%", "targets": [ 0 ] },
+        { "sWidth": "16%", "targets": [ 4 ], class: "text-center"}
+        ];
+        order = [[0, 'asc']];
+
+    {% endif %}
+{% endmacro %}

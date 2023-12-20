@@ -1,0 +1,162 @@
+{% extends 'comun.html.twig' %}
+
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-lg-offset-3 form-cont">
+                <h3 style="margin: 5px; padding-bottom: 3px; border-bottom: 1px solid #cecece; color: #898b85">Editar Hogar Materno</h3>
+                <form style="margin-top: 20px; border-bottom: 1px solid #393939; padding-bottom: 15px">
+                    <label for="codigo">Código:</label>
+                    <strong>{{ areaSalud.codigo }}</strong>
+
+                    <div style="margin-top: 10px"></div>
+
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" class="form-control" value="{{ areaSalud.nombre }}" id="nombre">
+
+                    <div style="margin-top: 10px"></div>
+
+                    <label class="control-label " for="provincia">Provincia:</label>
+                    <div class="form-group">
+                        <select class="form-control input-sm " id="provincia" name="provincia">
+                            {% for provincia in  provincias %}
+                                {% if provincia.id ==  areaSalud.getMunicipio().getProvincia().id %}
+                                    <option selected value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                {% else %}
+                                    <option  value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div style="margin-top: 10px"></div>
+
+                    <label class="control-label " for="municipio">Municipio:</label>
+                    <select class="form-control input-sm " id="municipio" name="municipio">
+                        {% for municipio in municipios %}
+                            {% if areaSalud.getMunicipio().id == municipio.id %}
+                                <option selected value="{{ areaSalud.getMunicipio().id }}">{{ areaSalud.getMunicipio().nombre }} </option>
+                            {% else %}
+                                {% if areaSalud.getMunicipio().getProvincia().id == municipio.provincia.id %}
+                                    <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+
+                    <div style="margin-top: 10px"></div>
+
+                </form>
+                <p class="text-center" style="margin-top: 20px">
+                    <button id="btnGuardar" type="button" class="btn btn-primario">Guardar</button>
+                    <button id="btnSalir" type="button" class="btn btn-primario"> Salir </button>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function()
+        {
+            function verificarusuario(){
+                {% if not ((is_granted("ROLE_ADMINISTRADOR") and  app.user.getNivelAcceso().nivel == 'nacional')  or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+            //--------- abandonar el formulario -----------------
+            $('#btnSalir').on('click', function ()
+            {
+                window.location.href = "{{ path('gestionarHogaresMaternos') }}";
+
+            });
+            //----------Relacionar selects --------------------------
+            $('#provincia').on('change', function () {
+
+                var provincia = $(this).val();
+
+                //ESTE CICLO ES PARA BUSCAR LOS MUNICIPIOS PERTENECIENTES A UNA PROVINCIA
+                var html    = '<option value="0">Seleccione un municipio</option>';
+
+                {% for municipio in  municipios %}
+                    var idProvincia = '{{ municipio.getProvincia().id }}';
+
+                    if (idProvincia == provincia) {
+                        var idMunicipio = '{{ municipio.id }}';
+                        var name = '{{ municipio.nombre }}';
+                        html += '<option value="' + idMunicipio + '">' + name + '</option>';
+                    }
+                {% endfor %}
+
+                $("#municipio").html(html);
+            });
+
+            //--------- enviar el formulario -----------------
+            $('#btnGuardar').click(function () {
+
+                if($("#nombre").val().trim() == ''){
+                    alertify.alert('<strong>El campo nombre es obligatorio , no puede quedar en blanco.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                if($("#municipio").val().trim() == 0){
+                    alertify.alert('<strong>Debe seleccionar el municipio al que pertenece el hogar materno.</strong>')
+                        .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                            '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                        .set('label','Aceptar');
+                    return false;
+                }
+                $(".preload").removeClass('hidden');
+
+                var isArea = 0;
+                var tipoArea = 4;
+                if ($('#isArea').prop('checked')) {
+                    isArea = 1;
+                }
+
+                var mat_datos = {
+                    idAreaSalud:{{ areaSalud.getId() }},
+                    nombre: $("#nombre").val(),
+                    municipio: $("#municipio").val(),
+                    isArea: isArea,
+                    tipoArea: tipoArea
+                };
+                $.ajax({
+                    type: "POST",
+                    dataType: "html",
+                    url: '{{ path("updateAreaSalud") }}',
+                    data: mat_datos
+                }).done(function (data) {
+
+                    $(".preload").addClass('hidden');
+                    if(data == 'ok'){
+
+                        alertify.alert('<strong>El hogar materno ha sido modificado correctamente</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmación</h4>')
+                            .set('label','Aceptar')
+                    }else{
+                        alertify.alert('<strong>'+ data +'</strong>')
+                            .setHeader('<span class="glyphicon glyphicon-ban-circle" style="font-size: 20px"></span>' +
+                                '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Error</h4>')
+                            .set('label','Aceptar')
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

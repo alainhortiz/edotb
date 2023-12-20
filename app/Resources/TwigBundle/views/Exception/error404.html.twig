@@ -1,0 +1,205 @@
+{% extends 'comun.html.twig' %}
+
+{% block title %}Página 404{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+
+        .btn_1 {
+            border: none;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            background: none;
+            cursor: pointer;
+            padding: 5px 25px;
+            display: inline-block;
+            margin-top:1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Open Sans Condensed', sans-serif;
+            outline: none;
+            position: relative;
+            -webkit-transition: all 0.3s;
+            -moz-transition: all 0.3s;
+            transition: all 0.3s;
+            font-size: 1.5em;
+        }
+        .btn_11 {
+            border:7px double #fff;
+            color: #fff;
+            background:#372f2d;
+        }
+        /* Button 1b */
+        .btn1_1b:after {
+            width: 100%;
+            height: 0;
+            top: 0;
+            left: 0;
+            background:#c6b297;
+        }
+        .btn1_1b:hover, .btn1_1b:active {
+            color:#fff;
+            text-decoration:none;
+        }
+        .btn1_1b:hover:after, .btn1_1b:active:after {
+            height: 100%;
+        }
+        .btn_1:after {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            -webkit-transition: all 0.3s;
+            -moz-transition: all 0.3s;
+            transition: all 0.3s;
+        }
+
+        /*----start-wrap-----*/
+        .wrap{
+            width:80%;
+            margin:0 auto;
+        }
+
+        /** About **/
+        .about-desc{
+            margin-top:4em;
+        }
+        .about-desc h2{
+            color:#0184ff;
+            font-size:20px;
+            text-transform: uppercase;
+            padding:15px 0;
+            font-weight:600;
+            border-bottom:1px solid rgba(245, 238, 243, 0.15);
+            margin-bottom:10px;
+        }
+        .about-desc p {
+            font-size:14px;
+            padding:5px 0;
+            color:#787c7f;
+            line-height: 1.8em;
+        }
+
+        /*---start-content-----*/
+        .content{
+            background:#1d1d1d2b;
+            padding:0 2%;
+            border-radius:5px;
+            -webkit-border-radius:5px;
+            -moz-border-radius:5px;
+            -o-border-radius:5px;
+        }
+
+        /* Self Clearing Goodness */
+        .container:after { content: "\0020"; display: block; height: 0; clear: both; visibility: hidden; }
+
+        /***** 404 ****/
+        .page-not-found{
+            text-align:center;
+            color: #2c9879;
+            padding:2% 0;
+        }
+        .page-not-found h4{
+            font-size:5em;
+            text-shadow: 1px 1px 1px #FFF, 2px 2px 1px #888;
+            text-transform:uppercase;
+        }
+        .page-not-found h3{
+            font-size: 12em;
+            text-shadow: 1px 1px 1px #FFF, 3px 2px 1px #FFF;
+            font-weight:bold;
+            color:#70cbb1;
+        }
+        .page-not-found h6{
+            font-size: medium;
+            font-weight:bold;
+            color:#372f2d;
+        }
+
+
+        /*----responsive-design-----*/
+        @media only screen and (max-width: 1366px) {
+            .wrap{
+                width:90%;
+            }
+        }
+        @media only screen and (max-width: 1280px) {
+            .wrap{
+                width:90%;
+            }
+        }
+        @media only screen and (max-width: 1024px){
+            .wrap{
+                width:90%;
+            }
+        }
+        @media only screen and (max-width:800px) {
+            .wrap{
+                width:95%;
+            }
+        }
+        @media only screen and (max-width: 640px) {
+            .wrap{
+                width:95%;
+            }
+            .content{
+                padding:0 4%;
+            }
+            .page-not-found h4{
+                font-size:3em;
+            }
+            .page-not-found h3{
+                font-size:8em;
+            }
+            .about-desc{
+                margin-top:2em;
+            }
+        }
+        @media only screen and (max-width: 480px) {
+            .wrap{
+                width:95%;
+            }
+        }
+        @media only screen and (max-width: 320px) {
+            .wrap{
+                width:95%;
+            }
+        }
+
+    </style>
+{% endblock %}
+{% block nav %}
+    <div class="row" style="margin-bottom: 40px ; margin-right: auto">
+        <nav class="navbar navbar-default" style="background: #70cbb1; border-bottom: 4px solid #434242">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{{  path('inicio') }}"><img src="{{ asset('img/logo-navbar2.png')}}" style="width: 90px; margin-top: -10px" title="Ir a inicio"></a>
+                </div>
+            </div><!-- /.container-fluid -->
+        </nav>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="wrap">
+        <div class="about-desc">
+            <div class="content">
+                <div class="page-not-found">
+                    <h4>Recurso no encontrado</h4>
+                    <h3>404</h3>
+                    <h6>Es posible que la página que usted está buscando no se encuentra en este sitio.</h6>
+                    <h6>Por favor le invitamos a que se dirija hacia la página inicial.</h6>
+                    <a href="{{ path('inicio') }}" class="btn_1 btn_11 btn1_1b">INICIO</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

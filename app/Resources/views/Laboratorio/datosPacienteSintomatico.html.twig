@@ -1,0 +1,502 @@
+{% extends 'comun.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/css/jquery.dataTables.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="preload hidden">
+        <div class="logo"></div>
+        <div class="loader-frame">
+            <div class="loader1" id="loader1"></div>
+            <div class="loader2" id="loader2"></div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="form-cont">
+            <div class="row">
+                <div class="col-md-11 col-lg-11" style="margin: auto; text-align: center">
+                    <h1 class="glyphicon glyphicon-user" style="color: #70cbb1; font-size: 54px; margin-bottom: 13px;"></h1>
+                </div>
+                <div class="col-md-1 col-lg-1" style="margin: auto; text-align: right">
+                    <input type="button" class="btn-primario" value="SALIR" id="btnSalir" >
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px">
+                <div class="col-lg-3 col-md-3">
+                    <h5>Carnet de Identidad: <strong>{{ pacienteSintomatico.carnetIdentidad }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Nombre: <strong>{{ pacienteSintomatico.nombre }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Primer Apellido: <strong>{{ pacienteSintomatico.primerApellido }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Segundo Apellido: <strong>{{ pacienteSintomatico.segundoApellido }}</strong></h5>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px">
+                <div class="col-lg-3 col-md-3">
+                    <h5>Edad: <strong>{{ pacienteSintomatico.edad }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Sexo: <strong>{{ pacienteSintomatico.sexo }}</strong></h5>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <h5>Dirección: <strong>{{ pacienteSintomatico.getDireccionPaciente().direccion }}</strong></h5>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px">
+                <div class="col-lg-3 col-md-3">
+                    <h5>Fecha de Entrada: <strong>{{ pacienteSintomatico.fechaEntrada|date('Y-m-d') }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Municipio de Residencia: <strong>{{ pacienteSintomatico.getDireccionPaciente().getMunicipio().nombre }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Provincia de Residencia: <strong>{{ pacienteSintomatico.getDireccionPaciente().getMunicipio().getProvincia().nombre }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>País: <strong>{{ pacienteSintomatico.getPais().nombre }}</strong></h5>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px">
+                <div class="col-lg-12 col-md-12">
+                    <h5>Grupo Vulnerable: <strong>{{ pacienteSintomatico.getGrupoVulnerable().grupo }}</strong></h5>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px">
+                <div class="col-lg-3 col-md-3">
+                    <h5>Unidad de Atención: <strong>{{ pacienteSintomatico.getAreaSalud() != null ? pacienteSintomatico.getAreaSalud().nombre : pacienteSintomatico.hospital.nombre }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Municipio: <strong>{{ pacienteSintomatico.getAreaSalud() != null ? pacienteSintomatico.getAreaSalud().getMunicipio().nombre : pacienteSintomatico.hospital.municipio.nombre }}</strong></h5>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <h5>Provincia: <strong>{{ pacienteSintomatico.getAreaSalud() != null ? pacienteSintomatico.getAreaSalud().getMunicipio().getProvincia().nombre : pacienteSintomatico.hospital.municipio.provincia.nombre}}</strong></h5>
+                </div>
+            </div>
+            <div style="margin-top: 20px; background-color: #7abfbb">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul style="margin-bottom: 10px" class="nav nav-tabs" role="tablist" id="myTab">
+                        <li role="presentation" class="active">
+                            <a  href="#baciloscopiaTab" aria-controls="baciloscopiaTab" role="tab" data-toggle="tab">
+                                <strong>Baciloscopias</strong>
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#cultivoTab" aria-controls="cultivoTab" role="tab" data-toggle="tab">
+                                <strong>Cultivos</strong>
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#xpertTab" aria-controls="xpertTab" role="tab" data-toggle="tab">
+                                <strong>Xperts</strong>
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#muestrasNoUtilesTab" aria-controls="xpertTab" role="tab" data-toggle="tab">
+                                <strong>Muestras no Utiles</strong>
+                            </a>
+                        </li>
+                        <li style="float: right; margin-top: 10px; margin-right: 10px" role="presentation">
+                            <strong>Total de Muestras no Utiles: {{ totalMuestrasNoUtiles != 0 ? totalMuestrasNoUtiles : 0 }}</strong>
+                        </li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="baciloscopiaTab">
+                            <div class="container-fluid">
+                                <div id="todos" class="row" style="background: #7abfbb; padding: 10px ; margin-bottom: 10px;">
+                                    <p style="float: inherit; margin-top: -10px; margin-bottom: -20px" class="text-center">
+                                        <a href="{{ path('addResultBaciloscopia' , {ci:pacienteSintomatico.carnetIdentidad}) }}" style="text-decoration: none" class="btn btn-primario">Agregar Baciloscopía</a>
+                                    </p>
+                                    <table data-id ="baciloscopia"   id="dataBaciloscopia">
+                                        <thead style="color: #242524">
+                                        <tr>
+                                            <th class="hidden"></th>
+                                            <th>Fecha</th>
+                                            <th>Provincia</th>
+                                            <th>Municipio</th>
+                                            <th>Unidad</th>
+                                            <th>Resultado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  class="table-striped">
+                                        {% set indiceB  = 1 %}
+                                        {% for baciloscopia in baciloscopias %}
+                                            <tr  data-id = "{{ baciloscopia.id }}">
+                                                <td class="hidden">{{ indiceB }}</td>
+                                                <td>{{ baciloscopia.fecha|date('Y-m-d') }}</td>
+                                                <td>{{ baciloscopia.getAreaSalud() != null ? baciloscopia.getAreaSalud().getMunicipio().getProvincia().nombre : baciloscopia.hospital.getMunicipio().getProvincia().nombre }}</td>
+                                                <td>{{ baciloscopia.getAreaSalud() != null ? baciloscopia.getAreaSalud().getMunicipio.nombre : baciloscopia.hospital.getMunicipio.nombre }}</td>
+                                                <td>{{ baciloscopia.getAreaSalud() != null ? baciloscopia.getAreaSalud().nombre : baciloscopia.hospital.getMunicipio.nombre }}</td>
+                                                <td>{{ baciloscopia.getBaciloscopia().descripcion~' ('~baciloscopia.getBaciloscopia().clasificacion~')' }}</td>
+                                                <td>
+                                                    {% if (baciloscopia.getAreaSalud() != null and app.user.getAreaSalud() != null and app.user.getAreaSalud().id == baciloscopia.getAreaSalud().id)
+                                                        or (baciloscopia.hospital != null and app.user.hospital != null and app.user.hospital.id == baciloscopia.hospital.id)  %}
+                                                        <div class="btn-opt" id="actualizar" style="background: #3a81b8; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Actualizar">
+                                                            <a href="{{ path('editResultBaciloscopia' , {idResultBaciloscopia:baciloscopia.id}) }}" style="text-decoration: none; color: #ffffff">
+                                                                <i class="glyphicon glyphicon-pencil" style="font-size: 20px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="btn-opt delete" id="borrar" style="background: #e42d26; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Borrar">
+                                                            <i class="glyphicon glyphicon-erase" style="font-size: 20px"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% set indiceB = indiceB + 1 %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="cultivoTab">
+                            <div class="container-fluid">
+                                <div id="todos" class="row" style="background: #7abfbb; padding: 10px ; margin-bottom: 10px;">
+                                    <p style="float: inherit; margin-top: -10px; margin-bottom: -20px" class="text-center">
+                                        <a href="{{ path('addResultCultivo' , {ci:pacienteSintomatico.carnetIdentidad}) }}" style="text-decoration: none" class="btn btn-primario">Agregar Cultivo</a>
+                                    </p>
+                                    <table data-id ="cultivo"  id="dataCultivo">
+                                        <thead style="color: #242524">
+                                        <tr>
+                                            <th class="hidden"></th>
+                                            <th>Fecha</th>
+                                            <th>Provincia</th>
+                                            <th>Municipio</th>
+                                            <th>Unidad</th>
+                                            <th>Resultado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  class="table-striped">
+                                        {% set indiceC  = 1 %}
+                                        {% for cultivo in cultivos %}
+                                            <tr  data-id = "{{ cultivo.id }}">
+                                                <td class="hidden">{{ indiceC }}</td>
+                                                <td>{{ cultivo.fecha|date('Y-m-d') }}</td>
+                                                <td>{{ cultivo.getAreaSalud() != null ? cultivo.getAreaSalud().getMunicipio().getProvincia().nombre : cultivo.hospital.getMunicipio().getProvincia().nombre }}</td>
+                                                <td>{{ cultivo.getAreaSalud() != null ? cultivo.getAreaSalud().getMunicipio.nombre : cultivo.hospital.getMunicipio.nombre }}</td>
+                                                <td>{{ cultivo.getAreaSalud() != null ? cultivo.getAreaSalud().nombre : cultivo.hospital.getMunicipio.nombre }}</td>
+                                                <td>{{ cultivo.getCultivo().descripcion~' ('~cultivo.getCultivo().clasificacion~')' }}</td>
+                                                <td>
+                                                    {% if (cultivo.getAreaSalud() != null and app.user.getAreaSalud() != null and app.user.getAreaSalud().id == cultivo.getAreaSalud().id)
+                                                        or (cultivo.hospital != null and app.user.hospital != null and app.user.hospital.id == cultivo.hospital.id)  %}
+                                                        <div class="btn-opt" id="actualizar" style="background: #3a81b8; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Actualizar">
+                                                            <a href="{{ path('editResultCultivo' , {idResultCultivo:cultivo.id}) }}" style="text-decoration: none; color: #ffffff">
+                                                                <i class="glyphicon glyphicon-pencil" style="font-size: 20px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="btn-opt delete" id="borrar" style="background: #e42d26; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Borrar">
+                                                            <i class="glyphicon glyphicon-erase" style="font-size: 20px"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% set indiceC = indiceC + 1 %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="xpertTab">
+                            <div class="container-fluid">
+                                <div id="todos" class="row" style="background: #7abfbb; padding: 10px ; margin-bottom: 10px;">
+                                    <p style="float: inherit; margin-top: -10px; margin-bottom: -20px" class="text-center">
+                                        <a href="{{ path('addResultXpert' , {ci:pacienteSintomatico.carnetIdentidad}) }}" style="text-decoration: none" class="btn btn-primario">Agregar Xpert</a>
+                                    </p>
+                                    <table data-id ="xpert"  id="dataXpert">
+                                        <thead style="color: #242524">
+                                        <tr>
+                                            <th class="hidden"></th>
+                                            <th>Fecha</th>
+                                            <th>Provincia</th>
+                                            <th>Municipio</th>
+                                            <th>Unidad</th>
+                                            <th>Resultado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  class="table-striped">
+                                        {% set indiceX  = 1 %}
+                                        {% for xpert in xperts %}
+                                            <tr  data-id = "{{ xpert.id }}">
+                                                <td class="hidden">{{ indiceX }}</td>
+                                                <td>{{ xpert.fecha|date('Y-m-d') }}</td>
+                                                <td>{{ xpert.getAreaSalud() != null ? xpert.getAreaSalud().getMunicipio().getProvincia().nombre : xpert.hospital.getMunicipio().getProvincia().nombre }}</td>
+                                                <td>{{ xpert.getAreaSalud() != null ? xpert.getAreaSalud().getMunicipio.nombre : xpert.hospital.getMunicipio.nombre }}</td>
+                                                <td>{{ xpert.getAreaSalud() != null ? xpert.getAreaSalud().nombre : xpert.hospital.getMunicipio.nombre }}</td>
+                                                <td>{{ xpert.getXpert().descripcion~' ('~xpert.getXpert().clasificacion~')' }}</td>
+                                                <td>
+                                                    {% if (xpert.getAreaSalud() != null and app.user.getAreaSalud() != null and app.user.getAreaSalud().id == xpert.getAreaSalud().id)
+                                                        or (xpert.hospital != null and app.user.hospital != null and app.user.hospital.id == xpert.hospital.id)  %}
+                                                        <div class="btn-opt" id="actualizar" style="background: #3a81b8; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Actualizar">
+                                                            <a href="{{ path('editResultXpert' , {idResultXpert:xpert.id}) }}" style="text-decoration: none; color: #ffffff">
+                                                                <i class="glyphicon glyphicon-pencil" style="font-size: 20px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="btn-opt delete" id="borrar" style="background: #e42d26; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Borrar">
+                                                            <i class="glyphicon glyphicon-erase" style="font-size: 20px"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% set indiceX = indiceX + 1 %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="muestrasNoUtilesTab">
+                            <div class="container-fluid">
+                                <div id="todos" class="row" style="background: #7abfbb; padding: 10px ; margin-bottom: 10px;">
+                                    <p style="float: inherit; margin-top: -10px; margin-bottom: -20px" class="text-center">
+                                        <a href="{{ path('addMuestraNoUtil' , {ci:pacienteSintomatico.carnetIdentidad}) }}" style="text-decoration: none" class="btn btn-primario">Agregar Muestras no Utiles</a>
+                                    </p>
+                                    <table data-id ="muestrasNoUtiles"  id="dataMuestrasNoUtiles">
+                                        <thead style="color: #242524">
+                                        <tr>
+                                            <th class="hidden"></th>
+                                            <th>Fecha</th>
+                                            <th>Provincia</th>
+                                            <th>Municipio</th>
+                                            <th>Unidad</th>
+                                            <th>Cantidad</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody  class="table-striped">
+                                        {% set indiceM  = 1 %}
+                                        {% for muestra in muestras %}
+                                            <tr  data-id = "{{ muestra.id }}">
+                                                <td class="hidden">{{ indiceM }}</td>
+                                                <td>{{ muestra.fecha|date('Y-m-d') }}</td>
+                                                <td>{{ muestra.getAreaSalud() != null ? muestra.getAreaSalud().getMunicipio().getProvincia().nombre : muestra.hospital.getMunicipio().getProvincia().nombre }}</td>
+                                                <td>{{ muestra.getAreaSalud() != null ? muestra.getAreaSalud().getMunicipio.nombre : muestra.hospital.getMunicipio.nombre }}</td>
+                                                <td>{{ muestra.getAreaSalud() != null ? muestra.getAreaSalud().nombre : muestra.hospital.getMunicipio.nombre }}</td>
+                                                <td>{{ muestra.cantidad }}</td>
+                                                <td>
+                                                    {% if (muestra.getAreaSalud() != null and app.user.getAreaSalud() != null and app.user.getAreaSalud().id == muestra.getAreaSalud().id)
+                                                        or (muestra.hospital != null and app.user.hospital != null and app.user.hospital.id == muestra.hospital.id)  %}
+                                                        <div class="btn-opt" id="actualizar" style="background: #3a81b8; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Actualizar">
+                                                            <a href="{{ path('editMuestraNoUtil' , {idMuestraNoUtil:muestra.id}) }}" style="text-decoration: none; color: #ffffff">
+                                                                <i class="glyphicon glyphicon-pencil" style="font-size: 20px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="btn-opt delete" id="borrar" style="background: #e42d26; text-align: center" data-toggle="tooltip" data-placement="bottom" title="Borrar">
+                                                            <i class="glyphicon glyphicon-erase" style="font-size: 20px"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% set indiceM = indiceM + 1 %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/easyadmin/DataTables-1.10.10/media/js/jquery.dataTables.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+
+            function verificarusuario(){
+                {% if not (is_granted("ROLE_EDITOR_ESTADISTICA") or is_granted("ROLE_EDITOR_LABORATORIO") or is_granted("ROLE_SUPERUSUARIO")) %}
+                    window.location.href = "{{ path('login') }}";
+                {% endif %}
+            }
+            verificarusuario();
+
+            $('#dataBaciloscopia').DataTable();
+            $('#dataCultivo').DataTable();
+            $('#dataXpert').DataTable();
+            $('#dataMuestrasNoUtiles').DataTable();
+
+
+            $('h4').each(function(){
+                $(this).css('margin-bottom','10px');
+            });
+
+            //--------- abandonar la pagina -----------------
+            $('#btnSalir').on('click', function (){
+
+                window.location.href = "{{ path('pacientesSintomaticos') }}";
+            });
+
+            $('#dataBaciloscopia tbody').on('click', '.delete', function () {
+
+                var row = $(this).parents('tr');
+
+                var mat_datos = { idResultBaciloscopia: row.data('id') };
+
+                alertify.confirm('Basic: false').set('message', 'Seguro que desea eliminar el resultado seleccionado').set('onok', function(){
+
+                    $(".preload").removeClass('hidden');
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "html",
+                        url: '{{ path("deleteResultBaciloscopia") }}',
+                        data: mat_datos
+                    }).done(function (data) {
+
+                        $(".preload").addClass('hidden');
+
+                        if(data == 'ok'){
+
+                            alertify.alert('<strong>El resultado  ha sido eliminado correctamente</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                                .set('onok', function(){
+
+                                row.fadeOut();
+                            });
+                        }else {
+                            alertify.alert('<strong>'+data+'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                        }
+                    });
+                });
+            });
+
+            $('#dataCultivo tbody').on('click', '.delete', function () {
+
+                var row = $(this).parents('tr');
+
+                var mat_datos = { idResultCultivo: row.data('id') };
+
+                alertify.confirm('Basic: false').set('message', 'Seguro que desea eliminar el resultado seleccionado').set('onok', function(){
+
+                    $(".preload").removeClass('hidden');
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "html",
+                        url: '{{ path("deleteResultCultivo") }}',
+                        data: mat_datos
+                    }).done(function (data) {
+
+                        $(".preload").addClass('hidden');
+
+                        if(data == 'ok'){
+
+                            alertify.alert('<strong>El resultado  ha sido eliminado correctamente</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                                .set('onok', function(){
+
+                                    row.fadeOut();
+                                });
+                        }else {
+                            alertify.alert('<strong>'+data+'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                        }
+                    });
+                });
+            });
+
+            $('#dataXpert tbody').on('click', '.delete', function () {
+
+                var row = $(this).parents('tr');
+
+                var mat_datos = { idResultXpert: row.data('id') };
+
+                alertify.confirm('Basic: false').set('message', 'Seguro que desea eliminar el resultado seleccionado').set('onok', function(){
+
+                    $(".preload").removeClass('hidden');
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "html",
+                        url: '{{ path("deleteResultXpert") }}',
+                        data: mat_datos
+                    }).done(function (data) {
+
+                        $(".preload").addClass('hidden');
+
+                        if(data == 'ok'){
+
+                            alertify.alert('<strong>El resultado  ha sido eliminado correctamente</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                                .set('onok', function(){
+
+                                    row.fadeOut();
+                                });
+                        }else {
+                            alertify.alert('<strong>'+data+'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                        }
+
+                    });
+                });
+            });
+
+            $('#dataMuestrasNoUtiles tbody').on('click', '.delete', function () {
+
+                var row = $(this).parents('tr');
+
+                var mat_datos = { idMuestraNoUtil: row.data('id') };
+
+                alertify.confirm('Basic: false').set('message', 'Seguro que desea eliminar la muestra seleccionada').set('onok', function(){
+
+                    $(".preload").removeClass('hidden');
+
+                    $.ajax({
+                        type: "POST",
+                        dataType: "html",
+                        url: '{{ path("deleteMuestraNoUtil") }}',
+                        data: mat_datos
+                    }).done(function (data) {
+
+                        $(".preload").addClass('hidden');
+
+                        if(data == 'ok'){
+
+                            alertify.alert('<strong>La muestra ha sido eliminada correctamente</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                                .set('onok', function(){
+
+                                    row.fadeOut();
+                                });
+                        }else {
+                            alertify.alert('<strong>'+data+'</strong>')
+                                .setHeader('<span class="glyphicon glyphicon-ok-circle" style="font-size: 20px"></span>' +
+                                    '<h4 class="modal-title" style="display: inline-block; margin-left: 10px">Confirmacion</h4>')
+                                .set('label','Aceptar')
+                        }
+
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}
